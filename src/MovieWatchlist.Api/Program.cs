@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using MovieWatchlist.Infrastructure;
 using MovieWatchlist.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,9 +10,20 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-//builder.Services.AddDbContext<MoviesContext>(options => options.(builder.Configuration.GetConnectionString("MoviesContext") ?? throw new InvalidOperationException("Connection string 'RazorPagesMovieContext' not found.")));
+builder.Services.AddDbContext<MovieWatchlistContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("MovieWatchlist") ?? throw new InvalidOperationException("Connection string 'MovieContext' not found.")));
+builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dataContext = scope.ServiceProvider.GetRequiredService<MovieWatchlistContext>();
+    dataContext.Database.Migrate();
+
+    var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+    dbInitializer.Initialize();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

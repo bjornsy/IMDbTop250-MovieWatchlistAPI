@@ -53,10 +53,11 @@ foreach (var row in tableRows)
     }); 
 }
 
-using (var streamWriter = new StreamWriter("../../../../moviewatchlist-db/top250Movies.csv"))
+using (var streamWriter = new StreamWriter("../../../top250Movies.csv"))
 {
     using (var csvWriter = new CsvWriter(streamWriter, CultureInfo.InvariantCulture))
     {
         csvWriter.WriteRecords(movies);
+        Console.WriteLine("Saved CSV file");
     }
 }

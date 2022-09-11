@@ -10,9 +10,9 @@ namespace MovieWatchlist.Api.Services
 
     public class MoviesService : IMoviesService
     {
-        private readonly IMoviesRepository _moviesRepository;
+        private readonly IMovieWatchlistRepository _moviesRepository;
 
-        public MoviesService(IMoviesRepository moviesRepository)
+        public MoviesService(IMovieWatchlistRepository moviesRepository)
         {
             _moviesRepository = moviesRepository;
         }

@@ -6,6 +6,8 @@ services:
       depends_on: [ moviewatchlist-db ]    
       ports:
         - "8080:80"
+      environment:
+        ConnectionStrings:MovieWatchlist: Server=localhost;Port=5432;Database=moviewatchlist;User ID=postgres;Password=postgres;
     moviewatchlist-db:
       image: postgres:14.5-bullseye
       restart: always
@@ -17,8 +19,6 @@ services:
         POSTGRES_DB: moviewatchlist
       volumes:
         - moviewatchlist-db:/var/lib/postgresql/data
-        - ./moviewatchlist-db/top250Movies.csv:/docker-entrypoint-initdb.d/top250Movies.csv
-        - ./moviewatchlist-db/init.sql:/docker-entrypoint-initdb.d/init.sql
 volumes:
   moviewatchlist-db:
     driver: local

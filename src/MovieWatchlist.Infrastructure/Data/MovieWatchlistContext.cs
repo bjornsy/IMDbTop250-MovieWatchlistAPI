@@ -3,13 +3,13 @@ using MovieWatchlist.ApplicationCore.Models;
 
 namespace MovieWatchlist.Infrastructure.Data
 {
-    public class MoviesContext : DbContext
+    public class MovieWatchlistContext : DbContext
     {
-        public MoviesContext(DbContextOptions<MoviesContext> options)
+        public MovieWatchlistContext(DbContextOptions<MovieWatchlistContext> options)
             : base(options)
         {
         }
 
-        public DbSet<Movie>? Movie { get; set; }
+        public DbSet<Movie> Movies { get; set; } = null!;
     }
 }
