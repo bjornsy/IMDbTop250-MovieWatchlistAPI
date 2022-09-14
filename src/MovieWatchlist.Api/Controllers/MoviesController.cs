@@ -16,7 +16,7 @@ namespace MovieWatchlist.Controllers
         }
 
         [HttpGet(Name = "GetTop250Movies")]
-        public async Task<ActionResult<IEnumerable<Movie>>> GetTop250Movies()
+        public async Task<ActionResult<IReadOnlyCollection<Movie>>> GetTop250Movies()
         {
             var movies = await _moviesService.GetTop250();
 

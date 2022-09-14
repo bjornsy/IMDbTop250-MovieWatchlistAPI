@@ -11,7 +11,7 @@ namespace MovieWatchlist.Infrastructure
         void Initialize();
     }
 
-    public class DbInitializer : IDbInitializer
+    public sealed class DbInitializer : IDbInitializer
     {
         private readonly MovieWatchlistContext _context;
 

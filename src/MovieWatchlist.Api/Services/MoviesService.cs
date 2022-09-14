@@ -5,21 +5,21 @@ namespace MovieWatchlist.Api.Services
 {
     public interface IMoviesService
     {
-        Task<IEnumerable<Movie>> GetTop250();
+        Task<IReadOnlyCollection<Movie>> GetTop250();
     }
 
     public class MoviesService : IMoviesService
     {
-        private readonly IMovieWatchlistRepository _moviesRepository;
+        private readonly IMoviesRepository _moviesRepository;
 
-        public MoviesService(IMovieWatchlistRepository moviesRepository)
+        public MoviesService(IMoviesRepository moviesRepository)
         {
             _moviesRepository = moviesRepository;
         }
 
-        public async Task<IEnumerable<Movie>> GetTop250()
+        public async Task<IReadOnlyCollection<Movie>> GetTop250()
         {
-            throw new NotImplementedException();
+            return await _moviesRepository.GetTop250();
         }
     }
 }

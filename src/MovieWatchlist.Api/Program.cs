@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using MovieWatchlist.Api.Services;
 using MovieWatchlist.Infrastructure;
 using MovieWatchlist.Infrastructure.Data;
 
@@ -10,9 +11,13 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddDbContext<MovieWatchlistContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("MovieWatchlist") ?? throw new InvalidOperationException("Connection string 'MovieContext' not found.")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("MovieWatchlist") ?? throw new InvalidOperationException("Connection string 'MovieWatchlistContext' not found.")));
+
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();
+builder.Services.AddScoped<IMoviesRepository, MoviesRepository>();
+builder.Services.AddTransient<IMoviesService, MoviesService>();
 
 var app = builder.Build();
 
