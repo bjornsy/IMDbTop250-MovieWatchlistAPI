@@ -1,13 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MovieWatchlist.ApplicationCore.Interfaces.Data;
 using MovieWatchlist.ApplicationCore.Models;
 
 namespace MovieWatchlist.Infrastructure.Data
 {
-    public interface IMoviesRepository
-    {
-        Task<IReadOnlyCollection<Movie>> GetTop250();
-    }
-
     public class MoviesRepository : IMoviesRepository
     {
         private readonly MovieWatchlistContext _context;

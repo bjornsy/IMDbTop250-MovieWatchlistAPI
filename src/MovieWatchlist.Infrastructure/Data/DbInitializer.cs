@@ -1,16 +1,11 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
+using MovieWatchlist.ApplicationCore.Interfaces.Data;
 using MovieWatchlist.ApplicationCore.Models;
-using MovieWatchlist.Infrastructure.Data;
 using System.Globalization;
 
-namespace MovieWatchlist.Infrastructure
+namespace MovieWatchlist.Infrastructure.Data
 {
-    public interface IDbInitializer
-    {
-        void Initialize();
-    }
-
     public sealed class DbInitializer : IDbInitializer
     {
         private readonly MovieWatchlistContext _context;
@@ -45,7 +40,7 @@ namespace MovieWatchlist.Infrastructure
                         _context.SaveChanges();
                     }
                 }
-            }      
+            }
         }
 
         public sealed class MovieMap : ClassMap<Movie>

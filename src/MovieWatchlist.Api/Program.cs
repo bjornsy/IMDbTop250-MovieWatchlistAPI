@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MovieWatchlist.Api.Services;
-using MovieWatchlist.Infrastructure;
+using MovieWatchlist.ApplicationCore.Interfaces.Data;
 using MovieWatchlist.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
