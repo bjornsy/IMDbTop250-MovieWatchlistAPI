@@ -7,7 +7,7 @@ services:
       ports:
         - "8080:80"
       environment:
-        ConnectionStrings:MovieWatchlist: Server=localhost;Port=5432;Database=moviewatchlist;User ID=postgres;Password=postgres;
+        ConnectionStrings:MovieWatchlist: Server=host.docker.internal;Port=5432;Database=moviewatchlist;User ID=postgres;Password=postgres;
     moviewatchlist-db:
       image: postgres:14.5-bullseye
       restart: always

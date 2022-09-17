@@ -7,13 +7,13 @@ namespace MovieWatchlist.ApplicationCore.Models
     public class Movie
     {
         [Key]
-        public Guid? Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
         [Required]
         public int Ranking { get; set; }
 
         [Required]
-        public string? Title { get; set; }
+        public string Title { get; set; } = string.Empty;
 
         [Required]
         [Column(TypeName = "numeric(2,1)")]

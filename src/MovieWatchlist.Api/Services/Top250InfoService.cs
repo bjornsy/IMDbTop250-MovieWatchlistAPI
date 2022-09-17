@@ -45,35 +45,53 @@ namespace MovieWatchlist.Api.Services
 
         private List<Movie> GetMoviesFromTableRows(IEnumerable<HtmlNode> tableRows)
         {
-            var rankCellIndex = 0;
             var titleCellIndex = 2;
-            var ratingCellIndex = 3;
-            var indexes = new HashSet<int> { rankCellIndex, titleCellIndex, ratingCellIndex };
+            var cellIndexToNames = new Dictionary<int, string>
+            {
+                [0] = "ranking",
+                [titleCellIndex] = "title",
+                [3] = "rating"
+            };
 
             var movies = new List<Movie>();
             foreach (var row in tableRows)
             {
                 var cells = row.SelectNodes("td");
 
-                var movieDatas = new List<string>();
+                var movieData = new Dictionary<string, string>();
                 for (var i = 0; i < cells.Count; i++)
                 {
-                    if (indexes.Contains(i))
+                    if (cellIndexToNames.Keys.Contains(i))
                     {
+                        if (i == titleCellIndex) //Id is within anchor tag of title cell
+                        {
+                            var anchorHref = cells[i].ChildNodes.Single(n => n.Name.Equals("a")).Attributes["href"].Value;
+                            var id = GetIdFromHref(anchorHref);
+                            movieData["id"] = id;
+                        }
                         var cellData = HttpUtility.HtmlDecode(cells[i].InnerText);
-                        movieDatas.Add(cellData);
+                        movieData[cellIndexToNames[i]] = cellData;
                     }
                 }
 
                 movies.Add(new Movie
                 {
-                    Ranking = int.Parse(movieDatas[0]),
-                    Title = movieDatas[1],
-                    Rating = decimal.Parse(movieDatas[2])
+                    Id = movieData["id"],
+                    Ranking = int.Parse(movieData["ranking"]),
+                    Title = movieData["title"],
+                    Rating = decimal.Parse(movieData["rating"])
                 });
             }
 
             return movies;
+        }
+
+        private string GetIdFromHref(string href)
+        {
+            var questionMarkIndex = href.LastIndexOf("?");
+            var id = href.Substring(questionMarkIndex + 1);
+
+            return id;
         }
     }
 }

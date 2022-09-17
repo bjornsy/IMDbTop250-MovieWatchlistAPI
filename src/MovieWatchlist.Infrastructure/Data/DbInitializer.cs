@@ -28,7 +28,7 @@ namespace MovieWatchlist.Infrastructure.Data
             {
                 _context.RemoveRange(_context.Movies);
 
-                using (var reader = new StreamReader("../../Top250Scraper/top250Movies.csv"))
+                using (var reader = new StreamReader("./Top250MoviesSeed.csv"))
                 {
                     using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
                     {
@@ -43,12 +43,11 @@ namespace MovieWatchlist.Infrastructure.Data
             }
         }
 
-        public sealed class MovieMap : ClassMap<Movie>
+        private sealed class MovieMap : ClassMap<Movie>
         {
             public MovieMap()
             {
                 AutoMap(CultureInfo.InvariantCulture);
-                Map(m => m.Id).Ignore();
             }
         }
     }

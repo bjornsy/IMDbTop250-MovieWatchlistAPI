@@ -1,6 +1,10 @@
-﻿using Moq;
+﻿using CsvHelper;
+using CsvHelper.Configuration;
+using Moq;
 using MovieWatchlist.Api.Services;
 using MovieWatchlist.ApplicationCore.Interfaces.Clients;
+using MovieWatchlist.ApplicationCore.Models;
+using System.Globalization;
 using Xunit;
 
 namespace MovieWatchlist.Api.Tests.Unit.Services
@@ -24,12 +28,50 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
             var movies = await _top250InfoService.GetTop250();
 
             Assert.Equal(250, movies.Count);
+            AssertAllMovies(movies.ToList());
         }
 
         private string Top250InfoHtmlString()
         {
-            var htmlString = File.ReadAllText("./Services/Top250Info_2022-09-04.html");
+            var htmlString = File.ReadAllText("./Services/TestData/Top250Info_2022-09-17.html");
             return htmlString;
+        }
+
+        private void AssertAllMovies(List<Movie> moviesResult)
+        {
+            var expectedMovies = LoadExpectedMovies();
+
+            for (int i = 0; i < moviesResult.Count; i++)
+            {
+                var expectedMovie = expectedMovies[i];
+                var actualMovie = moviesResult[i];
+
+                Assert.Equal(expectedMovie.Id, actualMovie.Id);
+                Assert.Equal(expectedMovie.Ranking, actualMovie.Ranking);
+                Assert.Equal(expectedMovie.Title, actualMovie.Title);
+                Assert.Equal(expectedMovie.Rating, actualMovie.Rating);
+            }
+        }
+
+        private List<Movie> LoadExpectedMovies()
+        {
+            using (var reader = new StreamReader("./Services/TestData/Top250Movies.csv"))
+            {
+                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                {
+                    csv.Context.RegisterClassMap<MovieMap>();
+                    var movies = csv.GetRecords<Movie>();
+
+                    return movies.ToList();
+                }
+            }
+        }
+        private sealed class MovieMap : ClassMap<Movie>
+        {
+            public MovieMap()
+            {
+                AutoMap(CultureInfo.InvariantCulture);
+            }
         }
     }
 }
