@@ -1,13 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
+using MovieWatchlist.Api;
 using MovieWatchlist.Api.Services;
 using MovieWatchlist.ApplicationCore.Interfaces.Clients;
 using MovieWatchlist.ApplicationCore.Interfaces.Data;
 using MovieWatchlist.Infrastructure.Clients;
 using MovieWatchlist.Infrastructure.Data;
-using Polly;
-using Polly.Caching.Memory;
-using Polly.Extensions.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,42 +14,22 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddMemoryCache();
 builder.Services.AddDbContext<MovieWatchlistContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("MovieWatchlist") ?? throw new InvalidOperationException("Connection string 'MovieWatchlistContext' not found.")));
 
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 builder.Services.AddScoped<IMoviesRepository, MoviesRepository>();
 builder.Services.AddTransient<IMoviesService, MoviesService>();
+builder.Services.AddTransient<ITop250InfoService, Top250InfoService>();
 
 builder.Services.AddHttpClient<ITop250InfoClient, Top250InfoClient>(client => client.BaseAddress = new Uri(builder.Configuration["Top250Info:BaseUrl"]))
-    .AddPolicyHandler(GetRetryPolicy())
-    .AddPolicyHandler(GetCircuitBreakerPolicy())
-    .AddPolicyHandler(GetCachePolicy());
-
-IAsyncPolicy <HttpResponseMessage> GetRetryPolicy()
-{
-    return HttpPolicyExtensions
-        .HandleTransientHttpError()
-        .WaitAndRetryAsync(4, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
-}
-
-IAsyncPolicy<HttpResponseMessage> GetCircuitBreakerPolicy()
-{
-    return HttpPolicyExtensions
-        .HandleTransientHttpError()
-        .CircuitBreakerAsync(5, TimeSpan.FromSeconds(30));
-}
-
-IAsyncPolicy<HttpResponseMessage> GetCachePolicy()
-{
-    var memoryCache = new MemoryCache(new MemoryCacheOptions());
-    var memoryCacheProvider = new MemoryCacheProvider(memoryCache);
-    var cachePolicy = Policy.CacheAsync<HttpResponseMessage>(memoryCacheProvider, TimeSpan.FromMinutes(60), onCacheGet: );
-
-    return cachePolicy;
-}
+    .AddPolicyHandler(Policies.GetRetryPolicy())
+    .AddPolicyHandler(Policies.GetCircuitBreakerPolicy());
 
 var app = builder.Build();
+
+var logger = app.Logger;
 
 using (var scope = app.Services.CreateScope())
 {
