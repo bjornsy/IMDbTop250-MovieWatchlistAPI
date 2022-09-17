@@ -2,11 +2,11 @@
 
 namespace MovieWatchlist.Infrastructure.Clients
 {
-    public class Top250Client : ITop250Client
+    public class Top250InfoClient : ITop250InfoClient
     {
         private readonly HttpClient _httpClient; 
 
-        public Top250Client(HttpClient httpClient)
+        public Top250InfoClient(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }

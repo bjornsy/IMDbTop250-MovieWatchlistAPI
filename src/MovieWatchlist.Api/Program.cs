@@ -24,7 +24,7 @@ builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 builder.Services.AddScoped<IMoviesRepository, MoviesRepository>();
 builder.Services.AddTransient<IMoviesService, MoviesService>();
 
-builder.Services.AddHttpClient<ITop250Client, Top250Client>(client => client.BaseAddress = new Uri(builder.Configuration["Top250Info:BaseUrl"]))
+builder.Services.AddHttpClient<ITop250InfoClient, Top250InfoClient>(client => client.BaseAddress = new Uri(builder.Configuration["Top250Info:BaseUrl"]))
     .AddPolicyHandler(GetRetryPolicy())
     .AddPolicyHandler(GetCircuitBreakerPolicy())
     .AddPolicyHandler(GetCachePolicy());
@@ -47,7 +47,7 @@ IAsyncPolicy<HttpResponseMessage> GetCachePolicy()
 {
     var memoryCache = new MemoryCache(new MemoryCacheOptions());
     var memoryCacheProvider = new MemoryCacheProvider(memoryCache);
-    var cachePolicy = Policy.CacheAsync<HttpResponseMessage>(memoryCacheProvider, TimeSpan.FromMinutes(60));
+    var cachePolicy = Policy.CacheAsync<HttpResponseMessage>(memoryCacheProvider, TimeSpan.FromMinutes(60), onCacheGet: );
 
     return cachePolicy;
 }

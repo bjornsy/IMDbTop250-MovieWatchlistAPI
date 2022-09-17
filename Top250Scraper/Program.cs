@@ -4,9 +4,9 @@ using System.Globalization;
 using System.Web;
 using Top250Scraper;
 
-var top250RelativePath = GetTop250RelativePath();
+var top250RelativePath = GetTop250RelativeUrl();
 
-string GetTop250RelativePath()
+string GetTop250RelativeUrl()
 {
     return "charts/?" + DateTime.Now.ToString("yyyy/MM/dd");
 }
