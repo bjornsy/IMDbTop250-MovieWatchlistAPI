@@ -15,6 +15,7 @@ namespace MovieWatchlist.Controllers
             _moviesService = moviesService;
         }
 
+        [Produces("application/json")]
         [HttpGet(Name = "GetTop250Movies")]
         public async Task<ActionResult<IReadOnlyCollection<Movie>>> GetTop250Movies()
         {
