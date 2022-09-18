@@ -9,8 +9,7 @@ namespace MovieWatchlist.ApplicationCore.Models
         [Key]
         public string Id { get; set; } = string.Empty;
 
-        [Required]
-        public int Ranking { get; set; }
+        public int? Ranking { get; set; }
 
         [Required]
         public string Title { get; set; } = string.Empty;

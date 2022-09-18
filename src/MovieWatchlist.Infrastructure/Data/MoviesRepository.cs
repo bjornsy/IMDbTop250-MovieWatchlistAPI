@@ -15,7 +15,17 @@ namespace MovieWatchlist.Infrastructure.Data
 
         public async Task<IReadOnlyCollection<Movie>> GetTop250()
         {
-            return await _context.Movies.AsNoTracking().Where(m => m.Ranking < 251).OrderBy(m => m.Ranking).ToListAsync();
+            return await _context.Movies.AsNoTracking().Where(m => m.Ranking != null && m.Ranking < 251).OrderBy(m => m.Ranking).ToListAsync();
+        }
+
+        public async Task<IList<Movie>> GetAll()
+        {
+            return await _context.Movies.ToListAsync();
+        }
+
+        public async Task Save()
+        {
+            await _context.SaveChangesAsync();
         }
     }
 }

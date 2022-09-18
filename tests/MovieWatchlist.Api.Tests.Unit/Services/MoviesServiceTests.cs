@@ -14,6 +14,7 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
     {
         private Mock<ITop250InfoService> _top250InfoServiceMock;
         private Mock<IMoviesRepository> _moviesRepositoryMock;
+        private Mock<ITop250MoviesDatabaseUpdateService> _top250MoviesDatabaseUpdateServiceMock;
         private IMemoryCache _memoryCache;
         private Mock<ILogger<MoviesService>> _loggerMock;
         private MoviesService _moviesService;
@@ -22,9 +23,10 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
         {
             _moviesRepositoryMock = new Mock<IMoviesRepository>();
             _top250InfoServiceMock = new Mock<ITop250InfoService>();
+            _top250MoviesDatabaseUpdateServiceMock = new Mock<ITop250MoviesDatabaseUpdateService>();
             _memoryCache = new MemoryCache(new MemoryCacheOptions());
             _loggerMock = new Mock<ILogger<MoviesService>>();
-            _moviesService = new MoviesService(_top250InfoServiceMock.Object, _moviesRepositoryMock.Object, _memoryCache, _loggerMock.Object);
+            _moviesService = new MoviesService(_top250InfoServiceMock.Object, _moviesRepositoryMock.Object, _top250MoviesDatabaseUpdateServiceMock.Object, _memoryCache, _loggerMock.Object);
         }
 
         [Fact]
@@ -37,6 +39,7 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
 
             Assert.Same(movies, result);
 
+            _top250MoviesDatabaseUpdateServiceMock.Verify(s => s.UpdateTop250InDatabase(result), Times.Once);
             _moviesRepositoryMock.Verify(repository => repository.GetTop250(), Times.Never);
             _loggerMock.Verify(logger => logger.Log(
                     It.IsAny<LogLevel>(),
@@ -60,6 +63,7 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
             Assert.Same(movies, secondCallResult);
 
             _top250InfoServiceMock.Verify(r => r.GetTop250(), Times.Once);
+            _top250MoviesDatabaseUpdateServiceMock.Verify(s => s.UpdateTop250InDatabase(firstCallResult), Times.Once);
             _moviesRepositoryMock.Verify(repository => repository.GetTop250(), Times.Never);
             _loggerMock.Verify(logger => logger.Log(
                     It.IsAny<LogLevel>(),
@@ -84,6 +88,7 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
             Assert.Same(movies, result);
 
             _top250InfoServiceMock.Verify(service => service.GetTop250(), Times.Once);
+            _top250MoviesDatabaseUpdateServiceMock.Verify(s => s.UpdateTop250InDatabase(It.IsAny<IReadOnlyCollection<Movie>>()), Times.Never);
             _moviesRepositoryMock.Verify(repository => repository.GetTop250(), Times.Once);
             _loggerMock.Verify(logger => logger.Log(
                 It.IsAny<LogLevel>(),

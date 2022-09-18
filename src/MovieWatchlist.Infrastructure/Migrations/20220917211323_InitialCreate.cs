@@ -17,7 +17,7 @@ namespace MovieWatchlist.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
-                    Ranking = table.Column<int>(type: "integer", nullable: false),
+                    Ranking = table.Column<int>(type: "integer", nullable: true),
                     Title = table.Column<string>(type: "text", nullable: false),
                     Rating = table.Column<decimal>(type: "numeric(2,1)", nullable: false)
                 },
