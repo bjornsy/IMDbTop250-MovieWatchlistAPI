@@ -7,10 +7,9 @@ namespace MovieWatchlist.ApplicationCore.Models
     public class Watchlist
     {
         [Key]
-        public string Id { get; set; } = string.Empty;
+        public Guid Id { get; set; }
 
         [Required]
         public string Name { get; set; } = string.Empty;
-
     }
 }

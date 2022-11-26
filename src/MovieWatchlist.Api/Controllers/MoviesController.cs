@@ -16,6 +16,7 @@ namespace MovieWatchlist.Controllers
         }
 
         [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet(Name = "GetTop250Movies")]
         public async Task<ActionResult<IReadOnlyCollection<Movie>>> GetTop250Movies()
         {
@@ -23,5 +24,14 @@ namespace MovieWatchlist.Controllers
 
             return Ok(movies);
         }
+
+        //[Produces("application/json")]
+        //[ProducesResponseType(StatusCodes.Status200OK)]
+        //[HttpGet]
+        //public async Task<ActionResult<IReadOnlyCollection<Movie>>> GetMoviesByWatchlistId(string watchlistId)
+        //{
+        //    var movies = await _moviesService.Get
+        //    return Ok();
+        //}
     }
 }

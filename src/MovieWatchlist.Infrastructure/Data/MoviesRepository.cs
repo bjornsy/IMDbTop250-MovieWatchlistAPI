@@ -23,6 +23,15 @@ namespace MovieWatchlist.Infrastructure.Data
             return await _context.Movies.ToListAsync();
         }
 
+        public async Task<IReadOnlyCollection<MovieInWatchlist>> GetMoviesByWatchlistId(string watchlistId)
+        {
+            return await _context.Movies.AsNoTracking()
+                .Join(_context.WatchlistsMovies.AsNoTracking().Where(wm => wm.WatchlistId.Equals(watchlistId)),
+                    m => m.Id, wm => wm.MovieId, (m, wm) => new { Movie = m, WatchlistsMovies = wm })
+                .Select(x => new MovieInWatchlist(x.Movie, x.WatchlistsMovies.Watched))
+                .ToListAsync();
+        }
+
         public async Task Save()
         {
             await _context.SaveChangesAsync();
