@@ -44,8 +44,9 @@ namespace MovieWatchlist.Infrastructure.Migrations
 
             modelBuilder.Entity("MovieWatchlist.ApplicationCore.Models.Watchlist", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -71,9 +72,8 @@ namespace MovieWatchlist.Infrastructure.Migrations
                     b.Property<bool>("Watched")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("WatchlistId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<Guid>("WatchlistId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
