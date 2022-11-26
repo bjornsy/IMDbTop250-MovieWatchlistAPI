@@ -25,8 +25,8 @@ builder.Services.AddTransient<ITop250InfoService, Top250InfoService>();
 builder.Services.AddTransient<ITop250MoviesDatabaseUpdateService, Top250MoviesDatabaseUpdateService>();
 
 builder.Services.AddHttpClient<ITop250InfoClient, Top250InfoClient>(client => client.BaseAddress = new Uri(builder.Configuration["Top250Info:BaseUrl"]))
-    .AddPolicyHandler(Policies.GetRetryPolicy())
-    .AddPolicyHandler(Policies.GetCircuitBreakerPolicy());
+    .AddPolicyHandler(Policies.RetryPolicy)
+    .AddPolicyHandler(Policies.CircuitBreakerPolicy);
 
 var app = builder.Build();
 

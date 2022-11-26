@@ -1,23 +1,18 @@
 ﻿using Polly.Extensions.Http;
 using Polly;
+using Polly.Contrib.WaitAndRetry;
 
 namespace MovieWatchlist.Api
 {
     public static class Policies
     {
-        public static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
-        {
-            return HttpPolicyExtensions
+        public static IAsyncPolicy<HttpResponseMessage> RetryPolicy = HttpPolicyExtensions
                 .HandleTransientHttpError()
-                .WaitAndRetryAsync(4, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
-        }
+                .WaitAndRetryAsync(Backoff.DecorrelatedJitterBackoffV2(TimeSpan.FromSeconds(1), 4));
 
-        public static IAsyncPolicy<HttpResponseMessage> GetCircuitBreakerPolicy()
-        {
-            return HttpPolicyExtensions
+        public static IAsyncPolicy<HttpResponseMessage> CircuitBreakerPolicy = HttpPolicyExtensions
                 .HandleTransientHttpError()
                 .CircuitBreakerAsync(5, TimeSpan.FromSeconds(30));
-        }
 
         //public static IAsyncPolicy<HttpResponseMessage> GetCachePolicy(IServiceProvider serviceProvider)
         //{
