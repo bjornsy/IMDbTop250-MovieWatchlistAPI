@@ -10,5 +10,7 @@ namespace MovieWatchlist.Infrastructure.Data
         }
 
         public DbSet<Movie> Movies { get; set; } = null!;
+        public DbSet<Watchlist> Watchlists { get; set; } = null!;
+        public DbSet<WatchlistsMovies> WatchlistsMovies { get; set; } = null!;
     }
 }
