@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using MovieWatchlist.Api.Services;
-using MovieWatchlist.ApplicationCore.Models;
+using Movie = MovieWatchlist.Api.Models.Responses.Movie;
 
 namespace MovieWatchlist.Controllers
 {

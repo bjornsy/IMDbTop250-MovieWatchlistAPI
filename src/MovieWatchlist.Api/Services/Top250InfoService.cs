@@ -1,4 +1,5 @@
 ﻿using HtmlAgilityPack;
+using MovieWatchlist.Api.Models.Responses;
 using MovieWatchlist.ApplicationCore.Interfaces.Clients;
 using MovieWatchlist.ApplicationCore.Models;
 using System.Web;

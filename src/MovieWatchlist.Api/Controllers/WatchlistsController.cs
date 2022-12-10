@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using MovieWatchlist.Api.Models.Requests;
 using MovieWatchlist.Api.Services;
-using MovieWatchlist.ApplicationCore.Models;
 using System.Net.Mime;
 
 namespace MovieWatchlist.Controllers

@@ -1,4 +1,5 @@
-﻿using MovieWatchlist.ApplicationCore.Interfaces.Data;
+﻿using MovieWatchlist.Api.Models.Responses;
+using MovieWatchlist.ApplicationCore.Interfaces.Data;
 using MovieWatchlist.ApplicationCore.Models;
 
 namespace MovieWatchlist.Api.Services
