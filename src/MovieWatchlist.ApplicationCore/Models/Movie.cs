@@ -17,5 +17,7 @@ namespace MovieWatchlist.ApplicationCore.Models
         [Required]
         [Column(TypeName = "numeric(2,1)")]
         public decimal Rating { get; set; }
+
+        public IList<WatchlistsMovies> WatchlistsMovies { get; set; }
     }
 }

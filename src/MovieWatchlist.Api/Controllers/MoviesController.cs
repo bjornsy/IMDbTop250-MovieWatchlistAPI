@@ -17,7 +17,7 @@ namespace MovieWatchlist.Controllers
 
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [HttpGet(Name = "GetTop250Movies")]
+        [HttpGet]
         public async Task<ActionResult<IReadOnlyCollection<Movie>>> GetTop250Movies()
         {
             var movies = await _moviesService.GetTop250();

@@ -10,11 +10,9 @@ namespace MovieWatchlist.ApplicationCore.Models
         public int Id { get; set; }
 
         [Required]
-        [ForeignKey("Watchlist")]
         public Guid WatchlistId { get; set; }
 
         [Required]
-        [ForeignKey("Movie")]
         public string MovieId { get; set; } = string.Empty;
 
         [Required]

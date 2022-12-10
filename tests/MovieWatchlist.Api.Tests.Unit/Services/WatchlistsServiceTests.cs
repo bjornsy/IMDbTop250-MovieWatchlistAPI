@@ -69,5 +69,19 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
             Assert.Equal(createdWatchlist.Id, result.Id);
             Assert.Equal(defaultName, result.Name);
         }
+
+        [Fact]
+        public async Task AddMoviesToWatchlist_ReturnsTask()
+        {
+            var addMoviesToWatchlistRequest = new AddMoviesToWatchlistRequest
+            {
+                WatchlistId = Guid.NewGuid(),
+                MovieIds = new List<string>()
+            };
+
+            _watchlistsRepositoryMock.Setup(m => m.AddMoviesToWatchlist(addMoviesToWatchlistRequest.WatchlistId, addMoviesToWatchlistRequest.MovieIds)).Returns(Task.CompletedTask);
+
+            await _watchlistsService.AddMoviesToWatchlist(addMoviesToWatchlistRequest);
+        }
     }
 }

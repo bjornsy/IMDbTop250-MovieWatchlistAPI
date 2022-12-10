@@ -23,5 +23,14 @@ namespace MovieWatchlist.Infrastructure.Data
 
             return watchlist;
         }
+
+        public async Task AddMoviesToWatchlist(Guid watchlistId, List<string> movieIds)
+        {
+            var watchlistsMoviesRecords = movieIds.Select(id => new WatchlistsMovies { WatchlistId = watchlistId, MovieId = id });
+
+            await _context.WatchlistsMovies.AddRangeAsync(watchlistsMoviesRecords);
+            await _context.SaveChangesAsync();
+
+        }
     }
 }

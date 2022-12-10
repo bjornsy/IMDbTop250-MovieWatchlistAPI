@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -31,26 +30,45 @@ namespace MovieWatchlist.Infrastructure.Migrations
                 schema: "Watchlists",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     WatchlistId = table.Column<Guid>(type: "uuid", nullable: false),
                     MovieId = table.Column<string>(type: "text", nullable: false),
+                    Id = table.Column<int>(type: "integer", nullable: false),
                     Watched = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_WatchlistsMovies", x => x.Id);
+                    table.PrimaryKey("PK_WatchlistsMovies", x => new { x.WatchlistId, x.MovieId });
+                    table.ForeignKey(
+                        name: "FK_WatchlistsMovies_Movies_MovieId",
+                        column: x => x.MovieId,
+                        principalSchema: "Movies",
+                        principalTable: "Movies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_WatchlistsMovies_Watchlists_WatchlistId",
+                        column: x => x.WatchlistId,
+                        principalSchema: "Watchlists",
+                        principalTable: "Watchlists",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WatchlistsMovies_MovieId",
+                schema: "Watchlists",
+                table: "WatchlistsMovies",
+                column: "MovieId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Watchlists",
+                name: "WatchlistsMovies",
                 schema: "Watchlists");
 
             migrationBuilder.DropTable(
-                name: "WatchlistsMovies",
+                name: "Watchlists",
                 schema: "Watchlists");
         }
     }

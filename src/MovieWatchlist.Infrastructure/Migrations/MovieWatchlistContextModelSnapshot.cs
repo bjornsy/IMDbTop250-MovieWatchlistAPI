@@ -59,25 +59,48 @@ namespace MovieWatchlist.Infrastructure.Migrations
 
             modelBuilder.Entity("MovieWatchlist.ApplicationCore.Models.WatchlistsMovies", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<Guid>("WatchlistId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("MovieId")
-                        .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("integer");
 
                     b.Property<bool>("Watched")
                         .HasColumnType("boolean");
 
-                    b.Property<Guid>("WatchlistId")
-                        .HasColumnType("uuid");
+                    b.HasKey("WatchlistId", "MovieId");
 
-                    b.HasKey("Id");
+                    b.HasIndex("MovieId");
 
                     b.ToTable("WatchlistsMovies", "Watchlists");
+                });
+
+            modelBuilder.Entity("MovieWatchlist.ApplicationCore.Models.WatchlistsMovies", b =>
+                {
+                    b.HasOne("MovieWatchlist.ApplicationCore.Models.Movie", null)
+                        .WithMany("WatchlistsMovies")
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MovieWatchlist.ApplicationCore.Models.Watchlist", null)
+                        .WithMany("WatchlistsMovies")
+                        .HasForeignKey("WatchlistId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MovieWatchlist.ApplicationCore.Models.Movie", b =>
+                {
+                    b.Navigation("WatchlistsMovies");
+                });
+
+            modelBuilder.Entity("MovieWatchlist.ApplicationCore.Models.Watchlist", b =>
+                {
+                    b.Navigation("WatchlistsMovies");
                 });
 #pragma warning restore 612, 618
         }
