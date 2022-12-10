@@ -1,4 +1,4 @@
-﻿namespace MovieWatchlist.ApplicationCore.Models
+﻿namespace MovieWatchlist.Api.Models.Requests
 {
     public class AddMoviesToWatchlistRequest
     {
