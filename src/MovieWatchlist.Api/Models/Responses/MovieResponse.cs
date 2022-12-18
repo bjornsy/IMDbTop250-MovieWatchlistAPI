@@ -2,7 +2,7 @@
 
 namespace MovieWatchlist.Api.Models.Responses
 {
-    public class Movie
+    public record MovieResponse
     {
         [Key]
         public string Id { get; set; } = string.Empty;

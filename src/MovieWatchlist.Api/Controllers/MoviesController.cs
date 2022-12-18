@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using MovieWatchlist.Api.Models.Responses;
 using MovieWatchlist.Api.Services;
-using Movie = MovieWatchlist.Api.Models.Responses.Movie;
 
 namespace MovieWatchlist.Controllers
 {
@@ -18,7 +18,7 @@ namespace MovieWatchlist.Controllers
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyCollection<Movie>>> GetTop250Movies()
+        public async Task<ActionResult<IReadOnlyCollection<MovieResponse>>> GetTop250Movies()
         {
             var movies = await _moviesService.GetTop250();
 

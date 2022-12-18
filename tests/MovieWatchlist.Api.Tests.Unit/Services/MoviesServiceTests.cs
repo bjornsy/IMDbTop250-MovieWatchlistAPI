@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Moq;
-using MovieWatchlist.Api.Models.Responses;
 using MovieWatchlist.Api.Services;
 using MovieWatchlist.ApplicationCore.Interfaces.Clients;
 using MovieWatchlist.ApplicationCore.Interfaces.Data;
@@ -33,14 +32,17 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
         [Fact]
         public async Task GetTop250_ReturnsFromTop250InfoService()
         {
-            var movies = new ReadOnlyCollection<Movie>(new List<Movie>());
+            var movies = new ReadOnlyCollection<Movie>(new List<Movie> { new Movie { Id = "1", Title = "Title", Ranking = 1, Rating = 1 } });
             _top250InfoServiceMock.Setup(r => r.GetTop250()).ReturnsAsync(movies);
 
             var result = await _moviesService.GetTop250();
 
-            Assert.Same(movies, result);
+            Assert.Equal(movies.Single().Id, result.Single().Id);
+            Assert.Equal(movies.Single().Title, result.Single().Title);
+            Assert.Equal(movies.Single().Ranking, result.Single().Ranking);
+            Assert.Equal(movies.Single().Rating, result.Single().Rating);
 
-            _top250MoviesDatabaseUpdateServiceMock.Verify(s => s.UpdateTop250InDatabase(result), Times.Once);
+            _top250MoviesDatabaseUpdateServiceMock.Verify(s => s.UpdateTop250InDatabase(movies), Times.Once);
             _moviesRepositoryMock.Verify(repository => repository.GetTop250(), Times.Never);
             _loggerMock.Verify(logger => logger.Log(
                     It.IsAny<LogLevel>(),
@@ -54,17 +56,17 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
         [Fact]
         public async Task GetTop250_ReturnsFromMemoryCache()
         {
-            var movies = new ReadOnlyCollection<Movie>(new List<Movie>());
+            var movies = new ReadOnlyCollection<Movie>(new List<Movie> { new Movie { Id = "1" } });
             _top250InfoServiceMock.Setup(r => r.GetTop250()).ReturnsAsync(movies);
 
             var firstCallResult = await _moviesService.GetTop250();
             var secondCallResult = await _moviesService.GetTop250();
 
-            Assert.Same(movies, firstCallResult);
-            Assert.Same(movies, secondCallResult);
+            Assert.Equal(movies.Single().Id, firstCallResult.Single().Id);
+            Assert.Same(movies.Single().Id, secondCallResult.Single().Id);
 
             _top250InfoServiceMock.Verify(r => r.GetTop250(), Times.Once);
-            _top250MoviesDatabaseUpdateServiceMock.Verify(s => s.UpdateTop250InDatabase(firstCallResult), Times.Once);
+            _top250MoviesDatabaseUpdateServiceMock.Verify(s => s.UpdateTop250InDatabase(movies), Times.Once);
             _moviesRepositoryMock.Verify(repository => repository.GetTop250(), Times.Never);
             _loggerMock.Verify(logger => logger.Log(
                     It.IsAny<LogLevel>(),
@@ -81,12 +83,12 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
             var exception = new Exception();
             _top250InfoServiceMock.Setup(r => r.GetTop250()).ThrowsAsync(exception);
 
-            var movies = new ReadOnlyCollection<Movie>(new List<Movie>());
+            var movies = new ReadOnlyCollection<Movie>(new List<Movie> { new Movie { Id = "1" } });
             _moviesRepositoryMock.Setup(r => r.GetTop250()).ReturnsAsync(movies);
 
             var result = await _moviesService.GetTop250();
 
-            Assert.Same(movies, result);
+            Assert.Equal(movies.Single().Id, result.Single().Id);
 
             _top250InfoServiceMock.Verify(service => service.GetTop250(), Times.Once);
             _top250MoviesDatabaseUpdateServiceMock.Verify(s => s.UpdateTop250InDatabase(It.IsAny<IReadOnlyCollection<Movie>>()), Times.Never);

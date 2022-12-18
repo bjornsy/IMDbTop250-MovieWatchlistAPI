@@ -2,7 +2,7 @@
 
 namespace MovieWatchlist.Api.Models.Responses
 {
-    public class Watchlist
+    public record WatchlistResponse
     {
         [Key]
         public Guid Id { get; set; }

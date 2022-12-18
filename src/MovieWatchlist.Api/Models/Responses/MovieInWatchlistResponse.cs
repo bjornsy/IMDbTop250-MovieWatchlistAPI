@@ -1,14 +1,14 @@
 ﻿namespace MovieWatchlist.Api.Models.Responses
 {
-    public class MovieInWatchlist
+    public record MovieInWatchlistResponse
     {
-        public MovieInWatchlist(Movie movie, bool watched)
+        public MovieInWatchlistResponse(MovieResponse movie, bool watched)
         {
             Movie = movie;
             Watched = watched;
         }
 
-        public Movie Movie { get; set; }
+        public MovieResponse Movie { get; set; }
         public bool Watched { get; set; }
     }
 }
