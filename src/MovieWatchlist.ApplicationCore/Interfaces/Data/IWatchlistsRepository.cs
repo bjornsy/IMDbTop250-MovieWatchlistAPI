@@ -6,5 +6,6 @@ namespace MovieWatchlist.ApplicationCore.Interfaces.Data
     {
         Task<Watchlist> SaveWatchlist(Watchlist watchlist, List<string> movieIds);
         Task AddMoviesToWatchlist(Guid watchlistId, List<string> movieIds);
+        Task RemoveMoviesFromWatchlist(Guid watchlistId, List<string> movieIds);
     }
 }

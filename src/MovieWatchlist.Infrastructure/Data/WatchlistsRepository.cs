@@ -18,6 +18,7 @@ namespace MovieWatchlist.Infrastructure.Data
 
             var watchlistsMoviesRecords = movieIds.Select(id => new WatchlistsMovies { WatchlistId = watchlist.Id, MovieId = id });
             await _context.WatchlistsMovies.AddRangeAsync(watchlistsMoviesRecords);
+
             await _context.SaveChangesAsync();
 
             return watchlist;
@@ -28,15 +29,17 @@ namespace MovieWatchlist.Infrastructure.Data
             var watchlistsMoviesRecords = movieIds.Select(id => new WatchlistsMovies { WatchlistId = watchlistId, MovieId = id });
 
             await _context.WatchlistsMovies.AddRangeAsync(watchlistsMoviesRecords);
+
             await _context.SaveChangesAsync();
         }
 
-        //public async Task RemoveMoviesFromWatchlist(Guid watchlistId, List<string> movieIds)
-        //{
-        //    var watchlistsMoviesRecords = movieIds.Select(id => new WatchlistsMovies { WatchlistId = watchlistId, MovieId = id });
+        public async Task RemoveMoviesFromWatchlist(Guid watchlistId, List<string> movieIds)
+        {
+            var watchlistsMoviesRecords = movieIds.Select(id => new WatchlistsMovies { WatchlistId = watchlistId, MovieId = id });
 
-        //    _context.WatchlistsMovies.RemoveRange(watchlistsMoviesRecords);
-        //    await _context.SaveChangesAsync();
-        //}
+            _context.WatchlistsMovies.RemoveRange(watchlistsMoviesRecords);
+
+            await _context.SaveChangesAsync();
+        }
     }
 }

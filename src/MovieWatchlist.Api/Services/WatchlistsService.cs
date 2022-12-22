@@ -1,5 +1,4 @@
 ﻿using MovieWatchlist.Api.Models.Requests;
-using MovieWatchlist.Api.Models.Responses;
 using MovieWatchlist.ApplicationCore.Interfaces.Data;
 using MovieWatchlist.ApplicationCore.Models;
 
@@ -9,6 +8,7 @@ namespace MovieWatchlist.Api.Services
     {
         Task<Watchlist> CreateWatchlist(CreateWatchlistRequest createWatchlistRequest);
         Task AddMoviesToWatchlist(AddMoviesToWatchlistRequest addMoviesToWatchlistRequest);
+        Task RemoveMoviesFromWatchlist(RemoveMoviesFromWatchlistRequest addMoviesToWatchlistRequest);
     }
 
     public class WatchlistsService : IWatchlistsService
@@ -35,6 +35,11 @@ namespace MovieWatchlist.Api.Services
         public async Task AddMoviesToWatchlist(AddMoviesToWatchlistRequest addMoviesToWatchlistRequest)
         {
             await _watchlistRepository.AddMoviesToWatchlist(addMoviesToWatchlistRequest.WatchlistId, addMoviesToWatchlistRequest.MovieIds);
+        }
+
+        public async Task RemoveMoviesFromWatchlist(RemoveMoviesFromWatchlistRequest removeMoviesFromWatchlistRequest)
+        {
+            await _watchlistRepository.RemoveMoviesFromWatchlist(removeMoviesFromWatchlistRequest.WatchlistId, removeMoviesFromWatchlistRequest.MovieIds);
         }
     }
 }

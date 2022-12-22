@@ -42,7 +42,15 @@ namespace MovieWatchlist.Controllers
             return NoContent();
         }
 
-        //RemoveMovieFromWatchlist
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [Route("removeMovies")]
+        [HttpPost]
+        public async Task<ActionResult> RemoveMoviesFromWatchlist(RemoveMoviesFromWatchlistRequest removeMoviesFromWatchlistRequest)
+        {
+            await _watchlistsService.RemoveMoviesFromWatchlist(removeMoviesFromWatchlistRequest);
+
+            return NoContent();
+        }
 
         //SetMovieAsWatched
 
