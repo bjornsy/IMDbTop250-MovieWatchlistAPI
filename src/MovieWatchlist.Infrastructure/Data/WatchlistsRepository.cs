@@ -1,4 +1,5 @@
-﻿using MovieWatchlist.ApplicationCore.Interfaces.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using MovieWatchlist.ApplicationCore.Interfaces.Data;
 using MovieWatchlist.ApplicationCore.Models;
 
 namespace MovieWatchlist.Infrastructure.Data
@@ -26,11 +27,11 @@ namespace MovieWatchlist.Infrastructure.Data
 
         public async Task DeleteWatchlist(Guid watchlistId)
         {
-            var watchlistsMoviesRecords = _context.WatchlistsMovies.Where(wm => wm.WatchlistId.Equals(watchlistId));
+            var watchlistsMoviesRecords = _context.WatchlistsMovies.AsNoTracking().Where(wm => wm.WatchlistId.Equals(watchlistId));
 
             _context.WatchlistsMovies.RemoveRange(watchlistsMoviesRecords);
 
-            var watchlist = _context.Watchlists.Single(w => w.Id.Equals(watchlistId));
+            var watchlist = _context.Watchlists.AsNoTracking().Single(w => w.Id.Equals(watchlistId));
 
             _context.Watchlists.Remove(watchlist);
 

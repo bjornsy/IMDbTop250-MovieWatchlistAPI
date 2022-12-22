@@ -31,7 +31,6 @@ namespace MovieWatchlist.Controllers
             };
         }
 
-
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [HttpDelete]
         public async Task<ActionResult> DeleteWatchlist(Guid watchlistId)
