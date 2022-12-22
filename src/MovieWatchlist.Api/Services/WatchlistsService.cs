@@ -7,6 +7,7 @@ namespace MovieWatchlist.Api.Services
     public interface IWatchlistsService
     {
         Task<Watchlist> CreateWatchlist(CreateWatchlistRequest createWatchlistRequest);
+        Task DeleteWatchlist(Guid watchlistId);
         Task AddMoviesToWatchlist(AddMoviesToWatchlistRequest addMoviesToWatchlistRequest);
         Task RemoveMoviesFromWatchlist(RemoveMoviesFromWatchlistRequest addMoviesToWatchlistRequest);
     }
@@ -30,6 +31,11 @@ namespace MovieWatchlist.Api.Services
             var movieIds = request.MovieIds;
 
             return await _watchlistRepository.SaveWatchlist(watchlist, movieIds);
+        }
+
+        public async Task DeleteWatchlist(Guid watchlistId)
+        {
+            await _watchlistRepository.DeleteWatchlist(watchlistId);
         }
 
         public async Task AddMoviesToWatchlist(AddMoviesToWatchlistRequest addMoviesToWatchlistRequest)

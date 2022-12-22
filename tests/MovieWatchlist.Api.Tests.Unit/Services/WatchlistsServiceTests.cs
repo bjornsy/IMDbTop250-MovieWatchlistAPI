@@ -72,6 +72,16 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
         }
 
         [Fact]
+        public void DeleteWatchlist_ReturnsTask()
+        {
+            var watchlistId = Guid.NewGuid();
+
+            _watchlistsRepositoryMock.Setup(m => m.DeleteWatchlist(watchlistId)).Returns(Task.CompletedTask);
+
+            _watchlistsService.DeleteWatchlist(watchlistId);
+        }
+
+        [Fact]
         public async Task AddMoviesToWatchlist_ReturnsTask()
         {
             var addMoviesToWatchlistRequest = new AddMoviesToWatchlistRequest

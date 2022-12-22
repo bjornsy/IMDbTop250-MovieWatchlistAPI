@@ -24,6 +24,19 @@ namespace MovieWatchlist.Infrastructure.Data
             return watchlist;
         }
 
+        public async Task DeleteWatchlist(Guid watchlistId)
+        {
+            var watchlistsMoviesRecords = _context.WatchlistsMovies.Where(wm => wm.WatchlistId.Equals(watchlistId));
+
+            _context.WatchlistsMovies.RemoveRange(watchlistsMoviesRecords);
+
+            var watchlist = _context.Watchlists.Single(w => w.Id.Equals(watchlistId));
+
+            _context.Watchlists.Remove(watchlist);
+
+            await _context.SaveChangesAsync();
+        }
+
         public async Task AddMoviesToWatchlist(Guid watchlistId, List<string> movieIds)
         {
             var watchlistsMoviesRecords = movieIds.Select(id => new WatchlistsMovies { WatchlistId = watchlistId, MovieId = id });

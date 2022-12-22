@@ -5,6 +5,7 @@ namespace MovieWatchlist.ApplicationCore.Interfaces.Data
     public interface IWatchlistsRepository
     {
         Task<Watchlist> SaveWatchlist(Watchlist watchlist, List<string> movieIds);
+        Task DeleteWatchlist(Guid watchlistId);
         Task AddMoviesToWatchlist(Guid watchlistId, List<string> movieIds);
         Task RemoveMoviesFromWatchlist(Guid watchlistId, List<string> movieIds);
     }

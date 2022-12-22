@@ -6,6 +6,7 @@ using System.Net.Mime;
 namespace MovieWatchlist.Controllers
 {
     [ApiController]
+    [Consumes(MediaTypeNames.Application.Json)]
     [Route("[controller]")]
     public class WatchlistsController : ControllerBase
     {
@@ -16,9 +17,7 @@ namespace MovieWatchlist.Controllers
             _watchlistsService = watchlistsService;
         }
 
-        [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        [Route("create")]
         [HttpPost]
         public async Task<ActionResult> CreateWatchlist(CreateWatchlistRequest createWatchlistRequest)
         {
@@ -30,6 +29,16 @@ namespace MovieWatchlist.Controllers
             {
                 StatusCode = StatusCodes.Status201Created
             };
+        }
+
+
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [HttpDelete]
+        public async Task<ActionResult> DeleteWatchlist(Guid watchlistId)
+        {
+            await _watchlistsService.DeleteWatchlist(watchlistId);
+
+            return NoContent();
         }
 
         [ProducesResponseType(StatusCodes.Status204NoContent)]
