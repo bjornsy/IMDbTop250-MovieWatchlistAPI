@@ -25,13 +25,14 @@ namespace MovieWatchlist.Controllers
             return Ok(movies);
         }
 
-        //[Produces("application/json")]
-        //[ProducesResponseType(StatusCodes.Status200OK)]
-        //[HttpGet]
-        //public async Task<ActionResult<IReadOnlyCollection<Movie>>> GetMoviesByWatchlistId(string watchlistId)
-        //{
-        //    var movies = await _moviesService.Get
-        //    return Ok();
-        //}
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpGet]
+        [Route("byWatchlistId")]
+        public async Task<ActionResult<IReadOnlyCollection<MovieInWatchlistResponse>>> GetMoviesByWatchlistId(Guid watchlistId)
+        {
+            var movies = await _moviesService.GetMoviesByWatchlistId(watchlistId);
+            return Ok(movies);
+        }
     }
 }

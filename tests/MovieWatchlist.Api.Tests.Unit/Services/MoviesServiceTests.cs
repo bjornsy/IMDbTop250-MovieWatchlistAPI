@@ -45,11 +45,11 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
             _top250MoviesDatabaseUpdateServiceMock.Verify(s => s.UpdateTop250InDatabase(movies), Times.Once);
             _moviesRepositoryMock.Verify(repository => repository.GetTop250(), Times.Never);
             _loggerMock.Verify(logger => logger.Log(
-                    It.IsAny<LogLevel>(),
-                    It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => true),
-                    It.IsAny<Exception>(),
-                    It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)), Times.Never);
+                It.IsAny<LogLevel>(),
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => true),
+                It.IsAny<Exception>(),
+                It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)), Times.Never);
 
         }
 
@@ -69,11 +69,11 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
             _top250MoviesDatabaseUpdateServiceMock.Verify(s => s.UpdateTop250InDatabase(movies), Times.Once);
             _moviesRepositoryMock.Verify(repository => repository.GetTop250(), Times.Never);
             _loggerMock.Verify(logger => logger.Log(
-                    It.IsAny<LogLevel>(),
-                    It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => true),
-                    It.IsAny<Exception>(),
-                    It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)), Times.Never);
+                It.IsAny<LogLevel>(),
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => true),
+                It.IsAny<Exception>(),
+                It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)), Times.Never);
 
         }
 
@@ -99,6 +99,26 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
                 It.Is<It.IsAnyType>((v, t) => v.ToString().Equals("Error getting movies from client, using repository as fallback")),
                 It.IsAny<Exception>(),
                 It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)), Times.Once);
+        }
+
+        [Fact]
+        public async Task GetMoviesByWatchlistId_ReturnsFromMoviesRepository()
+        {
+            var watchlistId = Guid.NewGuid();
+            var movie = new Movie { Id = "1", Title = "Title", Ranking = 1, Rating = 1 };
+            var moviesInWatchlist = new ReadOnlyCollection<MovieInWatchlist>(new List<MovieInWatchlist> { new MovieInWatchlist(movie, true)});
+
+            _moviesRepositoryMock.Setup(r => r.GetMoviesByWatchlistId(watchlistId)).ReturnsAsync(moviesInWatchlist);
+
+            var result = await _moviesService.GetMoviesByWatchlistId(watchlistId);
+
+            Assert.Equal(moviesInWatchlist.Single().Watched, result.Single().Watched);
+            Assert.Equal(moviesInWatchlist.Single().Movie.Id, result.Single().Movie.Id);
+            Assert.Equal(moviesInWatchlist.Single().Movie.Title, result.Single().Movie.Title);
+            Assert.Equal(moviesInWatchlist.Single().Movie.Rating, result.Single().Movie.Rating);
+            Assert.Equal(moviesInWatchlist.Single().Movie.Ranking, result.Single().Movie.Ranking);
+
+            _moviesRepositoryMock.Verify(repository => repository.GetMoviesByWatchlistId(watchlistId), Times.Once);
         }
     }
 }

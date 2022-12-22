@@ -23,7 +23,7 @@ namespace MovieWatchlist.Infrastructure.Data
             return await _context.Movies.ToListAsync();
         }
 
-        public async Task<IReadOnlyCollection<MovieInWatchlist>> GetMoviesByWatchlistId(string watchlistId)
+        public async Task<IReadOnlyCollection<MovieInWatchlist>> GetMoviesByWatchlistId(Guid watchlistId)
         {
             return await _context.Movies.AsNoTracking()
                 .Join(_context.WatchlistsMovies.AsNoTracking().Where(wm => wm.WatchlistId.Equals(watchlistId)),

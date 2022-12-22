@@ -6,7 +6,7 @@ namespace MovieWatchlist.ApplicationCore.Interfaces.Data
     {
         Task<IReadOnlyCollection<Movie>> GetTop250();
         Task<IList<Movie>> GetAll();
-        Task<IReadOnlyCollection<MovieInWatchlist>> GetMoviesByWatchlistId(string watchlistId);
+        Task<IReadOnlyCollection<MovieInWatchlist>> GetMoviesByWatchlistId(Guid watchlistId);
         Task Save();
     }
 }

@@ -24,5 +24,10 @@ namespace MovieWatchlist.Api.Extensions
                 Name = watchlist.Name
             };
         }
+
+        public static MovieInWatchlistResponse MapToResponse(this MovieInWatchlist movieInwatchlist)
+        {
+            return new MovieInWatchlistResponse(movieInwatchlist.Movie.MapToResponse(), movieInwatchlist.Watched);
+        }
     }
 }

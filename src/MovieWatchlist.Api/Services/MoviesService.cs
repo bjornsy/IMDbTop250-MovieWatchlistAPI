@@ -10,7 +10,7 @@ namespace MovieWatchlist.Api.Services
     public interface IMoviesService
     {
         Task<IReadOnlyCollection<MovieResponse>> GetTop250();
-        Task<IReadOnlyCollection<MovieInWatchlistResponse>> GetMoviesByWatchlistId(string watchlistId);
+        Task<IReadOnlyCollection<MovieInWatchlistResponse>> GetMoviesByWatchlistId(Guid watchlistId);
     }
 
     public class MoviesService : IMoviesService
@@ -56,9 +56,11 @@ namespace MovieWatchlist.Api.Services
             }
         }
 
-        public Task<IReadOnlyCollection<MovieInWatchlistResponse>> GetMoviesByWatchlistId(string watchlistId)
+        public async Task<IReadOnlyCollection<MovieInWatchlistResponse>> GetMoviesByWatchlistId(Guid watchlistId)
         {
-            throw new NotImplementedException();
+            var moviesInWatchlist = await _moviesRepository.GetMoviesByWatchlistId(watchlistId);
+
+            return moviesInWatchlist.Select(miw => miw.MapToResponse()).ToList();
         }
 
         private async Task<IReadOnlyCollection<Movie>> GetTop250FromClientAndUpdateDb()
