@@ -8,5 +8,6 @@ namespace MovieWatchlist.ApplicationCore.Interfaces.Data
         Task DeleteWatchlist(Guid watchlistId);
         Task AddMoviesToWatchlist(Guid watchlistId, List<string> movieIds);
         Task RemoveMoviesFromWatchlist(Guid watchlistId, List<string> movieIds);
+        Task SetMoviesAsWatched(Guid watchlistId, List<string> movieIds);
     }
 }

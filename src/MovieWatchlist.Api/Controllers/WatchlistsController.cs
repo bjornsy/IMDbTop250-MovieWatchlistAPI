@@ -60,7 +60,15 @@ namespace MovieWatchlist.Controllers
             return NoContent();
         }
 
-        //SetMovieAsWatched
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [Route("setMoviesWatched")]
+        [HttpPatch]
+        public async Task<ActionResult> SetMoviesAsWatched(SetMoviesAsWatchedRequest setMoviesAsWatchedRequest)
+        {
+            await _watchlistsService.SetMoviesAsWatched(setMoviesAsWatchedRequest);
+
+            return NoContent();
+        }
 
         //GetWatchlist
     }
