@@ -25,6 +25,11 @@ namespace MovieWatchlist.Infrastructure.Data
             return watchlist;
         }
 
+        public async Task<Watchlist> GetWatchlist(Guid watchlistId)
+        {
+            return await _context.Watchlists.AsNoTracking().SingleAsync(w => w.Id.Equals(watchlistId));
+        }
+
         public async Task DeleteWatchlist(Guid watchlistId)
         {
             var watchlistsMoviesRecords = _context.WatchlistsMovies.AsNoTracking().Where(wm => wm.WatchlistId.Equals(watchlistId));

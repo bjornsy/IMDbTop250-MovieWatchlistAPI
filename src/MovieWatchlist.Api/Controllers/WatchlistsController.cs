@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using MovieWatchlist.Api.Models.Requests;
+using MovieWatchlist.Api.Models.Responses;
 using MovieWatchlist.Api.Services;
 using System.Net.Mime;
 
@@ -29,6 +30,15 @@ namespace MovieWatchlist.Controllers
             {
                 StatusCode = StatusCodes.Status201Created
             };
+        }
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpGet]
+        public async Task<ActionResult<WatchlistResponse>> GetWatchlist(Guid watchlistId)
+        {
+            var watchlist = await _watchlistsService.GetWatchlist(watchlistId);
+
+            return Ok(watchlist);
         }
 
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -69,7 +79,5 @@ namespace MovieWatchlist.Controllers
 
             return NoContent();
         }
-
-        //GetWatchlist
     }
 }
