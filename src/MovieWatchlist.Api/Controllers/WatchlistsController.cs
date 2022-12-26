@@ -19,17 +19,13 @@ namespace MovieWatchlist.Controllers
         }
 
         [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost]
         public async Task<ActionResult> CreateWatchlist(CreateWatchlistRequest createWatchlistRequest)
         {
             var watchlist = await _watchlistsService.CreateWatchlist(createWatchlistRequest);
 
-
-            //TODO: Return location in Created response, after GetWatchlist implemented
-            return new ObjectResult(watchlist)
-            {
-                StatusCode = StatusCodes.Status201Created
-            };
+            return CreatedAtAction(nameof(GetWatchlist), new { watchlistId = watchlist.Id }, watchlist);
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
