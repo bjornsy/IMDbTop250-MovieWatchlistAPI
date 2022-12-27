@@ -13,26 +13,22 @@ namespace MovieWatchlist.Infrastructure.Data
             _context = context;
         }
 
-        public async Task<IReadOnlyCollection<Movie>> GetTop250()
-        {
-            return await _context.Movies.AsNoTracking().Where(m => m.Ranking != null && m.Ranking < 251).OrderBy(m => m.Ranking).ToListAsync();
-        }
-
-        public async Task<IList<Movie>> GetAll()
+        public async Task<IList<Movie>> GetAllMovies()
         {
             return await _context.Movies.ToListAsync();
         }
 
-        public async Task<IReadOnlyCollection<MovieInWatchlist>> GetMoviesByWatchlistId(Guid watchlistId)
+        public async Task<IReadOnlyCollection<Movie>> GetAllMoviesReadOnly()
         {
-            return await _context.Movies.AsNoTracking()
-                .Join(_context.WatchlistsMovies.AsNoTracking().Where(wm => wm.WatchlistId.Equals(watchlistId)),
-                    m => m.Id, wm => wm.MovieId, (m, wm) => new { Movie = m, WatchlistsMovies = wm })
-                .Select(x => new MovieInWatchlist(x.Movie, x.WatchlistsMovies.Watched))
-                .ToListAsync();
+            return await _context.Movies.AsNoTracking().ToListAsync();
         }
 
-        public async Task Save()
+        public async Task<IReadOnlyCollection<WatchlistsMovies>> GetWatchlistsMoviesByWatchlistId(Guid watchlistId)
+        {
+            return await _context.WatchlistsMovies.AsNoTracking().Where(wm => wm.WatchlistId.Equals(watchlistId)).ToListAsync();
+        }
+
+        public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();
         }

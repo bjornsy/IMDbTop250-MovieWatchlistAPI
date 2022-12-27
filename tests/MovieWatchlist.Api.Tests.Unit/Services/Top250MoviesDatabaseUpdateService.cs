@@ -57,7 +57,7 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
                 }
             };
 
-            _moviesRepositoryMock.Setup(r => r.GetAll()).ReturnsAsync(dbMovies);
+            _moviesRepositoryMock.Setup(r => r.GetAllMovies()).ReturnsAsync(dbMovies);
 
             await _databaseUpdateService.UpdateTop250InDatabase(updatedMovies);
 
@@ -70,7 +70,7 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
             Assert.Equal(updatedMoviesShawshank.Ranking, dbMoviesShawshank.Ranking);
             Assert.Equal(updatedMoviesGodfather.Ranking, dbMoviesGodfather.Ranking);
 
-            _moviesRepositoryMock.Verify(r => r.Save(), Times.Once);
+            _moviesRepositoryMock.Verify(r => r.SaveChangesAsync(), Times.Once);
         }
 
         [Fact]
@@ -112,7 +112,7 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
                 }
             };
 
-            _moviesRepositoryMock.Setup(r => r.GetAll()).ReturnsAsync(dbMovies);
+            _moviesRepositoryMock.Setup(r => r.GetAllMovies()).ReturnsAsync(dbMovies);
 
             await _databaseUpdateService.UpdateTop250InDatabase(updatedMovies);
 
@@ -125,7 +125,7 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
             Assert.Equal(updatedMoviesShawshank.Rating, dbMoviesShawshank.Rating);
             Assert.Equal(updatedMoviesGodfather.Rating, dbMoviesGodfather.Rating);
 
-            _moviesRepositoryMock.Verify(r => r.Save(), Times.Once);
+            _moviesRepositoryMock.Verify(r => r.SaveChangesAsync(), Times.Once);
         }
 
         [Fact]
@@ -147,13 +147,13 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
 
             };
 
-            _moviesRepositoryMock.Setup(r => r.GetAll()).ReturnsAsync(dbMovies);
+            _moviesRepositoryMock.Setup(r => r.GetAllMovies()).ReturnsAsync(dbMovies);
 
             await _databaseUpdateService.UpdateTop250InDatabase(updatedMovies);
 
             Assert.Null(dbMovies.Single().Ranking);
 
-            _moviesRepositoryMock.Verify(r => r.Save(), Times.Once);
+            _moviesRepositoryMock.Verify(r => r.SaveChangesAsync(), Times.Once);
         }
 
         [Fact]
@@ -175,13 +175,13 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
                 }
             };
 
-            _moviesRepositoryMock.Setup(r => r.GetAll()).ReturnsAsync(dbMovies);
+            _moviesRepositoryMock.Setup(r => r.GetAllMovies()).ReturnsAsync(dbMovies);
 
             await _databaseUpdateService.UpdateTop250InDatabase(updatedMovies);
 
             Assert.Same(updatedMovies.Single(), dbMovies.Single());
 
-            _moviesRepositoryMock.Verify(r => r.Save(), Times.Once);
+            _moviesRepositoryMock.Verify(r => r.SaveChangesAsync(), Times.Once);
         }
     }
 }

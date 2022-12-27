@@ -4,9 +4,9 @@ namespace MovieWatchlist.ApplicationCore.Interfaces.Data
 {
     public interface IMoviesRepository
     {
-        Task<IReadOnlyCollection<Movie>> GetTop250();
-        Task<IList<Movie>> GetAll();
-        Task<IReadOnlyCollection<MovieInWatchlist>> GetMoviesByWatchlistId(Guid watchlistId);
-        Task Save();
+        Task<IList<Movie>> GetAllMovies();
+        Task<IReadOnlyCollection<Movie>> GetAllMoviesReadOnly();
+        Task<IReadOnlyCollection<WatchlistsMovies>> GetWatchlistsMoviesByWatchlistId(Guid watchlistId);
+        Task SaveChangesAsync();
     }
 }

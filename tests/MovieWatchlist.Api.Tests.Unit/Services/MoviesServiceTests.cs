@@ -43,7 +43,7 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
             Assert.Equal(movies.Single().Rating, result.Single().Rating);
 
             _top250MoviesDatabaseUpdateServiceMock.Verify(s => s.UpdateTop250InDatabase(movies), Times.Once);
-            _moviesRepositoryMock.Verify(repository => repository.GetTop250(), Times.Never);
+            _moviesRepositoryMock.Verify(repository => repository.GetAllMoviesReadOnly(), Times.Never);
             _loggerMock.Verify(logger => logger.Log(
                 It.IsAny<LogLevel>(),
                 It.IsAny<EventId>(),
@@ -67,7 +67,7 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
 
             _top250InfoServiceMock.Verify(r => r.GetTop250(), Times.Once);
             _top250MoviesDatabaseUpdateServiceMock.Verify(s => s.UpdateTop250InDatabase(movies), Times.Once);
-            _moviesRepositoryMock.Verify(repository => repository.GetTop250(), Times.Never);
+            _moviesRepositoryMock.Verify(repository => repository.GetAllMoviesReadOnly(), Times.Never);
             _loggerMock.Verify(logger => logger.Log(
                 It.IsAny<LogLevel>(),
                 It.IsAny<EventId>(),
@@ -83,16 +83,22 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
             var exception = new Exception();
             _top250InfoServiceMock.Setup(r => r.GetTop250()).ThrowsAsync(exception);
 
-            var movies = new ReadOnlyCollection<Movie>(new List<Movie> { new Movie { Id = "1" } });
-            _moviesRepositoryMock.Setup(r => r.GetTop250()).ReturnsAsync(movies);
+            var movies = GenerateMoreThan250Movies();
+            _moviesRepositoryMock.Setup(r => r.GetAllMoviesReadOnly()).ReturnsAsync(movies);
 
             var result = await _moviesService.GetTop250();
 
-            Assert.Equal(movies.Single().Id, result.Single().Id);
+            Assert.Equal(250, result.Count);
+            var resultAsList = result.ToList();
+            for (var i = 0; i < result.Count; i++)
+            {
+                Assert.Same(movies[i].Id, resultAsList[i].Id);
+                Assert.Equal(movies[i].Ranking, resultAsList[i].Ranking);
+            }
 
             _top250InfoServiceMock.Verify(service => service.GetTop250(), Times.Once);
             _top250MoviesDatabaseUpdateServiceMock.Verify(s => s.UpdateTop250InDatabase(It.IsAny<IReadOnlyCollection<Movie>>()), Times.Never);
-            _moviesRepositoryMock.Verify(repository => repository.GetTop250(), Times.Once);
+            _moviesRepositoryMock.Verify(repository => repository.GetAllMoviesReadOnly(), Times.Once);
             _loggerMock.Verify(logger => logger.Log(
                 It.IsAny<LogLevel>(),
                 It.IsAny<EventId>(),
@@ -101,24 +107,42 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
                 It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)), Times.Once);
         }
 
+        private List<Movie> GenerateMoreThan250Movies()
+        {
+            var movies = new List<Movie>();
+            for (var i = 1; i < 300; i++)
+            {
+                movies.Add(new Movie { Id = i.ToString(), Ranking = i });
+            }
+
+            return movies;
+        }
+
         [Fact]
         public async Task GetMoviesByWatchlistId_ReturnsFromMoviesRepository()
         {
             var watchlistId = Guid.NewGuid();
-            var movie = new Movie { Id = "1", Title = "Title", Ranking = 1, Rating = 1 };
-            var moviesInWatchlist = new ReadOnlyCollection<MovieInWatchlist>(new List<MovieInWatchlist> { new MovieInWatchlist(movie, true)});
+            var movies = new List<Movie> { 
+                new Movie { Id = "1", Title = "Title", Ranking = 1, Rating = 1 },
+                new Movie { Id = "2", Title = "Title2", Ranking = 2, Rating = 2 } 
+            };
+            var watchlistsMovies = new List<WatchlistsMovies> { 
+                new WatchlistsMovies { Id = 1, WatchlistId = watchlistId, MovieId = "1", Watched = true },
+            };
 
-            _moviesRepositoryMock.Setup(r => r.GetMoviesByWatchlistId(watchlistId)).ReturnsAsync(moviesInWatchlist);
+            _moviesRepositoryMock.Setup(r => r.GetAllMoviesReadOnly()).ReturnsAsync(movies);
+            _moviesRepositoryMock.Setup(r => r.GetWatchlistsMoviesByWatchlistId(watchlistId)).ReturnsAsync(watchlistsMovies);
 
             var result = await _moviesService.GetMoviesByWatchlistId(watchlistId);
 
-            Assert.Equal(moviesInWatchlist.Single().Watched, result.Single().Watched);
-            Assert.Equal(moviesInWatchlist.Single().Movie.Id, result.Single().Movie.Id);
-            Assert.Equal(moviesInWatchlist.Single().Movie.Title, result.Single().Movie.Title);
-            Assert.Equal(moviesInWatchlist.Single().Movie.Rating, result.Single().Movie.Rating);
-            Assert.Equal(moviesInWatchlist.Single().Movie.Ranking, result.Single().Movie.Ranking);
+            Assert.Equal("1", result.Single().Movie.Id);
+            Assert.Equal("Title", result.Single().Movie.Title);
+            Assert.Equal(1, result.Single().Movie.Rating);
+            Assert.Equal(1, result.Single().Movie.Ranking);
+            Assert.True(result.Single().Watched);
 
-            _moviesRepositoryMock.Verify(repository => repository.GetMoviesByWatchlistId(watchlistId), Times.Once);
+            _moviesRepositoryMock.Verify(r => r.GetAllMoviesReadOnly(), Times.Once);
+            _moviesRepositoryMock.Verify(r => r.GetWatchlistsMoviesByWatchlistId(watchlistId), Times.Once);
         }
     }
 }

@@ -20,7 +20,7 @@ namespace MovieWatchlist.Api.Services
 
         public async Task UpdateTop250InDatabase(IReadOnlyCollection<Movie> updatedMovies)
         {
-            var dbMovies = await _moviesRepository.GetAll();
+            var dbMovies = await _moviesRepository.GetAllMovies();
 
             var updatedMoviesDictionary = updatedMovies.ToDictionary(m => m.Id, m => m);
 
@@ -49,7 +49,7 @@ namespace MovieWatchlist.Api.Services
                 dbMovies.Add(updatedMoviesDictionary[movieId]);
             }
 
-            await _moviesRepository.Save();
+            await _moviesRepository.SaveChangesAsync();
         }
     }
 }

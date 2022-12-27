@@ -4,6 +4,7 @@ using MovieWatchlist.Api.Models.Responses;
 using MovieWatchlist.ApplicationCore.Interfaces.Clients;
 using MovieWatchlist.ApplicationCore.Interfaces.Data;
 using MovieWatchlist.ApplicationCore.Models;
+using System.Linq;
 
 namespace MovieWatchlist.Api.Services
 {
@@ -51,14 +52,21 @@ namespace MovieWatchlist.Api.Services
             {
                 _logger.LogError("Error getting movies from client, using repository as fallback", ex);
 
-                var movies = await _moviesRepository.GetTop250();
-                return MapMovies(movies);
+                var movies = await _moviesRepository.GetAllMoviesReadOnly();
+                var top250 = GetTop250(movies);
+
+                return MapMovies(top250);
             }
         }
 
         public async Task<IReadOnlyCollection<MovieInWatchlistResponse>> GetMoviesByWatchlistId(Guid watchlistId)
         {
-            var moviesInWatchlist = await _moviesRepository.GetMoviesByWatchlistId(watchlistId);
+            var movies = await _moviesRepository.GetAllMoviesReadOnly();
+
+            var watchlistsMovies = await _moviesRepository.GetWatchlistsMoviesByWatchlistId(watchlistId);
+
+            var moviesInWatchlist = movies.Join(watchlistsMovies, m => m.Id, wm => wm.MovieId, (m, wm) => new { Movie = m, WatchlistsMovies = wm })
+                                            .Select(x => new MovieInWatchlist(x.Movie, x.WatchlistsMovies.Watched));
 
             return moviesInWatchlist.Select(miw => miw.MapToResponse()).ToList();
         }
@@ -75,6 +83,11 @@ namespace MovieWatchlist.Api.Services
         private IReadOnlyCollection<MovieResponse> MapMovies(IEnumerable<Movie> movies)
         {
             return movies.Select(m => m.MapToResponse()).ToList();
+        }
+
+        private IReadOnlyCollection<Movie> GetTop250(IEnumerable<Movie> movies)
+        {
+            return movies.Where(m => m.Ranking != null && m.Ranking < 251).OrderBy(m => m.Ranking).ToList();
         }
     }
 }
