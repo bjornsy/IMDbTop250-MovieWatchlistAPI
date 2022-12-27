@@ -34,7 +34,12 @@ namespace MovieWatchlist.Api.Services
 
             var movieIds = request.MovieIds;
 
-            var createdWatchlist = await _watchlistRepository.SaveWatchlist(watchlist, movieIds);
+            var createdWatchlist = await _watchlistRepository.AddWatchlist(watchlist);
+
+            var watchlistsMoviesRecords = movieIds.Select(id => new WatchlistsMovies { WatchlistId = createdWatchlist.Id, MovieId = id });
+            await _watchlistRepository.AddWatchlistsMovies(watchlistsMoviesRecords);
+
+            await _watchlistRepository.SaveChangesAsync();
 
             return createdWatchlist.MapToResponse();
         }

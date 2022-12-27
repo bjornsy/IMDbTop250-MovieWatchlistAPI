@@ -19,11 +19,12 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
         }
 
         [Fact]
-        public async Task CreateWatchlist_GivenPopulatedRequest_ReturnsCreatedWatchlist()
+        public async Task CreateWatchlist_GivenPopulatedRequest_ReturnsWatchlistResponse()
         {
+            var watchlistName = "watchlist name";
             var createWatchlistRequest = new CreateWatchlistRequest
             {
-                Name = "watchlist name",
+                Name = watchlistName,
                 MovieIds = new List<string>
                 {
                     "movieId"
@@ -35,21 +36,25 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
             var createdWatchlist = new Watchlist
             {
                 Id = watchlistId,
-                Name = "watchlist name"
+                Name = watchlistName
             };
 
-            _watchlistsRepositoryMock.Setup(m => m.SaveWatchlist(It.Is<Watchlist>(w => w.Name.Equals(createWatchlistRequest.Name)), createWatchlistRequest.MovieIds)).ReturnsAsync(createdWatchlist);
+            _watchlistsRepositoryMock.Setup(m => m.AddWatchlist(It.Is<Watchlist>(w => w.Name.Equals(createWatchlistRequest.Name)))).ReturnsAsync(createdWatchlist);
+            _watchlistsRepositoryMock.Setup(m => m.AddWatchlistsMovies(It.Is<IEnumerable<WatchlistsMovies>>(watchlistsMovies => 
+                watchlistsMovies.Single().WatchlistId.Equals(watchlistId) && watchlistsMovies.Single().MovieId.Equals("movieId"))));
 
             var result = await _watchlistsService.CreateWatchlist(createWatchlistRequest);
 
-            Assert.Equal(createdWatchlist.Id, result.Id);
-            Assert.Equal(createWatchlistRequest.Name, result.Name);
+            Assert.Equal(watchlistId, result.Id);
+            Assert.Equal("watchlist name", result.Name);
 
-            _watchlistsRepositoryMock.Verify(m => m.SaveWatchlist(It.Is<Watchlist>(w => w.Name.Equals(createWatchlistRequest.Name)), createWatchlistRequest.MovieIds), Times.Once);
+            _watchlistsRepositoryMock.Verify(m => m.AddWatchlist(It.Is<Watchlist>(w => w.Name.Equals(createWatchlistRequest.Name))), Times.Once);
+            _watchlistsRepositoryMock.Verify(m => m.AddWatchlistsMovies(It.Is<IEnumerable<WatchlistsMovies>>(watchlistsMovies =>
+                watchlistsMovies.Single().WatchlistId.Equals(watchlistId) && watchlistsMovies.Single().MovieId.Equals("movieId"))), Times.Once);
         }
 
         [Fact]
-        public async Task CreateWatchlist_GivenNullPropertiesInRequest_ReturnsCreatedWatchlist()
+        public async Task CreateWatchlist_GivenNullPropertiesInRequest_ReturnsWatchlistResponse()
         {
             var defaultName = "Movies to watch from IMDb Top 250";
 
@@ -65,14 +70,18 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
                 Name = defaultName
             };
 
-            _watchlistsRepositoryMock.Setup(m => m.SaveWatchlist(It.Is<Watchlist>(w => w.Name.Equals(createWatchlistRequest.Name)), createWatchlistRequest.MovieIds)).ReturnsAsync(createdWatchlist);
+            _watchlistsRepositoryMock.Setup(m => m.AddWatchlist(It.Is<Watchlist>(w => w.Name.Equals(createWatchlistRequest.Name)))).ReturnsAsync(createdWatchlist);
+            _watchlistsRepositoryMock.Setup(m => m.AddWatchlistsMovies(It.Is<IEnumerable<WatchlistsMovies>>(watchlistsMovies =>
+                watchlistsMovies.Any() == false)));
 
             var result = await _watchlistsService.CreateWatchlist(createWatchlistRequest);
 
-            Assert.Equal(createdWatchlist.Id, result.Id);
+            Assert.Equal(watchlistId, result.Id);
             Assert.Equal(defaultName, result.Name);
 
-            _watchlistsRepositoryMock.Verify(m => m.SaveWatchlist(It.Is<Watchlist>(w => w.Name.Equals(createWatchlistRequest.Name)), createWatchlistRequest.MovieIds), Times.Once);
+            _watchlistsRepositoryMock.Verify(m => m.AddWatchlist(It.Is<Watchlist>(w => w.Name.Equals(createWatchlistRequest.Name))), Times.Once);
+            _watchlistsRepositoryMock.Verify(m => m.AddWatchlistsMovies(It.Is<IEnumerable<WatchlistsMovies>>(watchlistsMovies =>
+                watchlistsMovies.Any() == false)), Times.Once);
         }
 
         [Fact]

@@ -13,16 +13,16 @@ namespace MovieWatchlist.Infrastructure.Data
             _context = context;
         }
 
-        public async Task<Watchlist> SaveWatchlist(Watchlist watchlist, List<string> movieIds)
+        public async Task<Watchlist> AddWatchlist(Watchlist watchlist)
         {
             await _context.Watchlists.AddAsync(watchlist);
 
-            var watchlistsMoviesRecords = movieIds.Select(id => new WatchlistsMovies { WatchlistId = watchlist.Id, MovieId = id });
-            await _context.WatchlistsMovies.AddRangeAsync(watchlistsMoviesRecords);
-
-            await _context.SaveChangesAsync();
-
             return watchlist;
+        }
+
+        public async Task AddWatchlistsMovies(IEnumerable<WatchlistsMovies> watchlistsMovies)
+        {
+            await _context.WatchlistsMovies.AddRangeAsync(watchlistsMovies);
         }
 
         public async Task<Watchlist> GetWatchlistById(Guid watchlistId)
@@ -72,6 +72,10 @@ namespace MovieWatchlist.Infrastructure.Data
                 watchlistMovie.Watched = true;
             }
 
+            await _context.SaveChangesAsync();
+        }
+        public async Task SaveChangesAsync()
+        {
             await _context.SaveChangesAsync();
         }
     }
