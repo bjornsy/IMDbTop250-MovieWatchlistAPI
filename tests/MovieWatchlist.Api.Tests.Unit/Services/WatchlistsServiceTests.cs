@@ -51,6 +51,7 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
             _watchlistsRepositoryMock.Verify(m => m.AddWatchlist(It.Is<Watchlist>(w => w.Name.Equals(createWatchlistRequest.Name))), Times.Once);
             _watchlistsRepositoryMock.Verify(m => m.AddWatchlistsMovies(It.Is<IEnumerable<WatchlistsMovies>>(watchlistsMovies =>
                 watchlistsMovies.Single().WatchlistId.Equals(watchlistId) && watchlistsMovies.Single().MovieId.Equals("movieId"))), Times.Once);
+            _watchlistsRepositoryMock.Verify(m => m.SaveChangesAsync(), Times.Once);
         }
 
         [Fact]
@@ -82,6 +83,7 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
             _watchlistsRepositoryMock.Verify(m => m.AddWatchlist(It.Is<Watchlist>(w => w.Name.Equals(createWatchlistRequest.Name))), Times.Once);
             _watchlistsRepositoryMock.Verify(m => m.AddWatchlistsMovies(It.Is<IEnumerable<WatchlistsMovies>>(watchlistsMovies =>
                 watchlistsMovies.Any() == false)), Times.Once);
+            _watchlistsRepositoryMock.Verify(m => m.SaveChangesAsync(), Times.Once);
         }
 
         [Fact]
