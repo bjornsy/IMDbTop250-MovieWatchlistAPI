@@ -25,7 +25,7 @@ namespace MovieWatchlist.Infrastructure.Data
             return watchlist;
         }
 
-        public async Task<Watchlist> GetWatchlist(Guid watchlistId)
+        public async Task<Watchlist> GetWatchlistById(Guid watchlistId)
         {
             return await _context.Watchlists.AsNoTracking().SingleAsync(w => w.Id.Equals(watchlistId));
         }
@@ -65,7 +65,7 @@ namespace MovieWatchlist.Infrastructure.Data
         {
             var watchlistMovies = _context.WatchlistsMovies.Where(wm => wm.WatchlistId.Equals(watchlistId) && movieIds.Contains(wm.MovieId));
 
-            //Error if none/some not found?
+            //TODO: Error if none/some not found?
 
             foreach (var watchlistMovie in watchlistMovies)
             {

@@ -87,14 +87,14 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
                 WatchlistsMovies = new List<WatchlistsMovies> { new WatchlistsMovies { Id = 1, WatchlistId = watchlistId } }
             };
 
-            _watchlistsRepositoryMock.Setup(m => m.GetWatchlist(watchlistId)).ReturnsAsync(watchlist);
+            _watchlistsRepositoryMock.Setup(m => m.GetWatchlistById(watchlistId)).ReturnsAsync(watchlist);
 
             var result = await _watchlistsService.GetWatchlist(watchlistId);
 
             Assert.Equal(watchlist.Id, result.Id);
             Assert.Equal(watchlist.Name, result.Name);
 
-            _watchlistsRepositoryMock.Verify(m => m.GetWatchlist(watchlistId), Times.Once);
+            _watchlistsRepositoryMock.Verify(m => m.GetWatchlistById(watchlistId), Times.Once);
         }
 
         [Fact]

@@ -41,7 +41,7 @@ namespace MovieWatchlist.Api.Services
 
         public async Task<WatchlistResponse> GetWatchlist(Guid watchlistId)
         {
-            var watchlist = await _watchlistRepository.GetWatchlist(watchlistId);
+            var watchlist = await _watchlistRepository.GetWatchlistById(watchlistId);
 
             return watchlist.MapToResponse();
             //TODO: throw 404
