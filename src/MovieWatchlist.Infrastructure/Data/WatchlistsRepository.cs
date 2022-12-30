@@ -45,15 +45,6 @@ namespace MovieWatchlist.Infrastructure.Data
             _context.Watchlists.Remove(watchlist);
         }
 
-        public async Task RemoveMoviesFromWatchlist(Guid watchlistId, List<string> movieIds)
-        {
-            var watchlistsMoviesRecords = movieIds.Select(id => new WatchlistsMovies { WatchlistId = watchlistId, MovieId = id });
-
-            _context.WatchlistsMovies.RemoveRange(watchlistsMoviesRecords);
-
-            await _context.SaveChangesAsync();
-        }
-
         public async Task SetMoviesAsWatched(Guid watchlistId, List<string> movieIds)
         {
             var watchlistMovies = _context.WatchlistsMovies.Where(wm => wm.WatchlistId.Equals(watchlistId) && movieIds.Contains(wm.MovieId));

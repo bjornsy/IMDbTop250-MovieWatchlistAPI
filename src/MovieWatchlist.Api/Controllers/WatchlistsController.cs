@@ -63,6 +63,8 @@ namespace MovieWatchlist.Controllers
         [HttpPost]
         public async Task<ActionResult> RemoveMoviesFromWatchlist(RemoveMoviesFromWatchlistRequest removeMoviesFromWatchlistRequest)
         {
+            //TODO: Return 400 if no movieIds
+
             await _watchlistsService.RemoveMoviesFromWatchlist(removeMoviesFromWatchlistRequest);
 
             return NoContent();

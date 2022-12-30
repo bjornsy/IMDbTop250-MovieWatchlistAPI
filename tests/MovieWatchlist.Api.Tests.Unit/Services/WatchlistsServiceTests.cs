@@ -145,6 +145,8 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
 
             _watchlistsRepositoryMock.Verify(m => m.AddWatchlistsMovies(It.Is<IEnumerable<WatchlistsMovies>>(watchlistsMovies =>
                 watchlistsMovies.Single().WatchlistId.Equals(addMoviesToWatchlistRequest.WatchlistId) && watchlistsMovies.Single().MovieId.Equals("movieId"))), Times.Once);
+
+            _watchlistsRepositoryMock.Verify(m => m.SaveChangesAsync(), Times.Once);
         }
 
         [Fact]
@@ -153,14 +155,18 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
             var removeMoviesFromWatchlistRequest = new RemoveMoviesFromWatchlistRequest
             {
                 WatchlistId = Guid.NewGuid(),
-                MovieIds = new List<string>()
+                MovieIds = new List<string> { "movieId" }
             };
 
-            _watchlistsRepositoryMock.Setup(m => m.RemoveMoviesFromWatchlist(removeMoviesFromWatchlistRequest.WatchlistId, removeMoviesFromWatchlistRequest.MovieIds)).Returns(Task.CompletedTask);
+            _watchlistsRepositoryMock.Setup(m => m.RemoveWatchlistsMovies(It.Is<IEnumerable<WatchlistsMovies>>(watchlistsMovies =>
+                watchlistsMovies.Single().WatchlistId.Equals(removeMoviesFromWatchlistRequest.WatchlistId) && watchlistsMovies.Single().MovieId.Equals("movieId"))));
 
             await _watchlistsService.RemoveMoviesFromWatchlist(removeMoviesFromWatchlistRequest);
 
-            _watchlistsRepositoryMock.Verify(m => m.RemoveMoviesFromWatchlist(removeMoviesFromWatchlistRequest.WatchlistId, removeMoviesFromWatchlistRequest.MovieIds), Times.Once);
+            _watchlistsRepositoryMock.Verify(m => m.RemoveWatchlistsMovies(It.Is<IEnumerable<WatchlistsMovies>>(watchlistsMovies =>
+                watchlistsMovies.Single().WatchlistId.Equals(removeMoviesFromWatchlistRequest.WatchlistId) && watchlistsMovies.Single().MovieId.Equals("movieId"))), Times.Once);
+
+            _watchlistsRepositoryMock.Verify(m => m.SaveChangesAsync(), Times.Once);
         }
 
         [Fact]

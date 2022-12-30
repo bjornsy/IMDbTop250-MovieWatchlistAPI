@@ -67,16 +67,20 @@ namespace MovieWatchlist.Api.Services
 
         public async Task AddMoviesToWatchlist(AddMoviesToWatchlistRequest addMoviesToWatchlistRequest)
         {
-            var watchlistsMoviesRecords = addMoviesToWatchlistRequest.MovieIds.Select(id => new WatchlistsMovies { WatchlistId = addMoviesToWatchlistRequest.WatchlistId, MovieId = id });
+            var watchlistsMovies = addMoviesToWatchlistRequest.MovieIds.Select(id => new WatchlistsMovies { WatchlistId = addMoviesToWatchlistRequest.WatchlistId, MovieId = id });
             
-            await _watchlistRepository.AddWatchlistsMovies(watchlistsMoviesRecords);
+            await _watchlistRepository.AddWatchlistsMovies(watchlistsMovies);
 
             await _watchlistRepository.SaveChangesAsync();
         }
 
         public async Task RemoveMoviesFromWatchlist(RemoveMoviesFromWatchlistRequest removeMoviesFromWatchlistRequest)
         {
-            await _watchlistRepository.RemoveMoviesFromWatchlist(removeMoviesFromWatchlistRequest.WatchlistId, removeMoviesFromWatchlistRequest.MovieIds);
+            var watchlistsMovies = removeMoviesFromWatchlistRequest.MovieIds.Select(id => new WatchlistsMovies { WatchlistId = removeMoviesFromWatchlistRequest.WatchlistId, MovieId = id });
+
+            _watchlistRepository.RemoveWatchlistsMovies(watchlistsMovies);
+
+            await _watchlistRepository.SaveChangesAsync();
         }
 
         public async Task SetMoviesAsWatched(SetMoviesAsWatchedRequest setMoviesAsWatchedRequest)
