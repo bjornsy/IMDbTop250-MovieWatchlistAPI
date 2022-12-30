@@ -172,23 +172,25 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
         [Fact]
         public async Task SetMoviesAsWatched_ReturnsTask()
         {
-            var setMoviesAsWatchedRequest = new SetMoviesAsWatchedRequest
+            var setMoviesAsWatchedRequest = new SetMoviesWatchedStatusRequest
             {
                 WatchlistId = Guid.NewGuid(),
-                MovieIds = new List<string> { "movieId" }
+                MovieIdsWatched = new Dictionary<string, bool> { ["movieId"] = true, ["movieId2"] = false }
             };
 
             var watchlistsMovies = new List<WatchlistsMovies> { 
-                new WatchlistsMovies { WatchlistId = setMoviesAsWatchedRequest.WatchlistId, MovieId = "movieId" },
-                new WatchlistsMovies { WatchlistId = setMoviesAsWatchedRequest.WatchlistId, MovieId = "movieId2" }
+                new WatchlistsMovies { WatchlistId = setMoviesAsWatchedRequest.WatchlistId, MovieId = "movieId", Watched = false },
+                new WatchlistsMovies { WatchlistId = setMoviesAsWatchedRequest.WatchlistId, MovieId = "movieId2", Watched = true },
+                new WatchlistsMovies { WatchlistId = setMoviesAsWatchedRequest.WatchlistId, MovieId = "movieId2", Watched = false }
             };
 
             _watchlistsRepositoryMock.Setup(m => m.GetWatchlistsMoviesByWatchlistId(setMoviesAsWatchedRequest.WatchlistId)).ReturnsAsync(watchlistsMovies);
 
             await _watchlistsService.SetMoviesAsWatched(setMoviesAsWatchedRequest);
 
-            Assert.True(watchlistsMovies.First().Watched);
-            Assert.False(watchlistsMovies.Last().Watched);
+            Assert.True(watchlistsMovies[0].Watched);
+            Assert.False(watchlistsMovies[1].Watched);
+            Assert.False(watchlistsMovies[2].Watched);
 
             _watchlistsRepositoryMock.Verify(m => m.GetWatchlistsMoviesByWatchlistId(setMoviesAsWatchedRequest.WatchlistId), Times.Once);
             _watchlistsRepositoryMock.Verify(m => m.SaveChangesAsync(), Times.Once);

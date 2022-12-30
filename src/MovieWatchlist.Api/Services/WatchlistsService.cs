@@ -13,7 +13,7 @@ namespace MovieWatchlist.Api.Services
         Task DeleteWatchlist(Guid watchlistId);
         Task AddMoviesToWatchlist(AddMoviesToWatchlistRequest addMoviesToWatchlistRequest);
         Task RemoveMoviesFromWatchlist(RemoveMoviesFromWatchlistRequest addMoviesToWatchlistRequest);
-        Task SetMoviesAsWatched(SetMoviesAsWatchedRequest setMoviesAsWatchedRequest);
+        Task SetMoviesAsWatched(SetMoviesWatchedStatusRequest setMoviesWatchedStatusRequest);
     }
 
     public class WatchlistsService : IWatchlistsService
@@ -83,17 +83,17 @@ namespace MovieWatchlist.Api.Services
             await _watchlistRepository.SaveChangesAsync();
         }
 
-        public async Task SetMoviesAsWatched(SetMoviesAsWatchedRequest setMoviesAsWatchedRequest)
+        public async Task SetMoviesAsWatched(SetMoviesWatchedStatusRequest setMoviesWatchedStatusRequest)
         {
-            var watchlistsMoviesByWatchlistId = await _watchlistRepository.GetWatchlistsMoviesByWatchlistId(setMoviesAsWatchedRequest.WatchlistId);
+            var watchlistsMoviesByWatchlistId = await _watchlistRepository.GetWatchlistsMoviesByWatchlistId(setMoviesWatchedStatusRequest.WatchlistId);
 
-            var watchlistsMovies = watchlistsMoviesByWatchlistId.Where(wm => setMoviesAsWatchedRequest.MovieIds.Contains(wm.MovieId));
+            var watchlistsMovies = watchlistsMoviesByWatchlistId.Where(wm => setMoviesWatchedStatusRequest.MovieIdsWatched.ContainsKey(wm.MovieId));
 
             //TODO: Error if none/some not found?
 
             foreach (var watchlistMovie in watchlistsMovies)
             {
-                watchlistMovie.Watched = true;
+                watchlistMovie.Watched = setMoviesWatchedStatusRequest.MovieIdsWatched[watchlistMovie.MovieId];
             }
 
             await _watchlistRepository.SaveChangesAsync();
