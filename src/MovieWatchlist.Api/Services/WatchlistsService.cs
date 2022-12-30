@@ -85,7 +85,18 @@ namespace MovieWatchlist.Api.Services
 
         public async Task SetMoviesAsWatched(SetMoviesAsWatchedRequest setMoviesAsWatchedRequest)
         {
-            await _watchlistRepository.SetMoviesAsWatched(setMoviesAsWatchedRequest.WatchlistId, setMoviesAsWatchedRequest.MovieIds);
+            var watchlistsMoviesByWatchlistId = await _watchlistRepository.GetWatchlistsMoviesByWatchlistId(setMoviesAsWatchedRequest.WatchlistId);
+
+            var watchlistsMovies = watchlistsMoviesByWatchlistId.Where(wm => setMoviesAsWatchedRequest.MovieIds.Contains(wm.MovieId));
+
+            //TODO: Error if none/some not found?
+
+            foreach (var watchlistMovie in watchlistsMovies)
+            {
+                watchlistMovie.Watched = true;
+            }
+
+            await _watchlistRepository.SaveChangesAsync();
         }
     }
 }
