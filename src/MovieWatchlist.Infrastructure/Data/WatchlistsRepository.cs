@@ -30,26 +30,19 @@ namespace MovieWatchlist.Infrastructure.Data
             return await _context.Watchlists.AsNoTracking().SingleAsync(w => w.Id.Equals(watchlistId));
         }
 
-        public async Task DeleteWatchlist(Guid watchlistId)
+        public async Task<IReadOnlyCollection<WatchlistsMovies>> GetWatchlistsMoviesByWatchlistId(Guid watchlistId)
         {
-            var watchlistsMoviesRecords = _context.WatchlistsMovies.AsNoTracking().Where(wm => wm.WatchlistId.Equals(watchlistId));
-
-            _context.WatchlistsMovies.RemoveRange(watchlistsMoviesRecords);
-
-            var watchlist = _context.Watchlists.AsNoTracking().Single(w => w.Id.Equals(watchlistId));
-
-            _context.Watchlists.Remove(watchlist);
-
-            await _context.SaveChangesAsync();
+            return await _context.WatchlistsMovies.AsNoTracking().Where(wm => wm.WatchlistId.Equals(watchlistId)).ToListAsync();
         }
 
-        public async Task AddMoviesToWatchlist(Guid watchlistId, List<string> movieIds)
+        public void RemoveWatchlistsMovies(IEnumerable<WatchlistsMovies> watchlistsMovies)
         {
-            var watchlistsMoviesRecords = movieIds.Select(id => new WatchlistsMovies { WatchlistId = watchlistId, MovieId = id });
+            _context.WatchlistsMovies.RemoveRange(watchlistsMovies);
+        }
 
-            await _context.WatchlistsMovies.AddRangeAsync(watchlistsMoviesRecords);
-
-            await _context.SaveChangesAsync();
+        public void RemoveWatchlist(Watchlist watchlist)
+        {
+            _context.Watchlists.Remove(watchlist);
         }
 
         public async Task RemoveMoviesFromWatchlist(Guid watchlistId, List<string> movieIds)
@@ -74,6 +67,7 @@ namespace MovieWatchlist.Infrastructure.Data
 
             await _context.SaveChangesAsync();
         }
+
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();

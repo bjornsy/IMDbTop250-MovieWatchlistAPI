@@ -51,6 +51,8 @@ namespace MovieWatchlist.Controllers
         [HttpPost]
         public async Task<ActionResult> AddMoviesToWatchlist(AddMoviesToWatchlistRequest addMoviesToWatchlistRequest)
         {
+            //TODO: Return 400 if no movieIds
+
             await _watchlistsService.AddMoviesToWatchlist(addMoviesToWatchlistRequest);
 
             return NoContent();
