@@ -22,6 +22,7 @@ namespace MovieWatchlist.Api.Tests.Integration
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             var moviesResponse = await response.Content.ReadFromJsonAsync<IReadOnlyCollection<MovieResponse>>();
             Assert.Equal(250, moviesResponse!.Count);
+            //Assert all records same as html
         }
     }
 }

@@ -18,7 +18,8 @@ namespace MovieWatchlist.Api.Tests.Integration
         public void SetupTop250()
         {
             _server.Given(Request.Create()
-                .WithPath(GetTop250RelativeUrl())
+                .WithPath(GetTop250Path())
+                .WithParam(GetTop250Param())
                 .UsingGet())
                 .RespondWith(Response.Create()
                     .WithBody(GeneratedTop250ChartHtml())
@@ -31,9 +32,14 @@ namespace MovieWatchlist.Api.Tests.Integration
             _server.Dispose();
         }
 
-        private string GetTop250RelativeUrl()
+        private string GetTop250Path()
         {
-            return "charts/?" + DateTime.Now.ToString("yyyy/MM/dd");
+            return "/charts/";
+        }
+
+        private string GetTop250Param()
+        {
+            return DateTime.Now.ToString("yyyy/MM/dd");
         }
 
         private string GeneratedTop250ChartHtml()

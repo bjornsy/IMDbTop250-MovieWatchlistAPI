@@ -28,6 +28,11 @@ namespace MovieWatchlist.Infrastructure.Data
             return await _context.WatchlistsMovies.AsNoTracking().Where(wm => wm.WatchlistId.Equals(watchlistId)).ToListAsync();
         }
 
+        public async Task UpdateRange(IEnumerable<Movie> movies)
+        {
+            //await _context.UpdateRange
+        }
+
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();
