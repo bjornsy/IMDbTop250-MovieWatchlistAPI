@@ -46,7 +46,7 @@ namespace MovieWatchlist.Api.Services
 
             foreach (var movieId in newMoviesIds)
             {
-                dbMovies.Add(updatedMoviesDictionary[movieId]);
+                await _moviesRepository.AddMovie(updatedMoviesDictionary[movieId]);
             }
 
             await _moviesRepository.SaveChangesAsync();

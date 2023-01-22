@@ -178,8 +178,7 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
 
             await _databaseUpdateService.UpdateTop250InDatabase(updatedMovies);
 
-            Assert.Same(updatedMovies.Single(), dbMovies.Single());
-
+            _moviesRepositoryMock.Verify(r => r.AddMovie(updatedMovies.Single()), Times.Once);
             _moviesRepositoryMock.Verify(r => r.SaveChangesAsync(), Times.Once);
         }
     }
