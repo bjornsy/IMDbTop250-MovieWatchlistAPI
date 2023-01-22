@@ -11,11 +11,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{90FB1E62
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Top250Scraper", "Top250Scraper\Top250Scraper.csproj", "{88F747C4-F8CF-48F5-8E30-DF1029411DEC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieWatchlist.Infrastructure", "src\MovieWatchlist.Infrastructure\MovieWatchlist.Infrastructure.csproj", "{0E799044-459E-4F87-93B2-0A27A91B6E6B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieWatchlist.Infrastructure", "src\MovieWatchlist.Infrastructure\MovieWatchlist.Infrastructure.csproj", "{0E799044-459E-4F87-93B2-0A27A91B6E6B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieWatchlist.ApplicationCore", "src\MovieWatchlist.ApplicationCore\MovieWatchlist.ApplicationCore.csproj", "{3D1C6046-FBD4-4A3A-8AA8-17D402344E64}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieWatchlist.ApplicationCore", "src\MovieWatchlist.ApplicationCore\MovieWatchlist.ApplicationCore.csproj", "{3D1C6046-FBD4-4A3A-8AA8-17D402344E64}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieWatchlist.Api.Tests.Unit", "tests\MovieWatchlist.Api.Tests.Unit\MovieWatchlist.Api.Tests.Unit.csproj", "{1A769873-903A-4E4A-9E65-5EE7770D7F88}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieWatchlist.Api.Tests.Unit", "tests\MovieWatchlist.Api.Tests.Unit\MovieWatchlist.Api.Tests.Unit.csproj", "{1A769873-903A-4E4A-9E65-5EE7770D7F88}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieWatchlist.Api.Tests.Integration", "tests\MovieWatchlist.Api.Tests.Integration\MovieWatchlist.Api.Tests.Integration.csproj", "{EFA41952-241C-442B-87FB-42FB3DF0EEB5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,6 +45,10 @@ Global
 		{1A769873-903A-4E4A-9E65-5EE7770D7F88}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A769873-903A-4E4A-9E65-5EE7770D7F88}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A769873-903A-4E4A-9E65-5EE7770D7F88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFA41952-241C-442B-87FB-42FB3DF0EEB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFA41952-241C-442B-87FB-42FB3DF0EEB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFA41952-241C-442B-87FB-42FB3DF0EEB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFA41952-241C-442B-87FB-42FB3DF0EEB5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -52,6 +58,7 @@ Global
 		{0E799044-459E-4F87-93B2-0A27A91B6E6B} = {8E544371-4757-44E2-9B58-B78AA94B9FBB}
 		{3D1C6046-FBD4-4A3A-8AA8-17D402344E64} = {8E544371-4757-44E2-9B58-B78AA94B9FBB}
 		{1A769873-903A-4E4A-9E65-5EE7770D7F88} = {90FB1E62-31AA-4C75-B41D-CEF25A5E5F22}
+		{EFA41952-241C-442B-87FB-42FB3DF0EEB5} = {90FB1E62-31AA-4C75-B41D-CEF25A5E5F22}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5C2F371E-1F7C-484F-A9FF-B01AA9363367}

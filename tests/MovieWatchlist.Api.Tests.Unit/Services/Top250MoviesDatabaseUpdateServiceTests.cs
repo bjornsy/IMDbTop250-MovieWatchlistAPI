@@ -1,5 +1,4 @@
 ﻿using Moq;
-using MovieWatchlist.Api.Models.Responses;
 using MovieWatchlist.Api.Services;
 using MovieWatchlist.ApplicationCore.Interfaces.Data;
 using MovieWatchlist.ApplicationCore.Models;

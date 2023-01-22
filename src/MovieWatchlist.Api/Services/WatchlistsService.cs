@@ -46,10 +46,10 @@ namespace MovieWatchlist.Api.Services
 
         public async Task<WatchlistResponse> GetWatchlist(Guid watchlistId)
         {
+            //TODO: throw 404 if null, put in private method
             var watchlist = await _watchlistRepository.GetWatchlistById(watchlistId);
 
             return watchlist.MapToResponse();
-            //TODO: throw 404
         }
 
         public async Task DeleteWatchlist(Guid watchlistId)
