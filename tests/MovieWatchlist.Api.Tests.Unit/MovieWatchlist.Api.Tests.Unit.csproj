@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -7,6 +7,10 @@
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Services\TestData\Top250MoviesSeed.csv" />
+  </ItemGroup>
 
   <ItemGroup>
     <Content Include="Services\TestData\Top250Info_2022-09-17.html">

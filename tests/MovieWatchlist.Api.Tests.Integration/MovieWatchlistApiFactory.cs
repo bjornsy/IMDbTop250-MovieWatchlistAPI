@@ -11,6 +11,8 @@ using Microsoft.Extensions.Logging;
 using MovieWatchlist.ApplicationCore.Interfaces.Clients;
 using MovieWatchlist.Infrastructure.Clients;
 using MovieWatchlist.Infrastructure.Data;
+using System.Net;
+using WireMock.Logging;
 using Xunit;
 
 namespace MovieWatchlist.Api.Tests.Integration
@@ -51,11 +53,17 @@ namespace MovieWatchlist.Api.Tests.Integration
             });
         }
 
+        public IEnumerable<ILogEntry> GetWireMockLogEntries(Guid guid) => _top250InfoServer.LogEntries.Where(l => l.MappingGuid.Equals(guid));
+
+        public void SetTop250Response(HttpStatusCode statusCode, Guid guid)
+        {
+            _top250InfoServer.SetupTop250(statusCode, guid);
+        }
+
         public async Task InitializeAsync()
         {
             await _dbContainer.StartAsync();
             _top250InfoServer.Start();
-            _top250InfoServer.SetupTop250();
         }
 
         public new async Task DisposeAsync()

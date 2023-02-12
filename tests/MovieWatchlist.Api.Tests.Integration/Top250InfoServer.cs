@@ -1,10 +1,12 @@
-﻿using WireMock.RequestBuilders;
+﻿using System.Net;
+using WireMock.Logging;
+using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
 
 namespace MovieWatchlist.Api.Tests.Integration
 {
-    internal class Top250InfoServer : IDisposable
+    public class Top250InfoServer : IDisposable
     {
         private WireMockServer _server;
 
@@ -15,16 +17,19 @@ namespace MovieWatchlist.Api.Tests.Integration
             _server = WireMockServer.Start();
         }
 
-        public void SetupTop250()
+        public void SetupTop250(HttpStatusCode statusCode, Guid guid)
         {
             _server.Given(Request.Create()
                 .WithPath(GetTop250Path())
                 .WithParam(GetTop250Param())
                 .UsingGet())
+                .WithGuid(guid)
                 .RespondWith(Response.Create()
                     .WithBody(GeneratedTop250ChartHtml())
-                    .WithStatusCode(200));
+                    .WithStatusCode(statusCode));
         }
+
+        public IEnumerable<ILogEntry> LogEntries => _server.LogEntries;
 
         public void Dispose()
         {
