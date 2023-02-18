@@ -59,6 +59,7 @@ namespace MovieWatchlist.Api.Services
 
         public async Task<IReadOnlyCollection<MovieInWatchlistResponse>> GetMoviesByWatchlistId(Guid watchlistId)
         {
+            //TODO: Get movies individually by Id rather than load all
             var movies = await _moviesRepository.GetAllMoviesReadOnly();
 
             var watchlistsMovies = await _moviesRepository.GetWatchlistsMoviesByWatchlistId(watchlistId);

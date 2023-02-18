@@ -27,11 +27,17 @@ namespace MovieWatchlist.Controllers
 
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [HttpGet]
-        [Route("byWatchlistId")]
-        public async Task<ActionResult<IReadOnlyCollection<MovieInWatchlistResponse>>> GetMoviesByWatchlistId(Guid watchlistId)
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpGet("byWatchlistId/{watchlistId:guid}")]
+        public async Task<ActionResult<IReadOnlyCollection<MovieInWatchlistResponse>>> GetMoviesByWatchlistId([FromRoute] Guid watchlistId)
         {
             var movies = await _moviesService.GetMoviesByWatchlistId(watchlistId);
+
+            if (!movies.Any())
+            {
+                return NotFound();
+            }
+
             return Ok(movies);
         }
     }

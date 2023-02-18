@@ -1,4 +1,5 @@
-﻿using MovieWatchlist.Api.Models.Responses;
+﻿using MovieWatchlist.Api.Models.Requests;
+using MovieWatchlist.Api.Models.Responses;
 using System.Net;
 using System.Net.Http.Json;
 using Xunit;
@@ -29,6 +30,28 @@ namespace MovieWatchlist.Api.Tests.Integration
             Assert.Equal(250, moviesResponse!.Count);
 
             AssertSingleWireMockLogEntry(guid);
+        }
+
+        [Fact]
+        public async Task GetMoviesByWatchlistId_WhenWatchlistExists_ReturnsMovies()
+        {
+            var createWatchlistRequest = new CreateWatchlistRequest { Name = "ShawshankWatchlist", MovieIds = new List<string> { "0111161" } };
+            var createdWatchlistResponse = await _httpClient.PostAsJsonAsync("watchlists", createWatchlistRequest);
+            var createdWatchlist = await createdWatchlistResponse.Content.ReadFromJsonAsync<WatchlistResponse>();
+
+            var response = await _httpClient.GetAsync($"movies/byWatchlistId/{createdWatchlist!.Id}");
+            var movies = await response.Content.ReadFromJsonAsync<IReadOnlyCollection<MovieInWatchlistResponse>>();
+
+            Assert.Equal("0111161", movies!.Single().Movie.Id);
+            Assert.False(movies!.Single().Watched);
+        }
+
+        [Fact]
+        public async Task GetMoviesByWatchlistId_WhenWatchlistDoesNotExist_ReturnsNotFound()
+        {
+            var response = await _httpClient.GetAsync($"movies/byWatchlistId/{Guid.NewGuid()}");
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
         private void AssertSingleWireMockLogEntry(Guid guid)
