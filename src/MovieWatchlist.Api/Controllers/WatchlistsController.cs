@@ -19,7 +19,6 @@ namespace MovieWatchlist.Controllers
         }
 
         [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost]
         public async Task<ActionResult> CreateWatchlist(CreateWatchlistRequest createWatchlistRequest)
         {
@@ -29,7 +28,7 @@ namespace MovieWatchlist.Controllers
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [HttpGet]
+        [HttpGet("{watchlistId:guid}")]
         public async Task<ActionResult<WatchlistResponse>> GetWatchlist(Guid watchlistId)
         {
             var watchlist = await _watchlistsService.GetWatchlist(watchlistId);
@@ -38,7 +37,7 @@ namespace MovieWatchlist.Controllers
         }
 
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [HttpDelete]
+        [HttpDelete("{watchlistId:guid}")]
         public async Task<ActionResult> DeleteWatchlist(Guid watchlistId)
         {
             await _watchlistsService.DeleteWatchlist(watchlistId);
