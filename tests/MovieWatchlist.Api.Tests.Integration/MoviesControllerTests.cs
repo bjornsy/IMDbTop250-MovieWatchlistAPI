@@ -47,11 +47,14 @@ namespace MovieWatchlist.Api.Tests.Integration
         }
 
         [Fact]
-        public async Task GetMoviesByWatchlistId_WhenWatchlistDoesNotExist_ReturnsNotFound()
+        public async Task GetMoviesByWatchlistId_WhenWatchlistDoesNotExist_ReturnsEmpty()
         {
             var response = await _httpClient.GetAsync($"movies/byWatchlistId/{Guid.NewGuid()}");
+            var movies = await response.Content.ReadFromJsonAsync<IReadOnlyCollection<MovieInWatchlistResponse>>();
 
-            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Empty(movies);
         }
 
         private void AssertSingleWireMockLogEntry(Guid guid)

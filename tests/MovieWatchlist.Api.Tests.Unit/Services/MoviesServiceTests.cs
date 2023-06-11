@@ -14,6 +14,7 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
     {
         private Mock<ITop250InfoService> _top250InfoServiceMock;
         private Mock<IMoviesRepository> _moviesRepositoryMock;
+        private Mock<IWatchlistsRepository> _watchlistsRepositoryMock;
         private Mock<ITop250MoviesDatabaseUpdateService> _top250MoviesDatabaseUpdateServiceMock;
         private IMemoryCache _memoryCache;
         private Mock<ILogger<MoviesService>> _loggerMock;
@@ -22,11 +23,12 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
         public MoviesServiceTests()
         {
             _moviesRepositoryMock = new Mock<IMoviesRepository>();
+            _watchlistsRepositoryMock = new Mock<IWatchlistsRepository>();
             _top250InfoServiceMock = new Mock<ITop250InfoService>();
             _top250MoviesDatabaseUpdateServiceMock = new Mock<ITop250MoviesDatabaseUpdateService>();
             _memoryCache = new MemoryCache(new MemoryCacheOptions());
             _loggerMock = new Mock<ILogger<MoviesService>>();
-            _moviesService = new MoviesService(_top250InfoServiceMock.Object, _moviesRepositoryMock.Object, _top250MoviesDatabaseUpdateServiceMock.Object, _memoryCache, _loggerMock.Object);
+            _moviesService = new MoviesService(_top250InfoServiceMock.Object, _moviesRepositoryMock.Object, _watchlistsRepositoryMock.Object, _top250MoviesDatabaseUpdateServiceMock.Object, _memoryCache, _loggerMock.Object);
         }
 
         [Fact]
@@ -162,7 +164,7 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
 
             Assert.Equal(0, result.Count);
 
-            _moviesRepositoryMock.Verify(m => m.GetAllMoviesReadOnly(), Times.Once);
+            _moviesRepositoryMock.Verify(m => m.GetAllMoviesReadOnly(), Times.Never);
             _moviesRepositoryMock.Verify(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId), Times.Once);
         }
     }

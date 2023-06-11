@@ -16,6 +16,7 @@ namespace MovieWatchlist.Api.Services
     {
         private readonly ITop250InfoService _top250InfoService;
         private readonly IMoviesRepository _moviesRepository;
+        private readonly IWatchlistsRepository _watchlistsRepository;
         private readonly ITop250MoviesDatabaseUpdateService _top250MoviesDatabaseUpdateService;
         private readonly IMemoryCache _memoryCache;
         private readonly ILogger<MoviesService> _logger;
@@ -24,6 +25,7 @@ namespace MovieWatchlist.Api.Services
 
         public MoviesService(ITop250InfoService top250InfoService,
             IMoviesRepository moviesRepository,
+            IWatchlistsRepository watchlistsRepository,
             ITop250MoviesDatabaseUpdateService top250MoviesDatabaseUpdateService, 
             IMemoryCache memoryCache,
             ILogger<MoviesService> logger)
@@ -57,17 +59,23 @@ namespace MovieWatchlist.Api.Services
             }
         }
 
-        public async Task<IReadOnlyCollection<MovieInWatchlistResponse>> GetMoviesByWatchlistId(Guid watchlistId)
+        public async Task<IReadOnlyCollection<MovieInWatchlistResponse>?> GetMoviesByWatchlistId(Guid watchlistId)
         {
-            //TODO: Get movies individually by Id rather than load all
-            var movies = await _moviesRepository.GetAllMoviesReadOnly();
-
             var watchlistsMovies = await _moviesRepository.GetWatchlistsMoviesByWatchlistId(watchlistId);
 
-            var moviesInWatchlist = movies.Join(watchlistsMovies, m => m.Id, wm => wm.MovieId, (m, wm) => new { Movie = m, WatchlistsMovies = wm })
-                                            .Select(x => new MovieInWatchlist(x.Movie, x.WatchlistsMovies.Watched));
+            if (watchlistsMovies.Any())
+            {
+                //TODO: Get movies individually by Id rather than load all
+                var movies = await _moviesRepository.GetAllMoviesReadOnly();
 
-            return moviesInWatchlist.Select(miw => miw.MapToResponse()).ToList();
+                var moviesInWatchlist = movies.Join(watchlistsMovies, m => m.Id, wm => wm.MovieId, (m, wm) => new { Movie = m, WatchlistsMovies = wm })
+                                .Select(x => new MovieInWatchlist(x.Movie, x.WatchlistsMovies.Watched));
+
+                return moviesInWatchlist.Select(miw => miw.MapToResponse()).ToList();
+
+            }
+
+            return new List<MovieInWatchlistResponse>();
         }
 
         private async Task<IReadOnlyCollection<Movie>> GetTop250FromClientAndUpdateDb()
