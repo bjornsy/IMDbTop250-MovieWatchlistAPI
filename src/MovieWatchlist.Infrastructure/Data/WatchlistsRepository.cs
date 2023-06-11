@@ -25,9 +25,9 @@ namespace MovieWatchlist.Infrastructure.Data
             await _context.WatchlistsMovies.AddRangeAsync(watchlistsMovies);
         }
 
-        public async Task<Watchlist> GetWatchlistById(Guid watchlistId)
+        public async Task<Watchlist?> GetWatchlistById(Guid watchlistId)
         {
-            return await _context.Watchlists.AsNoTracking().SingleAsync(w => w.Id.Equals(watchlistId));
+            return await _context.Watchlists.AsNoTracking().SingleOrDefaultAsync(w => w.Id.Equals(watchlistId));
         }
 
         public async Task<IReadOnlyCollection<WatchlistsMovies>> GetWatchlistsMoviesByWatchlistId(Guid watchlistId)

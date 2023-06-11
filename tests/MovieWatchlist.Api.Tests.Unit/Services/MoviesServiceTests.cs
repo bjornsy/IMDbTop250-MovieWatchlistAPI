@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using Moq;
 using MovieWatchlist.Api.Services;
-using MovieWatchlist.ApplicationCore.Interfaces.Clients;
 using MovieWatchlist.ApplicationCore.Interfaces.Data;
 using MovieWatchlist.ApplicationCore.Models;
 using System.Collections.ObjectModel;
@@ -131,7 +130,9 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
             var watchlistsMovies = new List<WatchlistsMovies> { 
                 new WatchlistsMovies { Id = 1, WatchlistId = watchlistId, MovieId = "1", Watched = true },
             };
+            var watchlist = new Watchlist { Id = watchlistId, WatchlistsMovies = watchlistsMovies };
 
+            _watchlistsRepositoryMock.Setup(m => m.GetWatchlistById(watchlistId)).ReturnsAsync(watchlist);
             _moviesRepositoryMock.Setup(m => m.GetAllMoviesReadOnly()).ReturnsAsync(movies);
             _moviesRepositoryMock.Setup(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId)).ReturnsAsync(watchlistsMovies);
 
@@ -143,6 +144,7 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
             Assert.Equal(1, result.Single().Movie.Ranking);
             Assert.True(result.Single().Watched);
 
+            _watchlistsRepositoryMock.Verify(m => m.GetWatchlistById(watchlistId), Times.Once);
             _moviesRepositoryMock.Verify(m => m.GetAllMoviesReadOnly(), Times.Once);
             _moviesRepositoryMock.Verify(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId), Times.Once);
         }
@@ -156,7 +158,9 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
                 new Movie { Id = "2", Title = "Title2", Ranking = 2, Rating = 2 }
             };
             var watchlistsMovies = new List<WatchlistsMovies> { };
+            var watchlist = new Watchlist { Id = watchlistId, WatchlistsMovies = watchlistsMovies };
 
+            _watchlistsRepositoryMock.Setup(m => m.GetWatchlistById(watchlistId)).ReturnsAsync(watchlist);
             _moviesRepositoryMock.Setup(m => m.GetAllMoviesReadOnly()).ReturnsAsync(movies);
             _moviesRepositoryMock.Setup(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId)).ReturnsAsync(watchlistsMovies);
 
@@ -164,8 +168,25 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
 
             Assert.Equal(0, result.Count);
 
+            _watchlistsRepositoryMock.Verify(m => m.GetWatchlistById(watchlistId), Times.Once);
             _moviesRepositoryMock.Verify(m => m.GetAllMoviesReadOnly(), Times.Never);
             _moviesRepositoryMock.Verify(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId), Times.Once);
+        }
+
+        [Fact]
+        public async Task GetMoviesByWatchlistId_WhenWatchlistNull_ReturnsNull()
+        {
+            var watchlistId = Guid.NewGuid();
+
+            _watchlistsRepositoryMock.Setup(m => m.GetWatchlistById(watchlistId)).ReturnsAsync((Watchlist?)null);
+
+            var result = await _moviesService.GetMoviesByWatchlistId(watchlistId);
+
+            Assert.Null(result);
+
+            _watchlistsRepositoryMock.Verify(m => m.GetWatchlistById(watchlistId), Times.Once);
+            _moviesRepositoryMock.Verify(m => m.GetAllMoviesReadOnly(), Times.Never);
+            _moviesRepositoryMock.Verify(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId), Times.Never);
         }
     }
 }

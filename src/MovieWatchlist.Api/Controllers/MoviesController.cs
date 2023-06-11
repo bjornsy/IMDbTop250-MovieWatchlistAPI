@@ -33,6 +33,11 @@ namespace MovieWatchlist.Controllers
         {
             var movies = await _moviesService.GetMoviesByWatchlistId(watchlistId);
 
+            if (movies == null)
+            {
+                return NotFound();
+            }
+
             return Ok(movies);
         }
     }

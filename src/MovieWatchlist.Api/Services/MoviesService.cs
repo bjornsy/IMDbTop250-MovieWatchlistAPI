@@ -9,7 +9,7 @@ namespace MovieWatchlist.Api.Services
     public interface IMoviesService
     {
         Task<IReadOnlyCollection<MovieResponse>> GetTop250();
-        Task<IReadOnlyCollection<MovieInWatchlistResponse>> GetMoviesByWatchlistId(Guid watchlistId);
+        Task<IReadOnlyCollection<MovieInWatchlistResponse>?> GetMoviesByWatchlistId(Guid watchlistId);
     }
 
     public class MoviesService : IMoviesService
@@ -32,6 +32,7 @@ namespace MovieWatchlist.Api.Services
         {
             _top250InfoService = top250InfoService;
             _moviesRepository = moviesRepository;
+            _watchlistsRepository = watchlistsRepository;
             _top250MoviesDatabaseUpdateService = top250MoviesDatabaseUpdateService;
             _memoryCache = memoryCache;
             _logger = logger;
@@ -61,6 +62,12 @@ namespace MovieWatchlist.Api.Services
 
         public async Task<IReadOnlyCollection<MovieInWatchlistResponse>?> GetMoviesByWatchlistId(Guid watchlistId)
         {
+            var watchlist = await _watchlistsRepository.GetWatchlistById(watchlistId);
+            if (watchlist == null)
+            {
+                return null;
+            }
+
             var watchlistsMovies = await _moviesRepository.GetWatchlistsMoviesByWatchlistId(watchlistId);
 
             if (watchlistsMovies.Any())
