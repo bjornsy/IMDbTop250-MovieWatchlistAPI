@@ -63,7 +63,7 @@ namespace MovieWatchlist.Api.Services
         public async Task<IReadOnlyCollection<MovieInWatchlistResponse>?> GetMoviesByWatchlistId(Guid watchlistId)
         {
             var watchlist = await _watchlistsRepository.GetWatchlistById(watchlistId);
-            if (watchlist == null)
+            if (watchlist is null)
             {
                 return null;
             }

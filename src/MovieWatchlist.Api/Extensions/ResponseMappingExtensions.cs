@@ -16,8 +16,13 @@ namespace MovieWatchlist.Api.Extensions
             };
         }
 
-        public static WatchlistResponse MapToResponse(this Watchlist watchlist)
+        public static WatchlistResponse? MapToResponse(this Watchlist? watchlist)
         {
+            if (watchlist is null)
+            {
+                return null;
+            }
+
             return new WatchlistResponse
             {
                 Id = watchlist.Id,

@@ -28,10 +28,16 @@ namespace MovieWatchlist.Controllers
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("{watchlistId:guid}")]
         public async Task<ActionResult<WatchlistResponse>> GetWatchlist(Guid watchlistId)
         {
             var watchlist = await _watchlistsService.GetWatchlist(watchlistId);
+
+            if (watchlist is null)
+            {
+                return NotFound();
+            }
 
             return Ok(watchlist);
         }

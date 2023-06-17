@@ -9,7 +9,7 @@ namespace MovieWatchlist.Api.Services
     public interface IWatchlistsService
     {
         Task<WatchlistResponse> CreateWatchlist(CreateWatchlistRequest createWatchlistRequest);
-        Task<WatchlistResponse> GetWatchlist(Guid watchlistId);
+        Task<WatchlistResponse?> GetWatchlist(Guid watchlistId);
         Task DeleteWatchlist(Guid watchlistId);
         Task AddMoviesToWatchlist(AddMoviesToWatchlistRequest addMoviesToWatchlistRequest);
         Task RemoveMoviesFromWatchlist(RemoveMoviesFromWatchlistRequest addMoviesToWatchlistRequest);
@@ -44,12 +44,11 @@ namespace MovieWatchlist.Api.Services
             return createdWatchlist.MapToResponse();
         }
 
-        public async Task<WatchlistResponse> GetWatchlist(Guid watchlistId)
+        public async Task<WatchlistResponse?> GetWatchlist(Guid watchlistId)
         {
-            //TODO: throw 404 if null, put in private method
             var watchlist = await _watchlistRepository.GetWatchlistById(watchlistId);
 
-            return watchlist.MapToResponse();
+            return watchlist?.MapToResponse();
         }
 
         public async Task DeleteWatchlist(Guid watchlistId)

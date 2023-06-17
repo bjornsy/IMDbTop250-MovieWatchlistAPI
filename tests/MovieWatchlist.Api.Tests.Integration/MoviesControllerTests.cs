@@ -47,7 +47,7 @@ namespace MovieWatchlist.Api.Tests.Integration
         }
 
         [Fact]
-        public async Task GetMoviesByWatchlistId_WhenWatchlistDoesNotExist_ReturnsEmpty()
+        public async Task GetMoviesByWatchlistId_WhenWatchlistDoesNotExist_Returns404NotFound()
         {
             var response = await _httpClient.GetAsync($"movies/byWatchlistId/{Guid.NewGuid()}");
 

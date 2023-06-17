@@ -109,6 +109,20 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
         }
 
         [Fact]
+        public async Task GetWatchlist_WhenWatchlistNull_ReturnsNull()
+        {
+            var watchlistId = Guid.NewGuid();
+
+            _watchlistsRepositoryMock.Setup(m => m.GetWatchlistById(watchlistId)).ReturnsAsync((Watchlist?)null);
+
+            var result = await _watchlistsService.GetWatchlist(watchlistId);
+
+            Assert.Null(result);
+
+            _watchlistsRepositoryMock.Verify(m => m.GetWatchlistById(watchlistId), Times.Once);
+        }
+
+        [Fact]
         public async Task DeleteWatchlist_ReturnsTask()
         {
             var watchlistId = Guid.NewGuid();

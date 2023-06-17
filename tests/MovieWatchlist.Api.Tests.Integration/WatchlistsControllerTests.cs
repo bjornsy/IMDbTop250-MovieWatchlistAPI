@@ -46,6 +46,14 @@ namespace MovieWatchlist.Api.Tests.Integration
         }
 
         [Fact]
+        public async Task GetWatchlist_WhenWatchlistDoesNotExist_Returns404NotFound()
+        {
+            var response = await _httpClient.GetAsync($"watchlists/{Guid.NewGuid()}");
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        [Fact]
         public async Task DeleteWatchlist_Returns204()
         {
             var createWatchlistRequest = new CreateWatchlistRequest { Name = "ShawshankWatchlist", MovieIds = new List<string> { "0111161" } };
