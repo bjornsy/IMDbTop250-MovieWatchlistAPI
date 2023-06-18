@@ -10,7 +10,7 @@ namespace MovieWatchlist.Api.Services
     {
         Task<WatchlistResponse> CreateWatchlist(CreateWatchlistRequest createWatchlistRequest);
         Task<WatchlistResponse?> GetWatchlist(Guid watchlistId);
-        Task DeleteWatchlist(Guid watchlistId);
+        Task<bool> DeleteWatchlist(Guid watchlistId);
         Task AddMoviesToWatchlist(AddMoviesToWatchlistRequest addMoviesToWatchlistRequest);
         Task RemoveMoviesFromWatchlist(RemoveMoviesFromWatchlistRequest addMoviesToWatchlistRequest);
         Task SetMoviesAsWatched(SetMoviesWatchedStatusRequest setMoviesWatchedStatusRequest);
@@ -51,17 +51,23 @@ namespace MovieWatchlist.Api.Services
             return watchlist?.MapToResponse();
         }
 
-        public async Task DeleteWatchlist(Guid watchlistId)
+        public async Task<bool> DeleteWatchlist(Guid watchlistId)
         {
+            var watchlist = await _watchlistRepository.GetWatchlistById(watchlistId);
+            if (watchlist is null)
+            {
+                return false;
+            }
+
             var watchlistsMovies = await _watchlistRepository.GetWatchlistsMoviesByWatchlistId(watchlistId);
 
             _watchlistRepository.RemoveWatchlistsMovies(watchlistsMovies);
 
-            var watchlist = await _watchlistRepository.GetWatchlistById(watchlistId);
-
             _watchlistRepository.RemoveWatchlist(watchlist);
 
             await _watchlistRepository.SaveChangesAsync();
+
+            return true;
         }
 
         public async Task AddMoviesToWatchlist(AddMoviesToWatchlistRequest addMoviesToWatchlistRequest)

@@ -1,5 +1,6 @@
 ﻿using MovieWatchlist.Api.Models.Requests;
 using MovieWatchlist.Api.Models.Responses;
+using MovieWatchlist.ApplicationCore.Models;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text;
@@ -54,7 +55,7 @@ namespace MovieWatchlist.Api.Tests.Integration
         }
 
         [Fact]
-        public async Task DeleteWatchlist_Returns204()
+        public async Task DeleteWatchlist_WhenWatchlistExists_Returns204()
         {
             var createWatchlistRequest = new CreateWatchlistRequest { Name = "ShawshankWatchlist", MovieIds = new List<string> { "0111161" } };
 
@@ -64,6 +65,23 @@ namespace MovieWatchlist.Api.Tests.Integration
             var response = await _httpClient.DeleteAsync($"watchlists/{createdWatchlist!.Id}");
 
             Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+
+            //Check actually deleted
+            var getWatchlistResponse = await _httpClient.GetAsync($"watchlists/{createdWatchlist!.Id}");
+            Assert.Equal(HttpStatusCode.NotFound, getWatchlistResponse.StatusCode);
+        }
+
+        [Fact]
+        public async Task DeleteWatchlist_WhenWatchlistDoesNotExist_Returns404()
+        {
+            var watchlistId = Guid.NewGuid();
+            var response = await _httpClient.DeleteAsync($"watchlists/{watchlistId}");
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+
+            //Check actually deleted
+            var getWatchlistResponse = await _httpClient.GetAsync($"watchlists/{watchlistId}");
+            Assert.Equal(HttpStatusCode.NotFound, getWatchlistResponse.StatusCode);
         }
 
         [Fact]

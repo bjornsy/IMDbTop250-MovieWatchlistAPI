@@ -43,10 +43,16 @@ namespace MovieWatchlist.Controllers
         }
 
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpDelete("{watchlistId:guid}")]
         public async Task<ActionResult> DeleteWatchlist(Guid watchlistId)
         {
-            await _watchlistsService.DeleteWatchlist(watchlistId);
+            var deleted = await _watchlistsService.DeleteWatchlist(watchlistId);
+
+            if (!deleted)
+            {
+                return NotFound();
+            }
 
             return NoContent();
         }
