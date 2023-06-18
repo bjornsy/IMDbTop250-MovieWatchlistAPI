@@ -54,6 +54,14 @@ namespace MovieWatchlist.Api.Tests.Integration
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
+        [Fact]
+        public async Task GetMoviesByWatchlistId_WhenIdNotGuid_Returns400BadRequest()
+        {
+            var response = await _httpClient.GetAsync($"movies/byWatchlistId/test");
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
         private void AssertSingleWireMockLogEntry(Guid guid)
         {
             var log = _movieWatchlistApiFactory.GetWireMockLogEntries(guid).Single();

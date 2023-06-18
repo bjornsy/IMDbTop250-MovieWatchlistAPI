@@ -1,6 +1,5 @@
 ﻿using MovieWatchlist.Api.Models.Requests;
 using MovieWatchlist.Api.Models.Responses;
-using MovieWatchlist.ApplicationCore.Models;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text;
@@ -55,6 +54,14 @@ namespace MovieWatchlist.Api.Tests.Integration
         }
 
         [Fact]
+        public async Task GetWatchlist_WhenRequestIdNotGuid_Returns400BadRequest()
+        {
+            var response = await _httpClient.GetAsync($"watchlists/test");
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        [Fact]
         public async Task DeleteWatchlist_WhenWatchlistExists_Returns204()
         {
             var createWatchlistRequest = new CreateWatchlistRequest { Name = "ShawshankWatchlist", MovieIds = new List<string> { "0111161" } };
@@ -85,6 +92,14 @@ namespace MovieWatchlist.Api.Tests.Integration
         }
 
         [Fact]
+        public async Task DeleteWatchlist_WhenRequestIdNotGuid_Returns400BadRequest()
+        {
+            var response = await _httpClient.DeleteAsync($"watchlists/test");
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        [Fact]
         public async Task AddMoviesToWatchlist_WhenWatchlistExists_Returns204()
         {
             var createWatchlistRequest = new CreateWatchlistRequest { Name = "ShawshankAndTheGodfatherWatchlist", MovieIds = new List<string> { "0111161" } };
@@ -110,6 +125,16 @@ namespace MovieWatchlist.Api.Tests.Integration
         }
 
         [Fact]
+        public async Task AddMoviesToWatchlist_WhenRequestModelInvalid_Returns400()
+        {
+            var addMoviesToWatchlistRequest = new AddMoviesToWatchlistRequest { WatchlistId = Guid.NewGuid(), MovieIds = new List<string> { } };
+
+            var response = await _httpClient.PostAsJsonAsync("watchlists/addMovies", addMoviesToWatchlistRequest);
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        [Fact]
         public async Task RemoveMoviesFromWatchlist_WhenWatchlistExists_Returns204()
         {
             var createWatchlistRequest = new CreateWatchlistRequest { Name = "ShawshankWatchlist", MovieIds = new List<string> { "0111161" } };
@@ -132,6 +157,16 @@ namespace MovieWatchlist.Api.Tests.Integration
             var response = await _httpClient.PostAsJsonAsync("watchlists/removeMovies", removeMoviesToWatchlistRequest);
 
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task RemoveMoviesFromWatchlist_WhenRequestInvalid_Returns400()
+        {
+            var removeMoviesToWatchlistRequest = new RemoveMoviesFromWatchlistRequest { WatchlistId = Guid.NewGuid(), MovieIds = new List<string> { } };
+
+            var response = await _httpClient.PostAsJsonAsync("watchlists/removeMovies", removeMoviesToWatchlistRequest);
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
 
         [Fact]
@@ -163,6 +198,19 @@ namespace MovieWatchlist.Api.Tests.Integration
             var response = await _httpClient.PatchAsync("watchlists/setMoviesWatchedStatus", content);
 
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task SetMoviesStatusWatched_WhenRequestInvalid_Returns400()
+        {
+            var setMoviesWatchedStatusRequest = new SetMoviesWatchedStatusRequest { WatchlistId = Guid.NewGuid(), MovieIdsWatched = new Dictionary<string, bool> { } };
+
+            var jsonRequest = JsonSerializer.Serialize(setMoviesWatchedStatusRequest);
+
+            var content = new StringContent(jsonRequest, Encoding.UTF8, "application/json-patch+json");
+            var response = await _httpClient.PatchAsync("watchlists/setMoviesWatchedStatus", content);
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
 
         [Fact]

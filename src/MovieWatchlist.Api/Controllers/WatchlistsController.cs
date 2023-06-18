@@ -29,7 +29,8 @@ namespace MovieWatchlist.Controllers
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpGet("{watchlistId:guid}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpGet("{watchlistId}")]
         public async Task<ActionResult<WatchlistResponse>> GetWatchlist(Guid watchlistId)
         {
             var watchlist = await _watchlistsService.GetWatchlist(watchlistId);
@@ -44,7 +45,8 @@ namespace MovieWatchlist.Controllers
 
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpDelete("{watchlistId:guid}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpDelete("{watchlistId}")]
         public async Task<ActionResult> DeleteWatchlist(Guid watchlistId)
         {
             var deleted = await _watchlistsService.DeleteWatchlist(watchlistId);
@@ -59,12 +61,11 @@ namespace MovieWatchlist.Controllers
 
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Route("addMovies")]
         [HttpPost]
         public async Task<ActionResult> AddMoviesToWatchlist(AddMoviesToWatchlistRequest addMoviesToWatchlistRequest)
         {
-            //TODO: Return 400 if no movieIds
-
             var added = await _watchlistsService.AddMoviesToWatchlist(addMoviesToWatchlistRequest);
             if (!added) { 
                 return NotFound(); 
@@ -75,12 +76,11 @@ namespace MovieWatchlist.Controllers
 
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Route("removeMovies")]
         [HttpPost]
         public async Task<ActionResult> RemoveMoviesFromWatchlist(RemoveMoviesFromWatchlistRequest removeMoviesFromWatchlistRequest)
         {
-            //TODO: Return 400 if no movieIds
-
             var removed = await _watchlistsService.RemoveMoviesFromWatchlist(removeMoviesFromWatchlistRequest);
             if (!removed)
             {
@@ -92,12 +92,11 @@ namespace MovieWatchlist.Controllers
 
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Route("setMoviesWatchedStatus")]
         [HttpPatch]
         public async Task<ActionResult> SetMoviesWatchedStatus(SetMoviesWatchedStatusRequest setMoviesWatchedStatusRequest)
         {
-            //TODO: Return 400 if no movieIds
-
             var set = await _watchlistsService.SetMoviesAsWatched(setMoviesWatchedStatusRequest);
             if (!set)
             {
