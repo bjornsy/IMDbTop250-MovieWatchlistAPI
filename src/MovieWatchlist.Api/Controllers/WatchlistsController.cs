@@ -58,13 +58,17 @@ namespace MovieWatchlist.Controllers
         }
 
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Route("addMovies")]
         [HttpPost]
         public async Task<ActionResult> AddMoviesToWatchlist(AddMoviesToWatchlistRequest addMoviesToWatchlistRequest)
         {
             //TODO: Return 400 if no movieIds
 
-            await _watchlistsService.AddMoviesToWatchlist(addMoviesToWatchlistRequest);
+            var added = await _watchlistsService.AddMoviesToWatchlist(addMoviesToWatchlistRequest);
+            if (!added) { 
+                return NotFound(); 
+            }
 
             return NoContent();
         }

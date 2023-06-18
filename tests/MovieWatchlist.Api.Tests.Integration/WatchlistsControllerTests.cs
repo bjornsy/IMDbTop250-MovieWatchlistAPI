@@ -85,7 +85,7 @@ namespace MovieWatchlist.Api.Tests.Integration
         }
 
         [Fact]
-        public async Task AddMoviesToWatchlist_Returns204()
+        public async Task AddMoviesToWatchlist_WhenWatchlistExists_Returns204()
         {
             var createWatchlistRequest = new CreateWatchlistRequest { Name = "ShawshankAndTheGodfatherWatchlist", MovieIds = new List<string> { "0111161" } };
 
@@ -97,6 +97,16 @@ namespace MovieWatchlist.Api.Tests.Integration
             var response = await _httpClient.PostAsJsonAsync("watchlists/addMovies", addMoviesToWatchlistRequest);
 
             Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task AddMoviesToWatchlist_WhenWatchlistDoesNotExist_Returns404()
+        {
+            var addMoviesToWatchlistRequest = new AddMoviesToWatchlistRequest { WatchlistId = Guid.NewGuid(), MovieIds = new List<string> { "0068646" } };
+
+            var response = await _httpClient.PostAsJsonAsync("watchlists/addMovies", addMoviesToWatchlistRequest);
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
         [Fact]

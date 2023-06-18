@@ -164,7 +164,31 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
         }
 
         [Fact]
-        public async Task AddMoviesToWatchlist_ReturnsTask()
+        public async Task AddMoviesToWatchlist_WhenWatchlistExists_ReturnsTrue()
+        {
+            var addMoviesToWatchlistRequest = new AddMoviesToWatchlistRequest
+            {
+                WatchlistId = Guid.NewGuid(),
+                MovieIds = new List<string> { "movieId" }
+            };
+            var watchlist = new Watchlist();
+
+            _watchlistsRepositoryMock.Setup(m => m.GetWatchlistById(addMoviesToWatchlistRequest.WatchlistId)).ReturnsAsync(watchlist);
+            _watchlistsRepositoryMock.Setup(m => m.AddWatchlistsMovies(It.Is<IEnumerable<WatchlistsMovies>>(watchlistsMovies =>
+                watchlistsMovies.Single().WatchlistId.Equals(addMoviesToWatchlistRequest.WatchlistId) && watchlistsMovies.Single().MovieId.Equals("movieId")))).Returns(Task.CompletedTask);
+
+            var added = await _watchlistsService.AddMoviesToWatchlist(addMoviesToWatchlistRequest);
+
+            Assert.True(added);
+
+            _watchlistsRepositoryMock.Verify(m => m.GetWatchlistById(addMoviesToWatchlistRequest.WatchlistId), Times.Once);
+            _watchlistsRepositoryMock.Verify(m => m.AddWatchlistsMovies(It.Is<IEnumerable<WatchlistsMovies>>(watchlistsMovies =>
+                watchlistsMovies.Single().WatchlistId.Equals(addMoviesToWatchlistRequest.WatchlistId) && watchlistsMovies.Single().MovieId.Equals("movieId"))), Times.Once);
+            _watchlistsRepositoryMock.Verify(m => m.SaveChangesAsync(), Times.Once);
+        }
+
+        [Fact]
+        public async Task AddMoviesToWatchlist_WhenWatchlistDoesNotExist_ReturnsFalse()
         {
             var addMoviesToWatchlistRequest = new AddMoviesToWatchlistRequest
             {
@@ -172,15 +196,15 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
                 MovieIds = new List<string> { "movieId" }
             };
 
-            _watchlistsRepositoryMock.Setup(m => m.AddWatchlistsMovies(It.Is<IEnumerable<WatchlistsMovies>>(watchlistsMovies =>
-                watchlistsMovies.Single().WatchlistId.Equals(addMoviesToWatchlistRequest.WatchlistId) && watchlistsMovies.Single().MovieId.Equals("movieId")))).Returns(Task.CompletedTask);
+            _watchlistsRepositoryMock.Setup(m => m.GetWatchlistById(addMoviesToWatchlistRequest.WatchlistId)).ReturnsAsync((Watchlist?)null);
 
-            await _watchlistsService.AddMoviesToWatchlist(addMoviesToWatchlistRequest);
+            var added = await _watchlistsService.AddMoviesToWatchlist(addMoviesToWatchlistRequest);
 
-            _watchlistsRepositoryMock.Verify(m => m.AddWatchlistsMovies(It.Is<IEnumerable<WatchlistsMovies>>(watchlistsMovies =>
-                watchlistsMovies.Single().WatchlistId.Equals(addMoviesToWatchlistRequest.WatchlistId) && watchlistsMovies.Single().MovieId.Equals("movieId"))), Times.Once);
+            Assert.False(added);
 
-            _watchlistsRepositoryMock.Verify(m => m.SaveChangesAsync(), Times.Once);
+            _watchlistsRepositoryMock.Verify(m => m.GetWatchlistById(addMoviesToWatchlistRequest.WatchlistId), Times.Once);
+            _watchlistsRepositoryMock.Verify(m => m.AddWatchlistsMovies(It.IsAny<IEnumerable<WatchlistsMovies>>()), Times.Never);
+            _watchlistsRepositoryMock.Verify(m => m.SaveChangesAsync(), Times.Never);
         }
 
         [Fact]
