@@ -110,18 +110,28 @@ namespace MovieWatchlist.Api.Tests.Integration
         }
 
         [Fact]
-        public async Task RemoveMoviesFromWatchlist_Returns204()
+        public async Task RemoveMoviesFromWatchlist_WhenWatchlistExists_Returns204()
         {
             var createWatchlistRequest = new CreateWatchlistRequest { Name = "ShawshankWatchlist", MovieIds = new List<string> { "0111161" } };
 
             var createResponse = await _httpClient.PostAsJsonAsync("watchlists", createWatchlistRequest);
             var createdWatchlist = await createResponse.Content.ReadFromJsonAsync<WatchlistResponse>();
 
-            var addMoviesToWatchlistRequest = new RemoveMoviesFromWatchlistRequest { WatchlistId = createdWatchlist!.Id, MovieIds = new List<string> { "0111161" } };
+            var removeMoviesToWatchlistRequest = new RemoveMoviesFromWatchlistRequest { WatchlistId = createdWatchlist!.Id, MovieIds = new List<string> { "0111161" } };
 
-            var response = await _httpClient.PostAsJsonAsync("watchlists/removeMovies", addMoviesToWatchlistRequest);
+            var response = await _httpClient.PostAsJsonAsync("watchlists/removeMovies", removeMoviesToWatchlistRequest);
 
             Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task RemoveMoviesFromWatchlist_WhenWatchlistDoesNotExist_Returns404()
+        {
+            var removeMoviesToWatchlistRequest = new RemoveMoviesFromWatchlistRequest { WatchlistId = Guid.NewGuid(), MovieIds = new List<string> { "0111161" } };
+
+            var response = await _httpClient.PostAsJsonAsync("watchlists/removeMovies", removeMoviesToWatchlistRequest);
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
         [Fact]

@@ -74,13 +74,18 @@ namespace MovieWatchlist.Controllers
         }
 
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Route("removeMovies")]
         [HttpPost]
         public async Task<ActionResult> RemoveMoviesFromWatchlist(RemoveMoviesFromWatchlistRequest removeMoviesFromWatchlistRequest)
         {
             //TODO: Return 400 if no movieIds
 
-            await _watchlistsService.RemoveMoviesFromWatchlist(removeMoviesFromWatchlistRequest);
+            var removed = await _watchlistsService.RemoveMoviesFromWatchlist(removeMoviesFromWatchlistRequest);
+            if (!removed)
+            {
+                return NotFound();
+            }
 
             return NoContent();
         }
