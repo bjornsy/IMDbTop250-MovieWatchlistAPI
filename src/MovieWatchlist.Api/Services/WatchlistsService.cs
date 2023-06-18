@@ -13,7 +13,7 @@ namespace MovieWatchlist.Api.Services
         Task<bool> DeleteWatchlist(Guid watchlistId);
         Task<bool> AddMoviesToWatchlist(AddMoviesToWatchlistRequest addMoviesToWatchlistRequest);
         Task<bool> RemoveMoviesFromWatchlist(RemoveMoviesFromWatchlistRequest addMoviesToWatchlistRequest);
-        Task SetMoviesAsWatched(SetMoviesWatchedStatusRequest setMoviesWatchedStatusRequest);
+        Task<bool> SetMoviesAsWatched(SetMoviesWatchedStatusRequest setMoviesWatchedStatusRequest);
     }
 
     public class WatchlistsService : IWatchlistsService
@@ -104,13 +104,16 @@ namespace MovieWatchlist.Api.Services
             return true;
         }
 
-        public async Task SetMoviesAsWatched(SetMoviesWatchedStatusRequest setMoviesWatchedStatusRequest)
+        public async Task<bool> SetMoviesAsWatched(SetMoviesWatchedStatusRequest setMoviesWatchedStatusRequest)
         {
             var watchlistsMoviesByWatchlistId = await _watchlistRepository.GetWatchlistsMoviesByWatchlistId(setMoviesWatchedStatusRequest.WatchlistId);
 
             var watchlistsMovies = watchlistsMoviesByWatchlistId.Where(wm => setMoviesWatchedStatusRequest.MovieIdsWatched.ContainsKey(wm.MovieId));
 
-            //TODO: Error if none/some not found?
+            if (!watchlistsMovies.Any())
+            {
+                return false;
+            }
 
             foreach (var watchlistMovie in watchlistsMovies)
             {
@@ -118,6 +121,8 @@ namespace MovieWatchlist.Api.Services
             }
 
             await _watchlistRepository.SaveChangesAsync();
+
+            return true;
         }
     }
 }

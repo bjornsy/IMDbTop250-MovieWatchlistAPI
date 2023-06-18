@@ -252,7 +252,7 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
         }
 
         [Fact]
-        public async Task SetMoviesAsWatched_ReturnsTask()
+        public async Task SetMoviesAsWatched_WhenWatchlistExistsAndHasMatchingMoves_ReturnsTrue()
         {
             var setMoviesAsWatchedRequest = new SetMoviesWatchedStatusRequest
             {
@@ -268,14 +268,63 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
 
             _watchlistsRepositoryMock.Setup(m => m.GetWatchlistsMoviesByWatchlistId(setMoviesAsWatchedRequest.WatchlistId)).ReturnsAsync(watchlistsMovies);
 
-            await _watchlistsService.SetMoviesAsWatched(setMoviesAsWatchedRequest);
+            var set = await _watchlistsService.SetMoviesAsWatched(setMoviesAsWatchedRequest);
 
+            Assert.True(set);
             Assert.True(watchlistsMovies[0].Watched);
             Assert.False(watchlistsMovies[1].Watched);
             Assert.False(watchlistsMovies[2].Watched);
 
             _watchlistsRepositoryMock.Verify(m => m.GetWatchlistsMoviesByWatchlistId(setMoviesAsWatchedRequest.WatchlistId), Times.Once);
             _watchlistsRepositoryMock.Verify(m => m.SaveChangesAsync(), Times.Once);
+        }
+
+
+        [Fact]
+        public async Task SetMoviesAsWatched_WhenWatchlistDoesNotExistOrHasNoMovies_ReturnsFalse()
+        {
+            var setMoviesAsWatchedRequest = new SetMoviesWatchedStatusRequest
+            {
+                WatchlistId = Guid.NewGuid(),
+                MovieIdsWatched = new Dictionary<string, bool> { ["movieId"] = true, ["movieId2"] = false }
+            };
+
+            var watchlistsMovies = new List<WatchlistsMovies>();
+
+            _watchlistsRepositoryMock.Setup(m => m.GetWatchlistsMoviesByWatchlistId(setMoviesAsWatchedRequest.WatchlistId)).ReturnsAsync(watchlistsMovies);
+
+            var set = await _watchlistsService.SetMoviesAsWatched(setMoviesAsWatchedRequest);
+
+            Assert.False(set);
+
+            _watchlistsRepositoryMock.Verify(m => m.GetWatchlistsMoviesByWatchlistId(setMoviesAsWatchedRequest.WatchlistId), Times.Once);
+            _watchlistsRepositoryMock.Verify(m => m.SaveChangesAsync(), Times.Never);
+        }
+
+        [Fact]
+        public async Task SetMoviesAsWatched_WhenWatchlistHasNoMatchingMovies_ReturnsFalse()
+        {
+            var setMoviesAsWatchedRequest = new SetMoviesWatchedStatusRequest
+            {
+                WatchlistId = Guid.NewGuid(),
+                MovieIdsWatched = new Dictionary<string, bool> { ["movieId"] = true, ["movieId2"] = false }
+            };
+
+            var watchlistsMovies = new List<WatchlistsMovies> {
+                new WatchlistsMovies { WatchlistId = setMoviesAsWatchedRequest.WatchlistId, MovieId = "movieId3", Watched = false },
+                new WatchlistsMovies { WatchlistId = setMoviesAsWatchedRequest.WatchlistId, MovieId = "movieId4", Watched = true },
+            };
+
+            _watchlistsRepositoryMock.Setup(m => m.GetWatchlistsMoviesByWatchlistId(setMoviesAsWatchedRequest.WatchlistId)).ReturnsAsync(watchlistsMovies);
+
+            var set = await _watchlistsService.SetMoviesAsWatched(setMoviesAsWatchedRequest);
+
+            Assert.False(set);
+            Assert.False(watchlistsMovies[0].Watched);
+            Assert.True(watchlistsMovies[1].Watched);
+
+            _watchlistsRepositoryMock.Verify(m => m.GetWatchlistsMoviesByWatchlistId(setMoviesAsWatchedRequest.WatchlistId), Times.Once);
+            _watchlistsRepositoryMock.Verify(m => m.SaveChangesAsync(), Times.Never);
         }
     }
 }

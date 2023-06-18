@@ -91,13 +91,18 @@ namespace MovieWatchlist.Controllers
         }
 
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Route("setMoviesWatchedStatus")]
         [HttpPatch]
         public async Task<ActionResult> SetMoviesWatchedStatus(SetMoviesWatchedStatusRequest setMoviesWatchedStatusRequest)
         {
             //TODO: Return 400 if no movieIds
 
-            await _watchlistsService.SetMoviesAsWatched(setMoviesWatchedStatusRequest);
+            var set = await _watchlistsService.SetMoviesAsWatched(setMoviesWatchedStatusRequest);
+            if (!set)
+            {
+                return NotFound();
+            }
 
             return NoContent();
         }

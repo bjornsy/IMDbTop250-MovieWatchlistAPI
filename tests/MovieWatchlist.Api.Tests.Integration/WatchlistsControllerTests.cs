@@ -135,7 +135,7 @@ namespace MovieWatchlist.Api.Tests.Integration
         }
 
         [Fact]
-        public async Task SetMoviesStatusWatched_Returns204()
+        public async Task SetMoviesStatusWatched_WhenWatchlistMovieExists_Returns204()
         {
             var createWatchlistRequest = new CreateWatchlistRequest { Name = "ShawshankWatchlist", MovieIds = new List<string> { "0111161" } };
 
@@ -150,6 +150,37 @@ namespace MovieWatchlist.Api.Tests.Integration
             var response = await _httpClient.PatchAsync("watchlists/setMoviesWatchedStatus", content);
 
             Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task SetMoviesStatusWatched_WhenWatchlistDoesNotExist_Returns404()
+        {
+            var setMoviesWatchedStatusRequest = new SetMoviesWatchedStatusRequest { WatchlistId = Guid.NewGuid(), MovieIdsWatched = new Dictionary<string, bool> { ["0111161"] = true } };
+
+            var jsonRequest = JsonSerializer.Serialize(setMoviesWatchedStatusRequest);
+
+            var content = new StringContent(jsonRequest, Encoding.UTF8, "application/json-patch+json");
+            var response = await _httpClient.PatchAsync("watchlists/setMoviesWatchedStatus", content);
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task SetMoviesStatusWatched_WhenWatchlistDoesNotContainMatchingMovie_Returns404()
+        {
+            var createWatchlistRequest = new CreateWatchlistRequest { Name = "ShawshankWatchlist", MovieIds = new List<string> { "0111161" } };
+
+            var createResponse = await _httpClient.PostAsJsonAsync("watchlists", createWatchlistRequest);
+            var createdWatchlist = await createResponse.Content.ReadFromJsonAsync<WatchlistResponse>();
+
+            var setMoviesWatchedStatusRequest = new SetMoviesWatchedStatusRequest { WatchlistId = createdWatchlist!.Id, MovieIdsWatched = new Dictionary<string, bool> { ["1111111"] = true } };
+
+            var jsonRequest = JsonSerializer.Serialize(setMoviesWatchedStatusRequest);
+
+            var content = new StringContent(jsonRequest, Encoding.UTF8, "application/json-patch+json");
+            var response = await _httpClient.PatchAsync("watchlists/setMoviesWatchedStatus", content);
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
     }
 }
