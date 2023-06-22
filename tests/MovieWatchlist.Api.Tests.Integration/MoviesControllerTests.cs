@@ -1,4 +1,5 @@
-﻿using MovieWatchlist.Api.Models.Requests;
+﻿using Microsoft.AspNetCore.Mvc;
+using MovieWatchlist.Api.Models.Requests;
 using MovieWatchlist.Api.Models.Responses;
 using System.Net;
 using System.Net.Http.Json;
@@ -59,7 +60,11 @@ namespace MovieWatchlist.Api.Tests.Integration
         {
             var response = await _httpClient.GetAsync($"movies/byWatchlistId/test");
 
+            var error = await response.Content.ReadFromJsonAsync<ValidationProblemDetails>();
+
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.Equal("One or more validation errors occurred.", error!.Title);
+            Assert.Equal("The value 'test' is not valid.", error!.Errors["watchlistId"].Single());
         }
 
         private void AssertSingleWireMockLogEntry(Guid guid)

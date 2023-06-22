@@ -1,4 +1,5 @@
-﻿using MovieWatchlist.Api.Models.Requests;
+﻿using Microsoft.AspNetCore.Mvc;
+using MovieWatchlist.Api.Models.Requests;
 using MovieWatchlist.Api.Models.Responses;
 using System.Net;
 using System.Net.Http.Json;
@@ -58,7 +59,11 @@ namespace MovieWatchlist.Api.Tests.Integration
         {
             var response = await _httpClient.GetAsync($"watchlists/test");
 
+            var error = await response.Content.ReadFromJsonAsync<ValidationProblemDetails>();
+
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.Equal("One or more validation errors occurred.", error!.Title);
+            Assert.Equal("The value 'test' is not valid.", error!.Errors["watchlistId"].Single());
         }
 
         [Fact]
@@ -96,7 +101,11 @@ namespace MovieWatchlist.Api.Tests.Integration
         {
             var response = await _httpClient.DeleteAsync($"watchlists/test");
 
+            var error = await response.Content.ReadFromJsonAsync<ValidationProblemDetails>();
+
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.Equal("One or more validation errors occurred.", error!.Title);
+            Assert.Equal("The value 'test' is not valid.", error!.Errors["watchlistId"].Single());
         }
 
         [Fact]
@@ -131,7 +140,11 @@ namespace MovieWatchlist.Api.Tests.Integration
 
             var response = await _httpClient.PostAsJsonAsync("watchlists/addMovies", addMoviesToWatchlistRequest);
 
+            var error = await response.Content.ReadFromJsonAsync<ValidationProblemDetails>();
+
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.Equal("One or more validation errors occurred.", error!.Title);
+            Assert.Equal("The field MovieIds must be a string or array type with a minimum length of '1'.", error!.Errors["MovieIds"].Single());
         }
 
         [Fact]
@@ -166,7 +179,11 @@ namespace MovieWatchlist.Api.Tests.Integration
 
             var response = await _httpClient.PostAsJsonAsync("watchlists/removeMovies", removeMoviesToWatchlistRequest);
 
+            var error = await response.Content.ReadFromJsonAsync<ValidationProblemDetails>();
+
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.Equal("One or more validation errors occurred.", error!.Title);
+            Assert.Equal("The field MovieIds must be a string or array type with a minimum length of '1'.", error!.Errors["MovieIds"].Single());
         }
 
         [Fact]
@@ -210,7 +227,11 @@ namespace MovieWatchlist.Api.Tests.Integration
             var content = new StringContent(jsonRequest, Encoding.UTF8, "application/json-patch+json");
             var response = await _httpClient.PatchAsync("watchlists/setMoviesWatchedStatus", content);
 
+            var error = await response.Content.ReadFromJsonAsync<ValidationProblemDetails>();
+
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.Equal("One or more validation errors occurred.", error!.Title);
+            Assert.Equal("The field MovieIdsWatched must be a string or array type with a minimum length of '1'.", error!.Errors["MovieIdsWatched"].Single());
         }
 
         [Fact]
