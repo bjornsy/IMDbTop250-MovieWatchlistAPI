@@ -1,3 +1,4 @@
+using HealthChecks.UI.Client;
 using Microsoft.EntityFrameworkCore;
 using MovieWatchlist.Api;
 using MovieWatchlist.Api.Services;
@@ -7,18 +8,17 @@ using MovieWatchlist.Infrastructure.Clients;
 using MovieWatchlist.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+var config = builder.Configuration;
 
 builder.Logging.AddConsole();
 
-// Add services to the container.
-
+builder.Services.AddHealthChecks().AddNpgSql(config.GetConnectionString("MovieWatchlist"));
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMemoryCache();
 builder.Services.AddDbContext<MovieWatchlistContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("MovieWatchlist") ?? throw new InvalidOperationException("Connection string 'MovieWatchlistContext' not found.")));
+    options.UseNpgsql(config.GetConnectionString("MovieWatchlist") ?? throw new InvalidOperationException("Connection string 'MovieWatchlistContext' not found.")));
 
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 builder.Services.AddScoped<IMoviesRepository, MoviesRepository>();
@@ -29,7 +29,7 @@ builder.Services.AddTransient<ITop250MoviesDatabaseUpdateService, Top250MoviesDa
 builder.Services.AddScoped<IWatchlistsRepository, WatchlistsRepository>();
 builder.Services.AddTransient<IWatchlistsService, WatchlistsService>();
 
-builder.Services.AddHttpClient<ITop250InfoClient, Top250InfoClient>(client => client.BaseAddress = new Uri(builder.Configuration["Top250Info:BaseUrl"]))
+builder.Services.AddHttpClient<ITop250InfoClient, Top250InfoClient>(client => client.BaseAddress = new Uri(config["Top250Info:BaseUrl"]))
     .AddPolicyHandler(Policies.RetryPolicy)
     .AddPolicyHandler(Policies.CircuitBreakerPolicy);
 
@@ -54,6 +54,11 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseExceptionHandler("/error");
+
+app.MapHealthChecks("/_health", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 
 app.UseAuthorization();
 
