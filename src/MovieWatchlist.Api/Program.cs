@@ -8,6 +8,8 @@ using MovieWatchlist.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Logging.AddConsole();
+
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -33,8 +35,6 @@ builder.Services.AddHttpClient<ITop250InfoClient, Top250InfoClient>(client => cl
 
 var app = builder.Build();
 
-var logger = app.Logger;
-
 using (var scope = app.Services.CreateScope())
 {
     var dataContext = scope.ServiceProvider.GetRequiredService<MovieWatchlistContext>();
@@ -52,6 +52,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseExceptionHandler("/error");
 
 app.UseAuthorization();
 
