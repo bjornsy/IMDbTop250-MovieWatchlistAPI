@@ -10,10 +10,10 @@ namespace MovieWatchlist.Api.Services
     {
         Task<WatchlistResponse> CreateWatchlist(CreateWatchlistRequest createWatchlistRequest);
         Task<WatchlistResponse?> GetWatchlist(Guid watchlistId);
-        Task<bool> DeleteWatchlist(Guid watchlistId);
-        Task<bool> AddMoviesToWatchlist(AddMoviesToWatchlistRequest addMoviesToWatchlistRequest);
-        Task<bool> RemoveMoviesFromWatchlist(RemoveMoviesFromWatchlistRequest addMoviesToWatchlistRequest);
-        Task<bool> SetMoviesAsWatched(SetMoviesWatchedStatusRequest setMoviesWatchedStatusRequest);
+        Task DeleteWatchlist(Guid watchlistId);
+        Task AddMoviesToWatchlist(AddMoviesToWatchlistRequest addMoviesToWatchlistRequest);
+        Task RemoveMoviesFromWatchlist(RemoveMoviesFromWatchlistRequest addMoviesToWatchlistRequest);
+        Task SetMoviesAsWatched(SetMoviesWatchedStatusRequest setMoviesWatchedStatusRequest);
     }
 
     public class WatchlistsService : IWatchlistsService
@@ -51,69 +51,40 @@ namespace MovieWatchlist.Api.Services
             return watchlist?.MapToResponse();
         }
 
-        public async Task<bool> DeleteWatchlist(Guid watchlistId)
+        public async Task DeleteWatchlist(Guid watchlistId)
         {
-            var watchlist = await _watchlistRepository.GetWatchlistById(watchlistId);
-            if (watchlist is null)
-            {
-                return false;
-            }
-
             var watchlistsMovies = await _watchlistRepository.GetWatchlistsMoviesByWatchlistId(watchlistId);
 
             _watchlistRepository.RemoveWatchlistsMovies(watchlistsMovies);
 
-            _watchlistRepository.RemoveWatchlist(watchlist);
+            _watchlistRepository.RemoveWatchlist(watchlistId);
 
             await _watchlistRepository.SaveChangesAsync();
-
-            return true;
         }
 
-        public async Task<bool> AddMoviesToWatchlist(AddMoviesToWatchlistRequest addMoviesToWatchlistRequest)
+        public async Task AddMoviesToWatchlist(AddMoviesToWatchlistRequest addMoviesToWatchlistRequest)
         {
-            var watchlist = await _watchlistRepository.GetWatchlistById(addMoviesToWatchlistRequest.WatchlistId);
-            if (watchlist is null)
-            {
-                return false;
-            }
-
             var watchlistsMovies = addMoviesToWatchlistRequest.MovieIds.Select(id => new WatchlistsMovies { WatchlistId = addMoviesToWatchlistRequest.WatchlistId, MovieId = id });
             
             await _watchlistRepository.AddWatchlistsMovies(watchlistsMovies);
 
             await _watchlistRepository.SaveChangesAsync();
-
-            return true;
         }
 
-        public async Task<bool> RemoveMoviesFromWatchlist(RemoveMoviesFromWatchlistRequest removeMoviesFromWatchlistRequest)
+        public async Task RemoveMoviesFromWatchlist(RemoveMoviesFromWatchlistRequest removeMoviesFromWatchlistRequest)
         {
-            var watchlist = await _watchlistRepository.GetWatchlistById(removeMoviesFromWatchlistRequest.WatchlistId);
-            if (watchlist is null)
-            {
-                return false;
-            }
-
             var watchlistsMovies = removeMoviesFromWatchlistRequest.MovieIds.Select(id => new WatchlistsMovies { WatchlistId = removeMoviesFromWatchlistRequest.WatchlistId, MovieId = id });
 
             _watchlistRepository.RemoveWatchlistsMovies(watchlistsMovies);
 
             await _watchlistRepository.SaveChangesAsync();
-
-            return true;
         }
 
-        public async Task<bool> SetMoviesAsWatched(SetMoviesWatchedStatusRequest setMoviesWatchedStatusRequest)
+        public async Task SetMoviesAsWatched(SetMoviesWatchedStatusRequest setMoviesWatchedStatusRequest)
         {
             var watchlistsMoviesByWatchlistId = await _watchlistRepository.GetWatchlistsMoviesByWatchlistId(setMoviesWatchedStatusRequest.WatchlistId);
 
             var watchlistsMovies = watchlistsMoviesByWatchlistId.Where(wm => setMoviesWatchedStatusRequest.MovieIdsWatched.ContainsKey(wm.MovieId));
-
-            if (!watchlistsMovies.Any())
-            {
-                return false;
-            }
 
             foreach (var watchlistMovie in watchlistsMovies)
             {
@@ -121,8 +92,6 @@ namespace MovieWatchlist.Api.Services
             }
 
             await _watchlistRepository.SaveChangesAsync();
-
-            return true;
         }
     }
 }

@@ -40,9 +40,10 @@ namespace MovieWatchlist.Infrastructure.Data
             _context.WatchlistsMovies.RemoveRange(watchlistsMovies);
         }
 
-        public void RemoveWatchlist(Watchlist watchlist)
+        public void RemoveWatchlist(Guid watchlistId)
         {
-            _context.Watchlists.Remove(watchlist);
+            var stub = new Watchlist { Id = watchlistId };
+            _context.Watchlists.Remove(stub);
         }
 
         public async Task SaveChangesAsync()
