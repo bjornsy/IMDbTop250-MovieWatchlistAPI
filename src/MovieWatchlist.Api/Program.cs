@@ -35,6 +35,8 @@ builder.Services.AddHttpClient<ITop250InfoClient, Top250InfoClient>(client => cl
 
 var app = builder.Build();
 
+app.UseHttpLogging();
+
 using (var scope = app.Services.CreateScope())
 {
     var dataContext = scope.ServiceProvider.GetRequiredService<MovieWatchlistContext>();
