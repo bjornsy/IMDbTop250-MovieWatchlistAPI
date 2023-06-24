@@ -30,7 +30,7 @@ namespace MovieWatchlist.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet("byWatchlistId/{watchlistId}")]
-        public async Task<ActionResult<IReadOnlyCollection<MovieInWatchlistResponse>>> GetMoviesByWatchlistId([FromRoute] Guid watchlistId)
+        public async Task<ActionResult<IReadOnlyCollection<MovieInWatchlistResponse>>> GetMoviesByWatchlistId(Guid watchlistId)
         {
             var movies = await _moviesService.GetMoviesByWatchlistId(watchlistId);
 

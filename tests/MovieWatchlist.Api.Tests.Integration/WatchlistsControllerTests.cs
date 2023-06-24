@@ -116,9 +116,9 @@ namespace MovieWatchlist.Api.Tests.Integration
             var createResponse = await _httpClient.PostAsJsonAsync("watchlists", createWatchlistRequest);
             var createdWatchlist = await createResponse.Content.ReadFromJsonAsync<WatchlistResponse>();
 
-            var addMoviesToWatchlistRequest = new AddMoviesToWatchlistRequest { WatchlistId = createdWatchlist!.Id, MovieIds = new List<string> { "0068646" } };
+            var addMoviesToWatchlistRequest = new AddMoviesToWatchlistRequest { MovieIds = new List<string> { "0068646" } };
 
-            var response = await _httpClient.PostAsJsonAsync("watchlists/addMovies", addMoviesToWatchlistRequest);
+            var response = await _httpClient.PostAsJsonAsync($"watchlists/{createdWatchlist!.Id}/addMovies", addMoviesToWatchlistRequest);
 
             Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
         }
@@ -126,9 +126,9 @@ namespace MovieWatchlist.Api.Tests.Integration
         [Fact]
         public async Task AddMoviesToWatchlist_WhenWatchlistDoesNotExist_Returns404()
         {
-            var addMoviesToWatchlistRequest = new AddMoviesToWatchlistRequest { WatchlistId = Guid.NewGuid(), MovieIds = new List<string> { "0068646" } };
+            var addMoviesToWatchlistRequest = new AddMoviesToWatchlistRequest { MovieIds = new List<string> { "0068646" } };
 
-            var response = await _httpClient.PostAsJsonAsync("watchlists/addMovies", addMoviesToWatchlistRequest);
+            var response = await _httpClient.PostAsJsonAsync($"watchlists/{Guid.NewGuid()}/addMovies", addMoviesToWatchlistRequest);
 
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
@@ -136,9 +136,9 @@ namespace MovieWatchlist.Api.Tests.Integration
         [Fact]
         public async Task AddMoviesToWatchlist_WhenRequestModelInvalid_Returns400()
         {
-            var addMoviesToWatchlistRequest = new AddMoviesToWatchlistRequest { WatchlistId = Guid.NewGuid(), MovieIds = new List<string> { } };
+            var addMoviesToWatchlistRequest = new AddMoviesToWatchlistRequest { MovieIds = new List<string> { } };
 
-            var response = await _httpClient.PostAsJsonAsync("watchlists/addMovies", addMoviesToWatchlistRequest);
+            var response = await _httpClient.PostAsJsonAsync($"watchlists/{Guid.NewGuid()}/addMovies", addMoviesToWatchlistRequest);
 
             var error = await response.Content.ReadFromJsonAsync<ValidationProblemDetails>();
 
@@ -155,9 +155,9 @@ namespace MovieWatchlist.Api.Tests.Integration
             var createResponse = await _httpClient.PostAsJsonAsync("watchlists", createWatchlistRequest);
             var createdWatchlist = await createResponse.Content.ReadFromJsonAsync<WatchlistResponse>();
 
-            var removeMoviesToWatchlistRequest = new RemoveMoviesFromWatchlistRequest { WatchlistId = createdWatchlist!.Id, MovieIds = new List<string> { "0111161" } };
+            var removeMoviesToWatchlistRequest = new RemoveMoviesFromWatchlistRequest { MovieIds = new List<string> { "0111161" } };
 
-            var response = await _httpClient.PostAsJsonAsync("watchlists/removeMovies", removeMoviesToWatchlistRequest);
+            var response = await _httpClient.PostAsJsonAsync($"watchlists/{createdWatchlist!.Id}/removeMovies", removeMoviesToWatchlistRequest);
 
             Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
         }
@@ -165,9 +165,9 @@ namespace MovieWatchlist.Api.Tests.Integration
         [Fact]
         public async Task RemoveMoviesFromWatchlist_WhenWatchlistDoesNotExist_Returns404()
         {
-            var removeMoviesToWatchlistRequest = new RemoveMoviesFromWatchlistRequest { WatchlistId = Guid.NewGuid(), MovieIds = new List<string> { "0111161" } };
+            var removeMoviesToWatchlistRequest = new RemoveMoviesFromWatchlistRequest { MovieIds = new List<string> { "0111161" } };
 
-            var response = await _httpClient.PostAsJsonAsync("watchlists/removeMovies", removeMoviesToWatchlistRequest);
+            var response = await _httpClient.PostAsJsonAsync($"watchlists/{Guid.NewGuid()}/removeMovies", removeMoviesToWatchlistRequest);
 
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
@@ -175,9 +175,9 @@ namespace MovieWatchlist.Api.Tests.Integration
         [Fact]
         public async Task RemoveMoviesFromWatchlist_WhenRequestInvalid_Returns400()
         {
-            var removeMoviesToWatchlistRequest = new RemoveMoviesFromWatchlistRequest { WatchlistId = Guid.NewGuid(), MovieIds = new List<string> { } };
+            var removeMoviesToWatchlistRequest = new RemoveMoviesFromWatchlistRequest { MovieIds = new List<string> { } };
 
-            var response = await _httpClient.PostAsJsonAsync("watchlists/removeMovies", removeMoviesToWatchlistRequest);
+            var response = await _httpClient.PostAsJsonAsync($"watchlists/{Guid.NewGuid()}/removeMovies", removeMoviesToWatchlistRequest);
 
             var error = await response.Content.ReadFromJsonAsync<ValidationProblemDetails>();
 
@@ -194,12 +194,12 @@ namespace MovieWatchlist.Api.Tests.Integration
             var createResponse = await _httpClient.PostAsJsonAsync("watchlists", createWatchlistRequest);
             var createdWatchlist = await createResponse.Content.ReadFromJsonAsync<WatchlistResponse>();
 
-            var setMoviesWatchedStatusRequest = new SetMoviesWatchedStatusRequest { WatchlistId = createdWatchlist!.Id,  MovieIdsWatched = new Dictionary<string, bool> { ["0111161"] = true } };
+            var setMoviesWatchedStatusRequest = new SetMoviesWatchedStatusRequest { MovieIdsWatched = new Dictionary<string, bool> { ["0111161"] = true } };
 
             var jsonRequest = JsonSerializer.Serialize(setMoviesWatchedStatusRequest);
 
             var content = new StringContent(jsonRequest, Encoding.UTF8, "application/json-patch+json");
-            var response = await _httpClient.PatchAsync("watchlists/setMoviesWatchedStatus", content);
+            var response = await _httpClient.PatchAsync($"watchlists/{createdWatchlist!.Id}/setMoviesWatchedStatus", content);
 
             Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
         }
@@ -207,12 +207,12 @@ namespace MovieWatchlist.Api.Tests.Integration
         [Fact]
         public async Task SetMoviesStatusWatched_WhenWatchlistDoesNotExist_Returns404()
         {
-            var setMoviesWatchedStatusRequest = new SetMoviesWatchedStatusRequest { WatchlistId = Guid.NewGuid(), MovieIdsWatched = new Dictionary<string, bool> { ["0111161"] = true } };
+            var setMoviesWatchedStatusRequest = new SetMoviesWatchedStatusRequest { MovieIdsWatched = new Dictionary<string, bool> { ["0111161"] = true } };
 
             var jsonRequest = JsonSerializer.Serialize(setMoviesWatchedStatusRequest);
 
             var content = new StringContent(jsonRequest, Encoding.UTF8, "application/json-patch+json");
-            var response = await _httpClient.PatchAsync("watchlists/setMoviesWatchedStatus", content);
+            var response = await _httpClient.PatchAsync($"watchlists/{Guid.NewGuid()}/setMoviesWatchedStatus", content);
 
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
@@ -220,12 +220,12 @@ namespace MovieWatchlist.Api.Tests.Integration
         [Fact]
         public async Task SetMoviesStatusWatched_WhenRequestInvalid_Returns400()
         {
-            var setMoviesWatchedStatusRequest = new SetMoviesWatchedStatusRequest { WatchlistId = Guid.NewGuid(), MovieIdsWatched = new Dictionary<string, bool> { } };
+            var setMoviesWatchedStatusRequest = new SetMoviesWatchedStatusRequest { MovieIdsWatched = new Dictionary<string, bool> { } };
 
             var jsonRequest = JsonSerializer.Serialize(setMoviesWatchedStatusRequest);
 
             var content = new StringContent(jsonRequest, Encoding.UTF8, "application/json-patch+json");
-            var response = await _httpClient.PatchAsync("watchlists/setMoviesWatchedStatus", content);
+            var response = await _httpClient.PatchAsync($"watchlists/{Guid.NewGuid()}/setMoviesWatchedStatus", content);
 
             var error = await response.Content.ReadFromJsonAsync<ValidationProblemDetails>();
 

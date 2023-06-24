@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using MovieWatchlist.Api.Models.Requests;
 using MovieWatchlist.Api.Models.Responses;
 using MovieWatchlist.Api.Services;
-using MovieWatchlist.ApplicationCore.Models;
 using System.Net.Mime;
 
 namespace MovieWatchlist.Controllers
@@ -64,17 +63,17 @@ namespace MovieWatchlist.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [Route("addMovies")]
+        [Route("{watchlistId}/addMovies")]
         [HttpPost]
-        public async Task<ActionResult> AddMoviesToWatchlist(AddMoviesToWatchlistRequest addMoviesToWatchlistRequest)
+        public async Task<ActionResult> AddMoviesToWatchlist(Guid watchlistId, AddMoviesToWatchlistRequest addMoviesToWatchlistRequest)
         {
-            var watchlist = await _watchlistsService.GetWatchlist(addMoviesToWatchlistRequest.WatchlistId);
+            var watchlist = await _watchlistsService.GetWatchlist(watchlistId);
             if (watchlist is null)
             {
                 return NotFound();
             }
             
-            await _watchlistsService.AddMoviesToWatchlist(addMoviesToWatchlistRequest);
+            await _watchlistsService.AddMoviesToWatchlist(watchlistId, addMoviesToWatchlistRequest);
 
             return NoContent();
         }
@@ -82,17 +81,17 @@ namespace MovieWatchlist.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [Route("removeMovies")]
+        [Route("{watchlistId}/removeMovies")]
         [HttpPost]
-        public async Task<ActionResult> RemoveMoviesFromWatchlist(RemoveMoviesFromWatchlistRequest removeMoviesFromWatchlistRequest)
+        public async Task<ActionResult> RemoveMoviesFromWatchlist(Guid watchlistId, RemoveMoviesFromWatchlistRequest removeMoviesFromWatchlistRequest)
         {
-            var watchlist = await _watchlistsService.GetWatchlist(removeMoviesFromWatchlistRequest.WatchlistId);
+            var watchlist = await _watchlistsService.GetWatchlist(watchlistId);
             if (watchlist is null)
             {
                 return NotFound();
             }
 
-            await _watchlistsService.RemoveMoviesFromWatchlist(removeMoviesFromWatchlistRequest);
+            await _watchlistsService.RemoveMoviesFromWatchlist(watchlistId, removeMoviesFromWatchlistRequest);
 
             return NoContent();
         }
@@ -100,17 +99,17 @@ namespace MovieWatchlist.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [Route("setMoviesWatchedStatus")]
+        [Route("{watchlistId}/setMoviesWatchedStatus")]
         [HttpPatch]
-        public async Task<ActionResult> SetMoviesWatchedStatus(SetMoviesWatchedStatusRequest setMoviesWatchedStatusRequest)
+        public async Task<ActionResult> SetMoviesWatchedStatus(Guid watchlistId, SetMoviesWatchedStatusRequest setMoviesWatchedStatusRequest)
         {
-            var watchlist = await _watchlistsService.GetWatchlist(setMoviesWatchedStatusRequest.WatchlistId);
+            var watchlist = await _watchlistsService.GetWatchlist(watchlistId);
             if (watchlist is null)
             {
                 return NotFound();
             }
 
-            await _watchlistsService.SetMoviesAsWatched(setMoviesWatchedStatusRequest);
+            await _watchlistsService.SetMoviesAsWatched(watchlistId, setMoviesWatchedStatusRequest);
 
             return NoContent();
         }
