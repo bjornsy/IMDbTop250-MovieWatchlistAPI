@@ -21,6 +21,8 @@ builder.Services.AddMemoryCache();
 builder.Services.AddDbContext<MovieWatchlistContext>(options =>
     options.UseNpgsql(config.GetConnectionString("MovieWatchlist") ?? throw new InvalidOperationException("Connection string 'MovieWatchlistContext' not found.")));
 
+builder.Services.AddTransient<IProblemDetailsWriter, ForeignKeyConstraintProblemDetailsWriter>();
+
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 builder.Services.AddScoped<IMoviesRepository, MoviesRepository>();
 builder.Services.AddTransient<IMoviesService, MoviesService>();
@@ -55,7 +57,20 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseExceptionHandler();
+app.UseExceptionHandler(exceptionHandlerApp =>
+{
+    exceptionHandlerApp.Run(async context =>
+    {
+        if (context.RequestServices.GetService<IProblemDetailsWriter>() is { } problemDetailsWriter)
+        {
+            var problemDetailsContext = new ProblemDetailsContext() { HttpContext = context };
+            if (problemDetailsWriter.CanWrite(problemDetailsContext))
+            {
+                await problemDetailsWriter.WriteAsync(problemDetailsContext);
+            }
+        }
+    });
+});
 
 app.MapHealthChecks("/_health", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
 {
