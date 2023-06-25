@@ -41,7 +41,7 @@ namespace MovieWatchlist.Api.Services
 
             await _watchlistRepository.SaveChangesAsync();
 
-            return createdWatchlist.MapToResponse();
+            return createdWatchlist.MapToResponse()!;
         }
 
         public async Task<WatchlistResponse?> GetWatchlist(Guid watchlistId)
