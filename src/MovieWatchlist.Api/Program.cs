@@ -12,6 +12,7 @@ var config = builder.Configuration;
 
 builder.Logging.AddConsole();
 
+builder.Services.AddProblemDetails();
 builder.Services.AddHealthChecks().AddNpgSql(config.GetConnectionString("MovieWatchlist"));
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -46,7 +47,6 @@ using (var scope = app.Services.CreateScope())
     dbInitializer.Initialize();
 }
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -55,7 +55,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseExceptionHandler("/error");
+app.UseExceptionHandler();
 
 app.MapHealthChecks("/_health", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
 {
