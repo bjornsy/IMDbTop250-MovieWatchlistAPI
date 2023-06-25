@@ -12,6 +12,7 @@ using MovieWatchlist.ApplicationCore.Interfaces.Clients;
 using MovieWatchlist.Infrastructure.Clients;
 using MovieWatchlist.Infrastructure.Data;
 using System.Net;
+using Testcontainers.PostgreSql;
 using WireMock.Logging;
 using Xunit;
 
@@ -19,14 +20,7 @@ namespace MovieWatchlist.Api.Tests.Integration
 {
     public class MovieWatchlistApiFactory : WebApplicationFactory<IApiMarker>, IAsyncLifetime
     {
-        private readonly TestcontainerDatabase _dbContainer = new TestcontainersBuilder<PostgreSqlTestcontainer>()
-            .WithDatabase(new PostgreSqlTestcontainerConfiguration
-            {
-                Database = "moviewatchlist",
-                Username = "postgres",
-                Password = "postgres"
-            })
-            .Build();
+        private readonly PostgreSqlContainer _dbContainer = new PostgreSqlBuilder().Build();
 
         private readonly Top250InfoServer _top250InfoServer = new();
 
@@ -42,7 +36,7 @@ namespace MovieWatchlist.Api.Tests.Integration
             {
                 services.RemoveAll(typeof(MovieWatchlistContext));
                 services.AddDbContext<MovieWatchlistContext>(options =>
-                    options.UseNpgsql(_dbContainer.ConnectionString));
+                    options.UseNpgsql(_dbContainer.GetConnectionString()));
 
                 services.AddHttpClient<ITop250InfoClient, Top250InfoClient>(client =>
                 {
