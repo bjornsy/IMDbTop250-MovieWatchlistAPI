@@ -32,6 +32,21 @@ namespace MovieWatchlist.Api.Tests.Integration
         }
 
         [Fact]
+        public async Task CreateWatchlist_GivenUnknownMovieId_Returns422()
+        {
+            var createWatchlistRequest = new CreateWatchlistRequest { Name = "ShawshankWatchlist", MovieIds = new List<string> { Guid.NewGuid().ToString() } };
+
+            var response = await _httpClient.PostAsJsonAsync("watchlists", createWatchlistRequest);
+            var problemDetails = await response.Content.ReadFromJsonAsync<ProblemDetails>();
+
+            Assert.Equal(HttpStatusCode.UnprocessableEntity, response.StatusCode);
+            Assert.Equal("Movie ID(s) supplied does not exist in the top 250.", problemDetails!.Detail);
+            Assert.Equal("Value in request is invalid.", problemDetails.Title);
+            Assert.Equal(422, problemDetails.Status);
+            Assert.Equal("https://datatracker.ietf.org/doc/html/rfc4918#section-11.2", problemDetails.Type);
+        }
+
+        [Fact]
         public async Task GetWatchlist_ReturnsWatchlist()
         {
             var createWatchlistRequest = new CreateWatchlistRequest { Name = "ShawshankWatchlist", MovieIds = new List<string> { "0111161" } };
@@ -148,6 +163,26 @@ namespace MovieWatchlist.Api.Tests.Integration
         }
 
         [Fact]
+        public async Task AddMoviesToWatchlist_GivenUnknownMovieId_Returns422()
+        {
+            var createWatchlistRequest = new CreateWatchlistRequest { Name = "ShawshankWatchlist", MovieIds = new List<string> { "0111161" } };
+
+            var createResponse = await _httpClient.PostAsJsonAsync("watchlists", createWatchlistRequest);
+            var createdWatchlist = await createResponse.Content.ReadFromJsonAsync<WatchlistResponse>();
+
+            var addMoviesToWatchlistRequest = new AddMoviesToWatchlistRequest { MovieIds = new List<string> { Guid.NewGuid().ToString() } };
+
+            var response = await _httpClient.PostAsJsonAsync($"watchlists/{createdWatchlist!.Id}/addMovies", addMoviesToWatchlistRequest);
+            var problemDetails = await response.Content.ReadFromJsonAsync<ProblemDetails>();
+
+            Assert.Equal(HttpStatusCode.UnprocessableEntity, response.StatusCode);
+            Assert.Equal("Movie ID(s) supplied does not exist in the top 250.", problemDetails!.Detail);
+            Assert.Equal("Value in request is invalid.", problemDetails.Title);
+            Assert.Equal(422, problemDetails.Status);
+            Assert.Equal("https://datatracker.ietf.org/doc/html/rfc4918#section-11.2", problemDetails.Type);
+        }
+
+        [Fact]
         public async Task RemoveMoviesFromWatchlist_WhenWatchlistExists_Returns204()
         {
             var createWatchlistRequest = new CreateWatchlistRequest { Name = "ShawshankWatchlist", MovieIds = new List<string> { "0111161" } };
@@ -160,6 +195,9 @@ namespace MovieWatchlist.Api.Tests.Integration
             var response = await _httpClient.PostAsJsonAsync($"watchlists/{createdWatchlist!.Id}/removeMovies", removeMoviesToWatchlistRequest);
 
             Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+
+            var moviesInWatchlist = await (await _httpClient.GetAsync($"movies/byWatchlistId/{createdWatchlist.Id!}")).Content.ReadFromJsonAsync<IReadOnlyCollection<MovieInWatchlistResponse>>();
+            Assert.True(moviesInWatchlist!.Count.Equals(0));
         }
 
         [Fact]
@@ -184,6 +222,26 @@ namespace MovieWatchlist.Api.Tests.Integration
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
             Assert.Equal("One or more validation errors occurred.", error!.Title);
             Assert.Equal("The field MovieIds must be a string or array type with a minimum length of '1'.", error!.Errors["MovieIds"].Single());
+        }
+
+        [Fact]
+        public async Task RemoveMoviesFromWatchlist_GivenUnknownMovieId_Returns422()
+        {
+            var createWatchlistRequest = new CreateWatchlistRequest { Name = "ShawshankWatchlist", MovieIds = new List<string> { "0111161" } };
+
+            var createResponse = await _httpClient.PostAsJsonAsync("watchlists", createWatchlistRequest);
+            var createdWatchlist = await createResponse.Content.ReadFromJsonAsync<WatchlistResponse>();
+
+            var removeMoviesFromWatchlistRequest = new RemoveMoviesFromWatchlistRequest { MovieIds = new List<string> { Guid.NewGuid().ToString() } };
+
+            var response = await _httpClient.PostAsJsonAsync($"watchlists/{createdWatchlist!.Id}/removeMovies", removeMoviesFromWatchlistRequest);
+            var problemDetails = await response.Content.ReadFromJsonAsync<ProblemDetails>();
+
+            Assert.Equal(HttpStatusCode.UnprocessableEntity, response.StatusCode);
+            Assert.Equal("Movie ID(s) supplied does not exist in the top 250.", problemDetails!.Detail);
+            Assert.Equal("Value in request is invalid.", problemDetails.Title);
+            Assert.Equal(422, problemDetails.Status);
+            Assert.Equal("https://datatracker.ietf.org/doc/html/rfc4918#section-11.2", problemDetails.Type);
         }
 
         [Fact]

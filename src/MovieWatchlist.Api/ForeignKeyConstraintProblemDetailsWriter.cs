@@ -6,11 +6,10 @@ namespace MovieWatchlist.Api
 {
     public class ForeignKeyConstraintProblemDetailsWriter : IProblemDetailsWriter
     {
-        private const string WatchlistsMoviesMovieIdConstraintName = "FK_WatchlistsMovies_Movies_MovieId";
-        private readonly HashSet<string> _knownForeignKeyNames = new HashSet<string>
+        private readonly Dictionary<string, string> _knownForeignKeyNamesWithErrorDetail = new()
         {
-            WatchlistsMoviesMovieIdConstraintName,
-            "FK_WatchlistsMovies_Watchlists_WatchlistId"
+            ["FK_WatchlistsMovies_Movies_MovieId"] = "Movie ID(s) supplied does not exist in the top 250.",
+            ["FK_WatchlistsMovies_Watchlists_WatchlistId"] = "Watchlist for ID supplied does not exist."
         };
 
         public bool CanWrite(ProblemDetailsContext context)
@@ -21,7 +20,7 @@ namespace MovieWatchlist.Api
             {
                 var postgresException = exceptionType.InnerException as PostgresException;
 
-                if (postgresException is not null && postgresException.SqlState.Equals(PostgresErrorCodes.ForeignKeyViolation) && _knownForeignKeyNames.Contains(postgresException.ConstraintName!)) {
+                if (postgresException is not null && postgresException.SqlState.Equals(PostgresErrorCodes.ForeignKeyViolation) && _knownForeignKeyNamesWithErrorDetail.Keys.Contains(postgresException.ConstraintName!)) {
                     return true;
                 }
             }
@@ -34,7 +33,7 @@ namespace MovieWatchlist.Api
             var exceptionHandlerFeature = context.HttpContext.Features.Get<IExceptionHandlerFeature>();
             var exceptionType = exceptionHandlerFeature?.Error;
             var postgresException = (PostgresException)exceptionType!.InnerException!;
-            var detail = postgresException.ConstraintName!.Equals(WatchlistsMoviesMovieIdConstraintName) ? "Movie ID(s) supplied does not exist in the top 250." : "Watchlist for ID supplied does not exist.";
+            var detail = _knownForeignKeyNamesWithErrorDetail[postgresException.ConstraintName!];
 
             context.ProblemDetails.Title = "Value in request is invalid.";
             context.ProblemDetails.Detail = detail;
