@@ -1,4 +1,5 @@
 ﻿using Moq;
+using MovieWatchlist.Api.Exceptions;
 using MovieWatchlist.Api.Models.Requests;
 using MovieWatchlist.Api.Services;
 using MovieWatchlist.ApplicationCore.Interfaces.Data;
@@ -167,6 +168,9 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
                 MovieIds = new List<string> { "movieId" }
             };
             var watchlistId = Guid.NewGuid();
+            var watchlistsMovies = new List<WatchlistsMovies> { new WatchlistsMovies { WatchlistId = watchlistId, MovieId = "movieId" } };
+
+            _watchlistsRepositoryMock.Setup(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId)).ReturnsAsync(watchlistsMovies);
 
             _watchlistsRepositoryMock.Setup(m => m.RemoveWatchlistsMovies(It.Is<IEnumerable<WatchlistsMovies>>(watchlistsMovies =>
                 watchlistsMovies.Single().WatchlistId.Equals(watchlistId) && watchlistsMovies.Single().MovieId.Equals("movieId"))));
@@ -175,7 +179,29 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
 
             _watchlistsRepositoryMock.Verify(m => m.RemoveWatchlistsMovies(It.Is<IEnumerable<WatchlistsMovies>>(watchlistsMovies =>
                 watchlistsMovies.Single().WatchlistId.Equals(watchlistId) && watchlistsMovies.Single().MovieId.Equals("movieId"))), Times.Once);
+            _watchlistsRepositoryMock.Verify(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId), Times.Once);
             _watchlistsRepositoryMock.Verify(m => m.SaveChangesAsync(), Times.Once);
+        }
+
+        [Fact]
+        public async Task RemoveMoviesFromWatchlist_GivenMovieIdsNotInWatchlist_Throws()
+        {
+            var removeMoviesFromWatchlistRequest = new RemoveMoviesFromWatchlistRequest
+            {
+                MovieIds = new List<string> { "invalidMovieId" }
+            };
+            var watchlistId = Guid.NewGuid();
+            var watchlistsMovies = new List<WatchlistsMovies> { new WatchlistsMovies { WatchlistId = watchlistId, MovieId = "movieId" } };
+
+            _watchlistsRepositoryMock.Setup(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId)).ReturnsAsync(watchlistsMovies);
+
+            var exception = await Assert.ThrowsAsync<InvalidRequestException>(async () => await _watchlistsService.RemoveMoviesFromWatchlist(watchlistId, removeMoviesFromWatchlistRequest));
+
+            Assert.Equal("The following movie Ids in the request are invalid: invalidMovieId", exception.Message);
+
+            _watchlistsRepositoryMock.Verify(m => m.RemoveWatchlistsMovies(It.IsAny<IEnumerable<WatchlistsMovies>>()), Times.Never);
+            _watchlistsRepositoryMock.Verify(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId), Times.Once);
+            _watchlistsRepositoryMock.Verify(m => m.SaveChangesAsync(), Times.Never);
         }
 
 
@@ -191,7 +217,7 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
             var watchlistsMovies = new List<WatchlistsMovies> { 
                 new WatchlistsMovies { WatchlistId = watchlistId, MovieId = "movieId", Watched = false },
                 new WatchlistsMovies { WatchlistId = watchlistId, MovieId = "movieId2", Watched = true },
-                new WatchlistsMovies { WatchlistId = watchlistId, MovieId = "movieId2", Watched = false }
+                new WatchlistsMovies { WatchlistId = watchlistId, MovieId = "movieId3", Watched = false }
             };
 
             _watchlistsRepositoryMock.Setup(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId)).ReturnsAsync(watchlistsMovies);
@@ -204,6 +230,31 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
 
             _watchlistsRepositoryMock.Verify(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId), Times.Once);
             _watchlistsRepositoryMock.Verify(m => m.SaveChangesAsync(), Times.Once);
+        }
+
+        [Fact]
+        public async Task SetMoviesAsWatched_GivenMovieIdsNotInWatchlist_Throws()
+        {
+            var setMoviesAsWatchedRequest = new SetMoviesWatchedStatusRequest
+            {
+                MovieIdsWatched = new Dictionary<string, bool> { ["invalidMovieId"] = true, ["invalidMovieId2"] = false }
+            };
+            var watchlistId = Guid.NewGuid();
+
+            var watchlistsMovies = new List<WatchlistsMovies> {
+                new WatchlistsMovies { WatchlistId = watchlistId, MovieId = "movieId", Watched = false },
+                new WatchlistsMovies { WatchlistId = watchlistId, MovieId = "movieId2", Watched = true },
+                new WatchlistsMovies { WatchlistId = watchlistId, MovieId = "movieId3", Watched = false }
+            };
+
+            _watchlistsRepositoryMock.Setup(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId)).ReturnsAsync(watchlistsMovies);
+
+            var exception = await Assert.ThrowsAsync<InvalidRequestException>(async () => await _watchlistsService.SetMoviesAsWatched(watchlistId, setMoviesAsWatchedRequest));
+
+            Assert.Equal("The following movie Ids in the request are invalid: invalidMovieId,invalidMovieId2", exception.Message);
+
+            _watchlistsRepositoryMock.Verify(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId), Times.Once);
+            _watchlistsRepositoryMock.Verify(m => m.SaveChangesAsync(), Times.Never);
         }
     }
 }

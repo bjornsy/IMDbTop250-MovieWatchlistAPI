@@ -21,7 +21,7 @@ builder.Services.AddMemoryCache();
 builder.Services.AddDbContext<MovieWatchlistContext>(options =>
     options.UseNpgsql(config.GetConnectionString("MovieWatchlist") ?? throw new InvalidOperationException("Connection string 'MovieWatchlistContext' not found.")));
 
-builder.Services.AddTransient<IProblemDetailsWriter, ForeignKeyConstraintProblemDetailsWriter>();
+builder.Services.AddTransient<IProblemDetailsWriter, ProblemDetailsWriter>();
 
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 builder.Services.AddScoped<IMoviesRepository, MoviesRepository>();

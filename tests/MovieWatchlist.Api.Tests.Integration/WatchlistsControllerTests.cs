@@ -232,13 +232,15 @@ namespace MovieWatchlist.Api.Tests.Integration
             var createResponse = await _httpClient.PostAsJsonAsync("watchlists", createWatchlistRequest);
             var createdWatchlist = await createResponse.Content.ReadFromJsonAsync<WatchlistResponse>();
 
-            var removeMoviesFromWatchlistRequest = new RemoveMoviesFromWatchlistRequest { MovieIds = new List<string> { Guid.NewGuid().ToString() } };
+            var invalidMovieId1 = Guid.NewGuid().ToString();
+            var invalidMovieId2 = Guid.NewGuid().ToString();
+            var removeMoviesFromWatchlistRequest = new RemoveMoviesFromWatchlistRequest { MovieIds = new List<string> { invalidMovieId1, invalidMovieId2 } };
 
             var response = await _httpClient.PostAsJsonAsync($"watchlists/{createdWatchlist!.Id}/removeMovies", removeMoviesFromWatchlistRequest);
             var problemDetails = await response.Content.ReadFromJsonAsync<ProblemDetails>();
 
             Assert.Equal(HttpStatusCode.UnprocessableEntity, response.StatusCode);
-            Assert.Equal("Movie ID(s) supplied does not exist in the top 250.", problemDetails!.Detail);
+            Assert.Equal($"The following movie Ids in the request are invalid: {invalidMovieId1},{invalidMovieId2}", problemDetails!.Detail);
             Assert.Equal("Value in request is invalid.", problemDetails.Title);
             Assert.Equal(422, problemDetails.Status);
             Assert.Equal("https://datatracker.ietf.org/doc/html/rfc4918#section-11.2", problemDetails.Type);
@@ -292,23 +294,30 @@ namespace MovieWatchlist.Api.Tests.Integration
             Assert.Equal("The field MovieIdsWatched must be a string or array type with a minimum length of '1'.", error!.Errors["MovieIdsWatched"].Single());
         }
 
-        //TODO: change to 422
-        //[Fact]
-        //public async Task SetMoviesStatusWatched_WhenWatchlistDoesNotContainMatchingMovie_Returns404()
-        //{
-        //    var createWatchlistRequest = new CreateWatchlistRequest { Name = "ShawshankWatchlist", MovieIds = new List<string> { "0111161" } };
+        [Fact]
+        public async Task SetMoviesStatusWatched_WhenWatchlistDoesNotContainMatchingMovie_Returns422()
+        {
+            var createWatchlistRequest = new CreateWatchlistRequest { Name = "ShawshankWatchlist", MovieIds = new List<string> { "0111161" } };
 
-        //    var createResponse = await _httpClient.PostAsJsonAsync("watchlists", createWatchlistRequest);
-        //    var createdWatchlist = await createResponse.Content.ReadFromJsonAsync<WatchlistResponse>();
+            var createResponse = await _httpClient.PostAsJsonAsync("watchlists", createWatchlistRequest);
+            var createdWatchlist = await createResponse.Content.ReadFromJsonAsync<WatchlistResponse>();
 
-        //    var setMoviesWatchedStatusRequest = new SetMoviesWatchedStatusRequest { WatchlistId = createdWatchlist!.Id, MovieIdsWatched = new Dictionary<string, bool> { ["1111111"] = true } };
+            var invalidMovieId1 = Guid.NewGuid().ToString();
+            var invalidMovieId2 = Guid.NewGuid().ToString();
+            var setMoviesWatchedStatusRequest = new SetMoviesWatchedStatusRequest { MovieIdsWatched = new Dictionary<string, bool> { [invalidMovieId1] = true, [invalidMovieId2] = false } };
 
-        //    var jsonRequest = JsonSerializer.Serialize(setMoviesWatchedStatusRequest);
+            var jsonRequest = JsonSerializer.Serialize(setMoviesWatchedStatusRequest);
 
-        //    var content = new StringContent(jsonRequest, Encoding.UTF8, "application/json-patch+json");
-        //    var response = await _httpClient.PatchAsync("watchlists/setMoviesWatchedStatus", content);
+            var content = new StringContent(jsonRequest, Encoding.UTF8, "application/json-patch+json");
+            var response = await _httpClient.PatchAsync($"watchlists/{createdWatchlist!.Id}/setMoviesWatchedStatus", content);
 
-        //    Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        //}
+            var problemDetails = await response.Content.ReadFromJsonAsync<ProblemDetails>();
+
+            Assert.Equal(HttpStatusCode.UnprocessableEntity, response.StatusCode);
+            Assert.Equal($"The following movie Ids in the request are invalid: {invalidMovieId1},{invalidMovieId2}", problemDetails!.Detail);
+            Assert.Equal("Value in request is invalid.", problemDetails.Title);
+            Assert.Equal(422, problemDetails.Status);
+            Assert.Equal("https://datatracker.ietf.org/doc/html/rfc4918#section-11.2", problemDetails.Type);
+        }
     }
 }

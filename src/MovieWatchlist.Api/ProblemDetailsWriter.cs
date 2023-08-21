@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using MovieWatchlist.Api.Exceptions;
 using Npgsql;
 
 namespace MovieWatchlist.Api
 {
-    public class ForeignKeyConstraintProblemDetailsWriter : IProblemDetailsWriter
+    public class ProblemDetailsWriter : IProblemDetailsWriter
     {
         private readonly Dictionary<string, string> _knownForeignKeyNamesWithErrorDetail = new()
         {
@@ -25,6 +26,11 @@ namespace MovieWatchlist.Api
                 }
             }
 
+            if (exceptionType is InvalidRequestException)
+            {
+                return true;
+            }
+
             return false;
         }
 
@@ -32,8 +38,18 @@ namespace MovieWatchlist.Api
         {
             var exceptionHandlerFeature = context.HttpContext.Features.Get<IExceptionHandlerFeature>();
             var exceptionType = exceptionHandlerFeature?.Error;
-            var postgresException = (PostgresException)exceptionType!.InnerException!;
-            var detail = _knownForeignKeyNamesWithErrorDetail[postgresException.ConstraintName!];
+
+            string? detail = null;
+            if (exceptionType is DbUpdateException)
+            {
+                var postgresException = (PostgresException)exceptionType!.InnerException!;
+                detail = _knownForeignKeyNamesWithErrorDetail[postgresException.ConstraintName!];
+            }
+
+            if (exceptionType is InvalidRequestException)
+            {
+                detail = exceptionType.Message;
+            }
 
             context.ProblemDetails.Title = "Value in request is invalid.";
             context.ProblemDetails.Detail = detail;

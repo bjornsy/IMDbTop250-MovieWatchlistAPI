@@ -1,4 +1,5 @@
-﻿using MovieWatchlist.Api.Extensions;
+﻿using MovieWatchlist.Api.Exceptions;
+using MovieWatchlist.Api.Extensions;
 using MovieWatchlist.Api.Models.Requests;
 using MovieWatchlist.Api.Models.Responses;
 using MovieWatchlist.ApplicationCore.Interfaces.Data;
@@ -73,7 +74,7 @@ namespace MovieWatchlist.Api.Services
 
         public async Task RemoveMoviesFromWatchlist(Guid watchlistId, RemoveMoviesFromWatchlistRequest removeMoviesFromWatchlistRequest)
         {
-            var watchlistsMovies = removeMoviesFromWatchlistRequest.MovieIds.Select(id => new WatchlistsMovies { WatchlistId = watchlistId, MovieId = id });
+            var watchlistsMovies = await ValidateRequest(watchlistId, removeMoviesFromWatchlistRequest.MovieIds);
 
             _watchlistRepository.RemoveWatchlistsMovies(watchlistsMovies);
 
@@ -82,9 +83,7 @@ namespace MovieWatchlist.Api.Services
 
         public async Task SetMoviesAsWatched(Guid watchlistId, SetMoviesWatchedStatusRequest setMoviesWatchedStatusRequest)
         {
-            var watchlistsMoviesByWatchlistId = await _watchlistRepository.GetWatchlistsMoviesByWatchlistId(watchlistId);
-
-            var watchlistsMovies = watchlistsMoviesByWatchlistId.Where(wm => setMoviesWatchedStatusRequest.MovieIdsWatched.ContainsKey(wm.MovieId));
+            var watchlistsMovies = await ValidateRequest(watchlistId, setMoviesWatchedStatusRequest.MovieIdsWatched.Keys);
 
             foreach (var watchlistMovie in watchlistsMovies)
             {
@@ -92,6 +91,22 @@ namespace MovieWatchlist.Api.Services
             }
 
             await _watchlistRepository.SaveChangesAsync();
+        }
+
+        private async Task<IEnumerable<WatchlistsMovies>> ValidateRequest(Guid watchlistId, IEnumerable<string> requestMovieIds)
+        {
+            var watchlistsMoviesByWatchlistId = await _watchlistRepository.GetWatchlistsMoviesByWatchlistId(watchlistId);
+
+            var invalidMovieIds = requestMovieIds.Except(watchlistsMoviesByWatchlistId.Select(wm => wm.MovieId));
+
+            if (invalidMovieIds.Any())
+            {
+                throw new InvalidRequestException(invalidMovieIds);
+            }
+
+            var validWatchlistsMovies = watchlistsMoviesByWatchlistId.Where(wm => requestMovieIds.Contains(wm.MovieId));
+
+            return validWatchlistsMovies;
         }
     }
 }
