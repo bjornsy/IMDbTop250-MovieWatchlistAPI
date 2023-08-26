@@ -256,5 +256,17 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
             _watchlistsRepositoryMock.Verify(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId), Times.Once);
             _watchlistsRepositoryMock.Verify(m => m.SaveChangesAsync(), Times.Never);
         }
+
+        [Fact]
+        public async Task Rename()
+        {
+            var watchlistId = Guid.NewGuid();
+            var name = "newName";
+
+            await _watchlistsService.Rename(watchlistId, name);
+
+            _watchlistsRepositoryMock.Verify(m => m.RenameWatchlist(watchlistId, name), Times.Once);
+            _watchlistsRepositoryMock.Verify(m => m.SaveChangesAsync(), Times.Once);
+        }
     }
 }
