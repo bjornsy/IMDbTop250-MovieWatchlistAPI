@@ -1,11 +1,16 @@
-﻿namespace MovieWatchlist.Api.Configuration
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace MovieWatchlist.Api.Configuration
 {
     public class PoliciesOptions
     {
         public const string Policies = "Policies";
 
-        public CircuitBreakerPolicyOptions CircuitBreaker { get; set; }
-        public RetryPolicyOptions Retry { get; set; }
+        [Required]
+        public required CircuitBreakerPolicyOptions CircuitBreaker { get; set; }
+
+        [Required]
+        public required RetryPolicyOptions Retry { get; set; }
     }
 
     public class CircuitBreakerPolicyOptions
@@ -21,6 +26,7 @@
         public const string RetryPolicy = "RetryPolicy";
 
         public TimeSpan BackoffMedianFirstRetryDelay { get; set; }
+
         public int Count { get; set; }
     }
 }

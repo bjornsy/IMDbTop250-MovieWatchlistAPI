@@ -1,5 +1,6 @@
 using HealthChecks.UI.Client;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using MovieWatchlist.Api;
 using MovieWatchlist.Api.Configuration;
 using MovieWatchlist.Api.Extensions;
@@ -34,11 +35,16 @@ builder.Services.AddTransient<ITop250MoviesDatabaseUpdateService, Top250MoviesDa
 builder.Services.AddScoped<IWatchlistsRepository, WatchlistsRepository>();
 builder.Services.AddTransient<IWatchlistsService, WatchlistsService>();
 
-builder.Services.AddPolicies(config);
+builder.Services.AddPolicies();
+
+builder.Services.AddOptions<Top250InfoClientOptions>()
+    .BindConfiguration(Top250InfoClientOptions.Top250InfoClient)
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
 
 builder.Services.AddHttpClient<ITop250InfoClient, Top250InfoClient>((serviceProvider, client) => {
-        var httpClientOptions = config.GetSection(Top250InfoClientOptions.Top250InfoClient).Get<Top250InfoClientOptions>();
-        client.BaseAddress = new Uri(httpClientOptions!.BaseUrl);
+        var httpClientOptions = serviceProvider.GetRequiredService<IOptions<Top250InfoClientOptions>>().Value;
+        client.BaseAddress = new Uri(httpClientOptions.BaseUrl);
         client.Timeout = httpClientOptions.Timeout;
     })
     .AddPolicyHandlerFromRegistry(RetryPolicyOptions.RetryPolicy)
