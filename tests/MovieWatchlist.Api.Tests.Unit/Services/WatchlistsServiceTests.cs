@@ -4,8 +4,6 @@ using MovieWatchlist.Api.Models.Requests;
 using MovieWatchlist.Api.Services;
 using MovieWatchlist.ApplicationCore.Interfaces.Data;
 using MovieWatchlist.ApplicationCore.Models;
-using MovieWatchlist.Infrastructure.Data;
-using System.Xml.Linq;
 using Xunit;
 
 namespace MovieWatchlist.Api.Tests.Unit.Services
