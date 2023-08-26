@@ -1,6 +1,8 @@
 using HealthChecks.UI.Client;
 using Microsoft.EntityFrameworkCore;
 using MovieWatchlist.Api;
+using MovieWatchlist.Api.Configuration;
+using MovieWatchlist.Api.Extensions;
 using MovieWatchlist.Api.Services;
 using MovieWatchlist.ApplicationCore.Interfaces.Clients;
 using MovieWatchlist.ApplicationCore.Interfaces.Data;
@@ -32,9 +34,15 @@ builder.Services.AddTransient<ITop250MoviesDatabaseUpdateService, Top250MoviesDa
 builder.Services.AddScoped<IWatchlistsRepository, WatchlistsRepository>();
 builder.Services.AddTransient<IWatchlistsService, WatchlistsService>();
 
-builder.Services.AddHttpClient<ITop250InfoClient, Top250InfoClient>(client => client.BaseAddress = new Uri(config["Top250Info:BaseUrl"]))
-    .AddPolicyHandler(Policies.RetryPolicy)
-    .AddPolicyHandler(Policies.CircuitBreakerPolicy);
+builder.Services.AddPolicies(config);
+
+builder.Services.AddHttpClient<ITop250InfoClient, Top250InfoClient>((serviceProvider, client) => {
+        var httpClientOptions = config.GetSection(Top250InfoClientOptions.Top250InfoClient).Get<Top250InfoClientOptions>();
+        client.BaseAddress = new Uri(httpClientOptions!.BaseUrl);
+        client.Timeout = httpClientOptions.Timeout;
+    })
+    .AddPolicyHandlerFromRegistry(RetryPolicyOptions.RetryPolicy)
+    .AddPolicyHandlerFromRegistry(CircuitBreakerPolicyOptions.CircuitBreakerPolicy);
 
 var app = builder.Build();
 

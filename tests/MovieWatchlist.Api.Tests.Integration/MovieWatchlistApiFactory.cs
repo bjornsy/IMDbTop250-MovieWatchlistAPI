@@ -1,13 +1,11 @@
-﻿using DotNet.Testcontainers.Builders;
-using DotNet.Testcontainers.Configurations;
-using DotNet.Testcontainers.Containers;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
+using MovieWatchlist.Api.Configuration;
 using MovieWatchlist.ApplicationCore.Interfaces.Clients;
 using MovieWatchlist.Infrastructure.Clients;
 using MovieWatchlist.Infrastructure.Data;
@@ -42,8 +40,8 @@ namespace MovieWatchlist.Api.Tests.Integration
                 {
                     client.BaseAddress = new Uri(_top250InfoServer.Url);
                 })
-                .AddPolicyHandler(Policies.RetryPolicy)
-                .AddPolicyHandler(Policies.CircuitBreakerPolicy);
+                .AddPolicyHandlerFromRegistry(RetryPolicyOptions.RetryPolicy)
+                .AddPolicyHandlerFromRegistry(CircuitBreakerPolicyOptions.CircuitBreakerPolicy);
             });
         }
 
