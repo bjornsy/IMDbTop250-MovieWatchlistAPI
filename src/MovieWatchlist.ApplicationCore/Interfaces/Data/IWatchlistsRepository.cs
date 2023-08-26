@@ -10,6 +10,7 @@ namespace MovieWatchlist.ApplicationCore.Interfaces.Data
         Task<IReadOnlyCollection<WatchlistsMovies>> GetWatchlistsMoviesByWatchlistId(Guid watchlistId);
         void RemoveWatchlistsMovies(IEnumerable<WatchlistsMovies> watchlistsMovies);
         void RemoveWatchlist(Guid watchlistId);
+        void RenameWatchlist(Guid watchlistId, string name);
         Task SaveChangesAsync();
     }
 }

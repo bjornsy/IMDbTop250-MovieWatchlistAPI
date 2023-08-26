@@ -122,5 +122,24 @@ namespace MovieWatchlist.Controllers
 
             return NoContent();
         }
+
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Route("{watchlistId}/rename")]
+        [HttpPatch]
+        public async Task<ActionResult> Rename(Guid watchlistId, RenameWatchlistRequest renameWatchlistRequest)
+        {
+            var watchlist = await _watchlistsService.GetWatchlist(watchlistId);
+            if (watchlist is null)
+            {
+                return NotFound();
+            }
+
+            await _watchlistsService.Rename(watchlistId, renameWatchlistRequest.Name);
+
+            return NoContent();
+        }
     }
 }

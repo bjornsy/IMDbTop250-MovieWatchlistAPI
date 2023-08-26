@@ -46,6 +46,13 @@ namespace MovieWatchlist.Infrastructure.Data
             _context.Watchlists.Remove(stub);
         }
 
+        public void RenameWatchlist(Guid watchlistId, string name)
+        {
+            var watchlist = _context.Watchlists.Single(w => w.Id.Equals(watchlistId));
+
+            watchlist.Name = name;
+        }
+
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();

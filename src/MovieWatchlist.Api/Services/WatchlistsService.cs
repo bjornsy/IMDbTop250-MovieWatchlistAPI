@@ -15,6 +15,7 @@ namespace MovieWatchlist.Api.Services
         Task AddMoviesToWatchlist(Guid watchlistId, AddMoviesToWatchlistRequest addMoviesToWatchlistRequest);
         Task RemoveMoviesFromWatchlist(Guid watchlistId, RemoveMoviesFromWatchlistRequest addMoviesToWatchlistRequest);
         Task SetMoviesAsWatched(Guid watchlistId, SetMoviesWatchedStatusRequest setMoviesWatchedStatusRequest);
+        Task Rename(Guid watchlistId, string name);
     }
 
     public class WatchlistsService : IWatchlistsService
@@ -89,6 +90,13 @@ namespace MovieWatchlist.Api.Services
             {
                 watchlistMovie.Watched = setMoviesWatchedStatusRequest.MovieIdsWatched[watchlistMovie.MovieId];
             }
+
+            await _watchlistRepository.SaveChangesAsync();
+        }
+
+        public async Task Rename(Guid watchlistId, string name)
+        {
+            _watchlistRepository.RenameWatchlist(watchlistId, name);
 
             await _watchlistRepository.SaveChangesAsync();
         }

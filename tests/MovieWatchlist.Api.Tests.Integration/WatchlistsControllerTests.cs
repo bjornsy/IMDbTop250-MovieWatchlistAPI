@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MovieWatchlist.Api.Models.Requests;
 using MovieWatchlist.Api.Models.Responses;
+using MovieWatchlist.ApplicationCore.Models;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text;
@@ -318,6 +319,41 @@ namespace MovieWatchlist.Api.Tests.Integration
             Assert.Equal("Value in request is invalid.", problemDetails.Title);
             Assert.Equal(422, problemDetails.Status);
             Assert.Equal("https://datatracker.ietf.org/doc/html/rfc4918#section-11.2", problemDetails.Type);
+        }
+
+        [Fact]
+        public async Task Rename_WhenWatchlistExists_Returns204()
+        {
+            var createWatchlistRequest = new CreateWatchlistRequest { Name = "ShawshankWatchlist", MovieIds = new List<string> { "0111161" } };
+
+            var createResponse = await _httpClient.PostAsJsonAsync("watchlists", createWatchlistRequest);
+            var createdWatchlist = await createResponse.Content.ReadFromJsonAsync<WatchlistResponse>();
+
+            var renameWatchlistRequest = new RenameWatchlistRequest { Name = "NewName" };
+
+            var jsonRequest = JsonSerializer.Serialize(renameWatchlistRequest);
+
+            var content = new StringContent(jsonRequest, Encoding.UTF8, "application/json-patch+json");
+            var response = await _httpClient.PatchAsync($"watchlists/{createdWatchlist!.Id}/rename", content);
+
+            Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+            
+            //Check actually renamed
+            var getWatchlistResponse = await _httpClient.GetAsync($"watchlists/{createdWatchlist!.Id}");
+            Assert.Equal("NewName", (await getWatchlistResponse.Content.ReadFromJsonAsync<WatchlistResponse>())!.Name);
+        }
+
+        [Fact]
+        public async Task Rename_WhenWatchlistDoesNotExist_Returns404()
+        {
+            var renameWatchlistRequest = new RenameWatchlistRequest { Name = "NewName" };
+
+            var jsonRequest = JsonSerializer.Serialize(renameWatchlistRequest);
+
+            var content = new StringContent(jsonRequest, Encoding.UTF8, "application/json-patch+json");
+            var response = await _httpClient.PatchAsync($"watchlists/{Guid.NewGuid()}/rename", content);
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
     }
 }
