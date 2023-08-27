@@ -1,0 +1,26 @@
+@startuml
+!theme metal
+
+skin rose
+
+title "Top 250 Movies Sequence Diagram"
+
+actor Client
+database Cache
+entity API
+database CSV
+database SQL
+boundary Top250Info
+
+CSV -> API : Load from CSV on startup
+API -> SQL : Save CSV data
+Client -> Cache : Get movies
+Cache -> API
+API -> Top250Info : To website if cache empty
+Top250Info --> API
+API -> SQL : Save website data if success
+SQL --> API
+API --> Cache
+Cache --> Client
+
+@enduml
