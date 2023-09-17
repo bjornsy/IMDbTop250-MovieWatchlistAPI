@@ -28,7 +28,8 @@ namespace MovieWatchlist.Infrastructure.Data
             {
                 _context.RemoveRange(_context.Movies);
 
-                using (var reader = new StreamReader("./Top250MoviesSeed.csv"))
+                var filepath = Path.GetFullPath("Top250MoviesSeed.csv");
+                using (var reader = new StreamReader(filepath))
                 {
                     using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
                     {

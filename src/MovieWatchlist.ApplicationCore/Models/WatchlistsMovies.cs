@@ -6,9 +6,6 @@ namespace MovieWatchlist.ApplicationCore.Models
     [Table("WatchlistsMovies", Schema = "Watchlists")]
     public class WatchlistsMovies
     {
-        [Key]
-        public int Id { get; set; }
-
         [Required]
         public Guid WatchlistId { get; set; }
 

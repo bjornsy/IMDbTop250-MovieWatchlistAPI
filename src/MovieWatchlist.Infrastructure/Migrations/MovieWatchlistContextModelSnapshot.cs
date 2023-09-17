@@ -65,9 +65,6 @@ namespace MovieWatchlist.Infrastructure.Migrations
                     b.Property<string>("MovieId")
                         .HasColumnType("text");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("integer");
-
                     b.Property<bool>("Watched")
                         .HasColumnType("boolean");
 

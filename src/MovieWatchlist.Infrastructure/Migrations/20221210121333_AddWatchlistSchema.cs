@@ -32,7 +32,6 @@ namespace MovieWatchlist.Infrastructure.Migrations
                 {
                     WatchlistId = table.Column<Guid>(type: "uuid", nullable: false),
                     MovieId = table.Column<string>(type: "text", nullable: false),
-                    Id = table.Column<int>(type: "integer", nullable: false),
                     Watched = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
