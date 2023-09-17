@@ -23,12 +23,12 @@ namespace MovieWatchlist.Api.Tests.Integration
             var guid = Guid.NewGuid();
             _movieWatchlistApiFactory.SetTop250Response(HttpStatusCode.OK, guid);
 
-            var response1 = await _httpClient.GetAsync("movies");
+            var response1 = await _httpClient.GetAsync("movies/top250");
             Assert.Equal(HttpStatusCode.OK, response1.StatusCode);
             var moviesResponse1 = (await response1.Content.ReadFromJsonAsync<IReadOnlyCollection<MovieResponse>>()).ToList();
             Assert.Equal(250, moviesResponse1!.Count);
 
-            var response2 = await _httpClient.GetAsync("movies");
+            var response2 = await _httpClient.GetAsync("movies/top250");
             Assert.Equal(HttpStatusCode.OK, response2.StatusCode);
             var moviesResponse2 = (await response2.Content.ReadFromJsonAsync<IReadOnlyCollection<MovieResponse>>()).ToList();
             Assert.Equal(250, moviesResponse2!.Count);

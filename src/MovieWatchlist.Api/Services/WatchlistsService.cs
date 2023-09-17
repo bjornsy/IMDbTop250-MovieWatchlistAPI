@@ -21,10 +21,12 @@ namespace MovieWatchlist.Api.Services
     public class WatchlistsService : IWatchlistsService
     {
         private readonly IWatchlistsRepository _watchlistRepository;
+        private readonly IMoviesRepository _moviesRepository;
 
-        public WatchlistsService(IWatchlistsRepository watchlistRepository)
+        public WatchlistsService(IWatchlistsRepository watchlistRepository, IMoviesRepository moviesRepository)
         {
             _watchlistRepository = watchlistRepository;
+            _moviesRepository = moviesRepository;
         }
 
         public async Task<WatchlistResponse> CreateWatchlist(CreateWatchlistRequest request)
@@ -43,14 +45,22 @@ namespace MovieWatchlist.Api.Services
 
             await _watchlistRepository.SaveChangesAsync();
 
-            return createdWatchlist.MapToResponse()!;
+            var moviesInWatchlist = await GetMoviesInWatchlist(watchlistsMoviesRecords);
+
+            return createdWatchlist.MapToResponse(moviesInWatchlist)!;
         }
 
         public async Task<WatchlistResponse?> GetWatchlist(Guid watchlistId)
         {
             var watchlist = await _watchlistRepository.GetWatchlistById(watchlistId);
 
-            return watchlist?.MapToResponse();
+            if (watchlist == null) { return null; }
+
+            var watchlistsMovies = await _watchlistRepository.GetWatchlistsMoviesByWatchlistId(watchlistId);
+
+            var moviesInWatchlist = await GetMoviesInWatchlist(watchlistsMovies);
+
+            return watchlist.MapToResponse(moviesInWatchlist);
         }
 
         public async Task DeleteWatchlist(Guid watchlistId)
@@ -58,6 +68,8 @@ namespace MovieWatchlist.Api.Services
             var watchlistsMovies = await _watchlistRepository.GetWatchlistsMoviesByWatchlistId(watchlistId);
 
             _watchlistRepository.RemoveWatchlistsMovies(watchlistsMovies);
+
+            await _watchlistRepository.SaveChangesAsync();
 
             _watchlistRepository.RemoveWatchlist(watchlistId);
 
@@ -115,6 +127,16 @@ namespace MovieWatchlist.Api.Services
             var validWatchlistsMovies = watchlistsMoviesByWatchlistId.Where(wm => requestMovieIds.Contains(wm.MovieId));
 
             return validWatchlistsMovies;
+        }
+
+        private async Task<IEnumerable<MovieInWatchlist>> GetMoviesInWatchlist(IEnumerable<WatchlistsMovies> watchlistsMovies)
+        {
+            var movies = await _moviesRepository.GetMoviesByIdReadOnly(watchlistsMovies.Select(wm => wm.MovieId));
+
+            var moviesInWatchlist = movies.Join(watchlistsMovies, m => m.Id, wm => wm.MovieId, (m, wm) => new { Movie = m, WatchlistsMovies = wm })
+                            .Select(x => new MovieInWatchlist(x.Movie, x.WatchlistsMovies.Watched));
+
+            return moviesInWatchlist;
         }
     }
 }

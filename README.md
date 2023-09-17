@@ -66,3 +66,4 @@ Planned updates include:
 * [Distributed Redis output cache](https://learn.microsoft.com/en-us/aspnet/core/release-notes/aspnetcore-8.0?view=aspnetcore-7.0#redis-based-output-caching)
 * [Use ExecuteDeleteAsync](https://learn.microsoft.com/en-us/ef/core/what-is-new/ef-core-7.0/whatsnew#executeupdate-and-executedelete-bulk-updates)
 * Change to NSubstitute from Moq
+* Implement HATEOAS

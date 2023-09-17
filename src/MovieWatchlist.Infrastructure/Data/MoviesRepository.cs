@@ -23,9 +23,9 @@ namespace MovieWatchlist.Infrastructure.Data
             return await _context.Movies.AsNoTracking().ToListAsync();
         }
 
-        public async Task<IReadOnlyCollection<WatchlistsMovies>> GetWatchlistsMoviesByWatchlistId(Guid watchlistId)
+        public async Task<IReadOnlyCollection<Movie>> GetMoviesByIdReadOnly(IEnumerable<string> movieIds)
         {
-            return await _context.WatchlistsMovies.AsNoTracking().Where(wm => wm.WatchlistId.Equals(watchlistId)).ToListAsync();
+            return await _context.Movies.Where(m => movieIds.Contains(m.Id)).AsNoTracking().ToListAsync();
         }
 
         public async Task AddMovie(Movie movie)

@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MovieWatchlist.Api.Models.Requests;
-using MovieWatchlist.Api.Models.Responses;
+﻿using MovieWatchlist.Api.Models.Responses;
 using System.Net;
 using System.Net.Http.Json;
 using Xunit;
@@ -24,7 +22,7 @@ namespace MovieWatchlist.Api.Tests.Integration
             var guid = Guid.NewGuid();
             _movieWatchlistApiFactory.SetTop250Response(HttpStatusCode.OK, guid);
 
-            var response = await _httpClient.GetAsync("movies");
+            var response = await _httpClient.GetAsync("movies/top250");
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             var moviesResponse = await response.Content.ReadFromJsonAsync<IReadOnlyCollection<MovieResponse>>();
@@ -34,37 +32,41 @@ namespace MovieWatchlist.Api.Tests.Integration
         }
 
         [Fact]
-        public async Task GetMoviesByWatchlistId_WhenWatchlistExists_ReturnsMovies()
+        public async Task GetMovies_GivenValidMovieIds_ReturnsMovies()
         {
-            var createWatchlistRequest = new CreateWatchlistRequest { Name = "ShawshankWatchlist", MovieIds = new List<string> { "0111161" } };
-            var createdWatchlistResponse = await _httpClient.PostAsJsonAsync("watchlists", createWatchlistRequest);
-            var createdWatchlist = await createdWatchlistResponse.Content.ReadFromJsonAsync<WatchlistResponse>();
+            var shawshankId = "0111161";
+            var godfatherId = "0068646";
+            var response = await _httpClient.GetAsync($"movies?movieIds={shawshankId}&movieIds={godfatherId}");
+            var movies = await response.Content.ReadFromJsonAsync<IReadOnlyCollection<MovieResponse>>();
 
-            var response = await _httpClient.GetAsync($"movies/byWatchlistId/{createdWatchlist!.Id}");
-            var movies = await response.Content.ReadFromJsonAsync<IReadOnlyCollection<MovieInWatchlistResponse>>();
-
-            Assert.Equal("0111161", movies!.Single().Movie.Id);
-            Assert.False(movies!.Single().Watched);
+            Assert.Equal(2, movies!.Count);
+            var shawshankMovie = movies!.Single(m => m.Id.Equals(shawshankId));
+            var godfatherMovie = movies!.Single(m => m.Id.Equals(godfatherId));
+            Assert.Equal("The Shawshank Redemption (1994)", shawshankMovie.Title);
+            Assert.NotEqual(decimal.Zero, shawshankMovie.Rating);
+            Assert.NotEqual(0, shawshankMovie.Ranking);
+            Assert.Equal("The Godfather (1972)", godfatherMovie.Title);
+            Assert.NotEqual(decimal.Zero, godfatherMovie.Rating);
+            Assert.NotEqual(0, godfatherMovie.Ranking);
         }
 
         [Fact]
-        public async Task GetMoviesByWatchlistId_WhenWatchlistDoesNotExist_Returns404NotFound()
+        public async Task GetMovies_GivenNoIds_Returns400BadRequest()
         {
-            var response = await _httpClient.GetAsync($"movies/byWatchlistId/{Guid.NewGuid()}");
-
-            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        }
-
-        [Fact]
-        public async Task GetMoviesByWatchlistId_WhenIdNotGuid_Returns400BadRequest()
-        {
-            var response = await _httpClient.GetAsync($"movies/byWatchlistId/test");
-
-            var error = await response.Content.ReadFromJsonAsync<ValidationProblemDetails>();
+            var response = await _httpClient.GetAsync("movies");
 
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-            Assert.Equal("One or more validation errors occurred.", error!.Title);
-            Assert.Equal("The value 'test' is not valid.", error!.Errors["watchlistId"].Single());
+        }
+
+        [Fact]
+        public async Task GetMovies_WhenMovieIdDoesNotExist_ReturnsEmpty()
+        {
+            var response = await _httpClient.GetAsync($"movies?movieIds=INVALID");
+
+            var movies = await response.Content.ReadFromJsonAsync<IReadOnlyCollection<MovieResponse>>();
+
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Empty(movies!);
         }
 
         private void AssertSingleWireMockLogEntry(Guid guid)

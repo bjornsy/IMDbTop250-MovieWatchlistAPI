@@ -16,7 +16,7 @@ namespace MovieWatchlist.Api.Extensions
             };
         }
 
-        public static WatchlistResponse? MapToResponse(this Watchlist? watchlist)
+        public static WatchlistResponse? MapToResponse(this Watchlist? watchlist, IEnumerable<MovieInWatchlist> watchlistsMovies)
         {
             if (watchlist is null)
             {
@@ -26,11 +26,12 @@ namespace MovieWatchlist.Api.Extensions
             return new WatchlistResponse
             {
                 Id = watchlist.Id,
-                Name = watchlist.Name
+                Name = watchlist.Name,
+                Movies = watchlistsMovies.Select(wm => wm.MapToResponse()).ToList()
             };
         }
 
-        public static MovieInWatchlistResponse MapToResponse(this MovieInWatchlist movieInwatchlist)
+        private static MovieInWatchlistResponse MapToResponse(this MovieInWatchlist movieInwatchlist)
         {
             return new MovieInWatchlistResponse(movieInwatchlist.Movie.MapToResponse(), movieInwatchlist.Watched);
         }

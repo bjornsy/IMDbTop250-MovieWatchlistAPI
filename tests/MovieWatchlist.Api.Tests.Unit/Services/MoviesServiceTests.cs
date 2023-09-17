@@ -120,73 +120,26 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
         }
 
         [Fact]
-        public async Task GetMoviesByWatchlistId_ReturnsJoinedMovieInWatchlistResponses()
+        public async Task GetMovies_ReturnsRequestedMovieResponses()
         {
-            var watchlistId = Guid.NewGuid();
-            var movies = new List<Movie> { 
-                new Movie { Id = "1", Title = "Title", Ranking = 1, Rating = 1 },
-                new Movie { Id = "2", Title = "Title2", Ranking = 2, Rating = 2 } 
+            var movieIds = new List<string>
+            {
+                "movieId"
             };
-            var watchlistsMovies = new List<WatchlistsMovies> { 
-                new WatchlistsMovies { Id = 1, WatchlistId = watchlistId, MovieId = "1", Watched = true },
-            };
-            var watchlist = new Watchlist { Id = watchlistId, WatchlistsMovies = watchlistsMovies };
 
-            _watchlistsRepositoryMock.Setup(m => m.GetWatchlistById(watchlistId)).ReturnsAsync(watchlist);
-            _moviesRepositoryMock.Setup(m => m.GetAllMoviesReadOnly()).ReturnsAsync(movies);
-            _moviesRepositoryMock.Setup(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId)).ReturnsAsync(watchlistsMovies);
+            var movies = new List<Movie> { new Movie { Id = "movieId", Title = "movieTitle", Ranking = 1, Rating = 1 } };
 
-            var result = await _moviesService.GetMoviesByWatchlistId(watchlistId);
+            _moviesRepositoryMock.Setup(m => m.GetMoviesByIdReadOnly(movieIds)).ReturnsAsync(movies);
 
-            Assert.Equal("1", result.Single().Movie.Id);
-            Assert.Equal("Title", result.Single().Movie.Title);
-            Assert.Equal(1, result.Single().Movie.Rating);
-            Assert.Equal(1, result.Single().Movie.Ranking);
-            Assert.True(result.Single().Watched);
+            var result = await _moviesService.GetMovies(movieIds);
 
-            _watchlistsRepositoryMock.Verify(m => m.GetWatchlistById(watchlistId), Times.Once);
-            _moviesRepositoryMock.Verify(m => m.GetAllMoviesReadOnly(), Times.Once);
-            _moviesRepositoryMock.Verify(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId), Times.Once);
-        }
+            var movie = result.Single();
+            Assert.Equal("movieId", movie.Id);
+            Assert.Equal("movieTitle", movie.Title);
+            Assert.Equal(1, movie.Ranking);
+            Assert.Equal(1, movie.Rating);
 
-        [Fact]
-        public async Task GetMoviesByWatchlistId_WhenNoMoviesInWatchlist_ReturnsEmptyMoviesInWatchlistResponses()
-        {
-            var watchlistId = Guid.NewGuid();
-            var movies = new List<Movie> {
-                new Movie { Id = "1", Title = "Title", Ranking = 1, Rating = 1 },
-                new Movie { Id = "2", Title = "Title2", Ranking = 2, Rating = 2 }
-            };
-            var watchlistsMovies = new List<WatchlistsMovies> { };
-            var watchlist = new Watchlist { Id = watchlistId, WatchlistsMovies = watchlistsMovies };
-
-            _watchlistsRepositoryMock.Setup(m => m.GetWatchlistById(watchlistId)).ReturnsAsync(watchlist);
-            _moviesRepositoryMock.Setup(m => m.GetAllMoviesReadOnly()).ReturnsAsync(movies);
-            _moviesRepositoryMock.Setup(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId)).ReturnsAsync(watchlistsMovies);
-
-            var result = await _moviesService.GetMoviesByWatchlistId(watchlistId);
-
-            Assert.Equal(0, result.Count);
-
-            _watchlistsRepositoryMock.Verify(m => m.GetWatchlistById(watchlistId), Times.Once);
-            _moviesRepositoryMock.Verify(m => m.GetAllMoviesReadOnly(), Times.Never);
-            _moviesRepositoryMock.Verify(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId), Times.Once);
-        }
-
-        [Fact]
-        public async Task GetMoviesByWatchlistId_WhenWatchlistNull_ReturnsNull()
-        {
-            var watchlistId = Guid.NewGuid();
-
-            _watchlistsRepositoryMock.Setup(m => m.GetWatchlistById(watchlistId)).ReturnsAsync((Watchlist?)null);
-
-            var result = await _moviesService.GetMoviesByWatchlistId(watchlistId);
-
-            Assert.Null(result);
-
-            _watchlistsRepositoryMock.Verify(m => m.GetWatchlistById(watchlistId), Times.Once);
-            _moviesRepositoryMock.Verify(m => m.GetAllMoviesReadOnly(), Times.Never);
-            _moviesRepositoryMock.Verify(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId), Times.Never);
+            _moviesRepositoryMock.Verify(m => m.GetMoviesByIdReadOnly(movieIds), Times.Once);
         }
     }
 }

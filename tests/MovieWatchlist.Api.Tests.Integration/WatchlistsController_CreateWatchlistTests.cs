@@ -27,6 +27,12 @@ namespace MovieWatchlist.Api.Tests.Integration
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
             Assert.Equal("ShawshankWatchlist", createdWatchlist!.Name);
             Assert.NotEqual(Guid.Empty, createdWatchlist.Id);
+            var movieInResponse = createdWatchlist.Movies.Single();
+            Assert.Equal("0111161", movieInResponse.Movie.Id);
+            Assert.Equal("The Shawshank Redemption (1994)", movieInResponse.Movie.Title);
+            Assert.NotNull(movieInResponse.Movie.Ranking);
+            Assert.NotEqual(0, movieInResponse.Movie.Rating);
+            Assert.False(movieInResponse.Watched);
         }
 
         [Fact]

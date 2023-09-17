@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using MovieWatchlist.Api.Models.Responses;
 using MovieWatchlist.Api.Services;
 
@@ -17,7 +18,7 @@ namespace MovieWatchlist.Controllers
 
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [HttpGet]
+        [HttpGet("top250")]
         public async Task<ActionResult<IReadOnlyCollection<MovieResponse>>> GetTop250Movies()
         {
             var movies = await _moviesService.GetTop250();
@@ -27,17 +28,12 @@ namespace MovieWatchlist.Controllers
 
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpGet("byWatchlistId/{watchlistId}")]
-        public async Task<ActionResult<IReadOnlyCollection<MovieInWatchlistResponse>>> GetMoviesByWatchlistId(Guid watchlistId)
+        [HttpGet]
+        public async Task<ActionResult<IReadOnlyCollection<MovieResponse>>> GetMovies([FromQuery][BindRequired] IEnumerable<string> movieIds)
         {
-            var movies = await _moviesService.GetMoviesByWatchlistId(watchlistId);
-
-            if (movies is null)
-            {
-                return NotFound();
-            }
+            var movies = await _moviesService.GetMovies(movieIds);
 
             return Ok(movies);
         }

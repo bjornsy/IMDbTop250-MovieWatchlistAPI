@@ -11,7 +11,5 @@ namespace MovieWatchlist.ApplicationCore.Models
 
         [Required]
         public string Name { get; set; } = string.Empty;
-
-        public IList<WatchlistsMovies> WatchlistsMovies { get; set; }
     }
 }

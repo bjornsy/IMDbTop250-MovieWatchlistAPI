@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MovieWatchlist.Api.Models.Requests;
+using MovieWatchlist.Api.Models.Responses;
 using System.Net;
 using System.Net.Http.Json;
 using Xunit;
@@ -12,6 +14,29 @@ namespace MovieWatchlist.Api.Tests.Integration
         public WatchlistsController_GetWatchlistTests(MovieWatchlistApiFactory movieWatchlistApiFactory)
         {
             _httpClient = movieWatchlistApiFactory.CreateClient();
+        }
+
+        [Fact]
+        public async Task GetWatchlist_Returns200()
+        {
+            var createWatchlistRequest = new CreateWatchlistRequest { Name = "ShawshankWatchlist", MovieIds = new List<string> { "0111161" } };
+
+            var createResponse = await _httpClient.PostAsJsonAsync("watchlists", createWatchlistRequest);
+            var createdWatchlist = await createResponse.Content.ReadFromJsonAsync<WatchlistResponse>();
+
+            var response = await _httpClient.GetAsync($"watchlists/{createdWatchlist!.Id}");
+
+            var watchlist = await response.Content.ReadFromJsonAsync<WatchlistResponse>();
+
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Equal("ShawshankWatchlist", watchlist!.Name);
+            Assert.NotEqual(Guid.Empty, watchlist.Id);
+            var movieInResponse = createdWatchlist.Movies.Single();
+            Assert.Equal("0111161", movieInResponse.Movie.Id);
+            Assert.Equal("The Shawshank Redemption (1994)", movieInResponse.Movie.Title);
+            Assert.NotNull(movieInResponse.Movie.Ranking);
+            Assert.NotEqual(0, movieInResponse.Movie.Rating);
+            Assert.False(movieInResponse.Watched);
         }
 
         [Fact]

@@ -9,7 +9,7 @@ namespace MovieWatchlist.Api.Services
     public interface IMoviesService
     {
         Task<IReadOnlyCollection<MovieResponse>> GetTop250();
-        Task<IReadOnlyCollection<MovieInWatchlistResponse>?> GetMoviesByWatchlistId(Guid watchlistId);
+        Task<IReadOnlyCollection<MovieResponse>> GetMovies(IEnumerable<string> movieIds);
     }
 
     public class MoviesService : IMoviesService
@@ -60,29 +60,9 @@ namespace MovieWatchlist.Api.Services
             }
         }
 
-        public async Task<IReadOnlyCollection<MovieInWatchlistResponse>?> GetMoviesByWatchlistId(Guid watchlistId)
+        public async Task<IReadOnlyCollection<MovieResponse>> GetMovies(IEnumerable<string> movieIds)
         {
-            var watchlist = await _watchlistsRepository.GetWatchlistById(watchlistId);
-            if (watchlist is null)
-            {
-                return null;
-            }
-
-            var watchlistsMovies = await _moviesRepository.GetWatchlistsMoviesByWatchlistId(watchlistId);
-
-            if (watchlistsMovies.Any())
-            {
-                //TODO: Get movies individually by Id rather than load all
-                var movies = await _moviesRepository.GetAllMoviesReadOnly();
-
-                var moviesInWatchlist = movies.Join(watchlistsMovies, m => m.Id, wm => wm.MovieId, (m, wm) => new { Movie = m, WatchlistsMovies = wm })
-                                .Select(x => new MovieInWatchlist(x.Movie, x.WatchlistsMovies.Watched));
-
-                return moviesInWatchlist.Select(miw => miw.MapToResponse()).ToList();
-
-            }
-
-            return new List<MovieInWatchlistResponse>();
+            return (await _moviesRepository.GetMoviesByIdReadOnly(movieIds)).Select(m => m.MapToResponse()).ToList();
         }
 
         private async Task<IReadOnlyCollection<Movie>> GetTop250FromClientAndUpdateDb()
