@@ -8,7 +8,7 @@ Written in .NET and using a Postgres SQL database, it provides endpoints to mana
 
 ### Basic usage
 
-* `GET` the latest top 250 list from `/Movies`
+* `GET` the latest top 250 list from `/Movies/top250`
 * Create a watchlist with a name and array of movie Ids (`POST` to `/Watchlists`)
 * After creation, you can add/remove movies, set movies as "watched" or delete/rename the watchlist
 
