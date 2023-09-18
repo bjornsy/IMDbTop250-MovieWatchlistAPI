@@ -33,7 +33,7 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
 
         private string Top250InfoHtmlString()
         {
-            var htmlString = File.ReadAllText("./Services/TestData/Top250Info_2022-09-17.html");
+            var htmlString = File.ReadAllText("./Services/TestData/Top250Info_2023-09-18.html");
             return htmlString;
         }
 

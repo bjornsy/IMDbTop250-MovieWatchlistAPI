@@ -42,7 +42,7 @@ namespace MovieWatchlist.Api.Services
             htmlDocument.LoadHtml(html);
 
             var table = htmlDocument.DocumentNode.SelectNodes("//table").ElementAt(1);
-            var rowClassesToInclude = new HashSet<string>() { "row_same", "row_up", "row_down" };
+            var rowClassesToInclude = new HashSet<string>() { "row_same", "row_up", "row_down", "row_new" };
             var tableRows = table.SelectNodes("tr").Where(tr => rowClassesToInclude.Contains(tr.GetClasses().First()));
 
             return tableRows;

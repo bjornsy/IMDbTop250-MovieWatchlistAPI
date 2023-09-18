@@ -9,11 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="TestData\Top250Info_2022-09-17.html" />
+    <None Remove="TestData\Top250Info_2023-09-18.html" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="TestData\Top250Info_2022-09-17.html">
+    <Content Include="TestData\Top250Info_2023-09-18.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

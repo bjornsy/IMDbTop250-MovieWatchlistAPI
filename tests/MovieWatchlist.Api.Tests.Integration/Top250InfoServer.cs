@@ -49,7 +49,7 @@ namespace MovieWatchlist.Api.Tests.Integration
 
         private string GeneratedTop250ChartHtml()
         {
-            var htmlString = File.ReadAllText("./TestData/Top250Info_2022-09-17.html");
+            var htmlString = File.ReadAllText("./TestData/Top250Info_2023-09-18.html");
             return htmlString;
         }
     }

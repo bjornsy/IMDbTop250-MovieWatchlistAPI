@@ -9,15 +9,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Services\TestData\Top250MoviesSeed.csv" />
+    <None Remove="Services\TestData\Top250Info_2023-09-18.html" />
+    <None Remove="Services\TestData\Top250Movies.csv" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Services\TestData\Top250Info_2022-09-17.html">
+    <Content Include="Services\TestData\Top250Info_2023-09-18.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Services\TestData\Top250Movies.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
