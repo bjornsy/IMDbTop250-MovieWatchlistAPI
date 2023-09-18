@@ -11,7 +11,14 @@ namespace MovieWatchlist.Infrastructure.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<WatchlistsMovies>().HasKey(wm => new { wm.WatchlistId, wm.MovieId });
+            modelBuilder.Entity<Watchlist>()
+                .HasMany(e => e.Movies)
+                .WithMany(e => e.Watchlists)
+                .UsingEntity<WatchlistsMovies>();
+
+            modelBuilder.Entity<WatchlistsMovies>()
+                .HasIndex(b => b.WatchlistId)
+                .IncludeProperties(b => b.MovieId);
         }
 
         public DbSet<Movie> Movies { get; set; } = null!;

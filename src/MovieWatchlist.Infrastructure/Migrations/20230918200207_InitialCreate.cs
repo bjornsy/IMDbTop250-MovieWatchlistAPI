@@ -1,16 +1,35 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace MovieWatchlist.Infrastructure.Migrations
 {
-    public partial class AddWatchlistSchema : Migration
+    /// <inheritdoc />
+    public partial class InitialCreate : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
+                name: "Movies");
+
+            migrationBuilder.EnsureSchema(
                 name: "Watchlists");
+
+            migrationBuilder.CreateTable(
+                name: "Movies",
+                schema: "Movies",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    Ranking = table.Column<int>(type: "integer", nullable: true),
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    Rating = table.Column<decimal>(type: "numeric(2,1)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Movies", x => x.Id);
+                });
 
             migrationBuilder.CreateTable(
                 name: "Watchlists",
@@ -36,7 +55,7 @@ namespace MovieWatchlist.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_WatchlistsMovies", x => new { x.WatchlistId, x.MovieId });
+                    table.PrimaryKey("PK_WatchlistsMovies", x => new { x.MovieId, x.WatchlistId });
                     table.ForeignKey(
                         name: "FK_WatchlistsMovies_Movies_MovieId",
                         column: x => x.MovieId,
@@ -54,17 +73,23 @@ namespace MovieWatchlist.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_WatchlistsMovies_MovieId",
+                name: "IX_WatchlistsMovies_WatchlistId",
                 schema: "Watchlists",
                 table: "WatchlistsMovies",
-                column: "MovieId");
+                column: "WatchlistId")
+                .Annotation("Npgsql:IndexInclude", new[] { "MovieId" });
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
                 name: "WatchlistsMovies",
                 schema: "Watchlists");
+
+            migrationBuilder.DropTable(
+                name: "Movies",
+                schema: "Movies");
 
             migrationBuilder.DropTable(
                 name: "Watchlists",
