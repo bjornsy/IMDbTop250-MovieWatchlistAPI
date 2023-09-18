@@ -16,7 +16,7 @@ Written in .NET and using a Postgres SQL database, it provides endpoints to mana
 
 The list of movies is obtained from <http://top250.info/>, under the Top 250 section which is updated each day from IMDb itself.
 
-If the Movies table is not fully populated, the [DbInitializer](src/MovieWatchlist.Infrastructure/Data/DbInitializer.cs) will add movies from a [pre-populated CSV file](src/MovieWatchlist.Api/Top250MoviesSeed.csv) on application start (in case the website is down). This file can be updated by the separate [Top250Scraper console application](Top250Scraper/Program.cs) if desired.
+In case the website is down, as part of the Entity Framework migration, movie data is seeded from a [pre-populated CSV file](src/MovieWatchlist.Api/Top250MoviesSeed.csv). This file can be updated by the separate [Top250Scraper console application](Top250Scraper/Program.cs) if desired.
 
 Within the `GET Movies` endpoint, if the cache is empty the [Top250InfoService](src/MovieWatchlist.Api/Services/Top250InfoService.cs) will scrape the list of movies from the page of the current day, then [Top250MoviesDatabaseUpdateService](src/MovieWatchlist.Api/Services/Top250MoviesDatabaseUpdateService.cs) will update the table in the database.
 

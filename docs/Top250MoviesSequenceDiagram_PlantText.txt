@@ -12,8 +12,7 @@ database CSV
 database SQL
 boundary Top250Info
 
-CSV -> API : Load from CSV on startup
-API -> SQL : Save CSV data
+CSV -> SQL : Seed during migration
 Client -> Cache : Get movies
 Cache -> API
 API -> Top250Info : To website if cache empty

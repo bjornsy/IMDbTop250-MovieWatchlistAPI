@@ -26,7 +26,6 @@ builder.Services.AddDbContext<MovieWatchlistContext>(options =>
 
 builder.Services.AddTransient<IProblemDetailsWriter, ProblemDetailsWriter>();
 
-builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 builder.Services.AddScoped<IMoviesRepository, MoviesRepository>();
 builder.Services.AddTransient<IMoviesService, MoviesService>();
 builder.Services.AddTransient<ITop250InfoService, Top250InfoService>();
@@ -58,9 +57,6 @@ using (var scope = app.Services.CreateScope())
 {
     var dataContext = scope.ServiceProvider.GetRequiredService<MovieWatchlistContext>();
     dataContext.Database.Migrate();
-
-    var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
-    dbInitializer.Initialize();
 }
 
 if (app.Environment.IsDevelopment())
