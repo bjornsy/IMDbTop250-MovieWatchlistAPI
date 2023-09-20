@@ -1,4 +1,4 @@
-name: Docker Compose and .NET Test
+name: .NET Test for unit test project only
 
 on:
   push:
@@ -13,8 +13,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Docker Compose
-      run: docker compose up
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
@@ -24,4 +22,4 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test ./tests/MovieWatchlist.Api.Tests.Unit --no-build --verbosity normal
