@@ -31,13 +31,13 @@ Within the `GET Movies` endpoint, if the cache is empty the [Top250InfoService](
 
 ### How to run
 
-* After cloning, run `docker compose build` in the root folder, then `docker compose up`
+* After cloning, run `docker compose up` in the root folder
 * The Swagger page will be available at <http://localhost:8080/swagger/index.html>
 * The healthcheck is available at <http://localhost:8080/_health>
 
 ### How to develop locally
 
-* After `docker compose build`, start the Postgres container with a volume: `docker compose start moviewatchlist-db`
+* Ensure the docker volume is up (like if you've done `docker compose up`, or after `docker compose build` then starting the Postgres container independently: `docker compose start moviewatchlist-db`)
 * After starting the program in your IDE, the Swagger page is available at <https://localhost:7069/swagger/index.html>
 * To check data in the database container, use the following commands:
   * Get running containers `docker container list`
