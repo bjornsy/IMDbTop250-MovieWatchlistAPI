@@ -1,3 +1,5 @@
+[![Unit tests with GitHub Actions](https://github.com/bjornsy/IMDbTop250-MovieWatchlistAPI/actions/workflows/dotnet-test-unit.yml/badge.svg?branch=main)](https://github.com/bjornsy/IMDbTop250-MovieWatchlistAPI/actions/workflows/dotnet-test-unit.yml)
+
 # Movie Watchlist API for IMDb Top 250
 
 API to view the top 250 rated movies from IMDb, and save movies that you want to watch and set as watched.
