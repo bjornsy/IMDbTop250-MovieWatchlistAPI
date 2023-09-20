@@ -14,16 +14,29 @@ namespace MovieWatchlist.Infrastructure.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Watchlist>()
-                .HasMany(e => e.Movies)
-                .WithMany(e => e.Watchlists)
-                .UsingEntity<WatchlistsMovies>();
+            modelBuilder.Entity<Watchlist>(entity => 
+            {
+                entity.Property(e => e.Created).HasDefaultValueSql("now()");
 
-            modelBuilder.Entity<WatchlistsMovies>()
-                .HasIndex(b => b.WatchlistId)
-                .IncludeProperties(b => b.MovieId);
+                entity.HasMany(e => e.Movies)
+                    .WithMany(e => e.Watchlists)
+                    .UsingEntity<WatchlistsMovies>();
+            });
 
-            modelBuilder.Entity<Movie>().HasData(GetMoviesFromSeedCsv()); 
+            modelBuilder.Entity<WatchlistsMovies>(entity =>
+            {
+                entity.Property(e => e.Created).HasDefaultValueSql("now()");
+
+                entity.HasIndex(b => b.WatchlistId)
+                    .IncludeProperties(b => b.MovieId);
+            });
+
+            modelBuilder.Entity<Movie>(entity => 
+            {
+                entity.Property(e => e.Created).HasDefaultValueSql("now()");
+
+                entity.HasData(GetMoviesFromSeedCsv());
+            }); 
         }
 
         public DbSet<Movie> Movies { get; set; } = null!;
@@ -49,7 +62,10 @@ namespace MovieWatchlist.Infrastructure.Data
         {
             public MovieMap()
             {
-                AutoMap(CultureInfo.InvariantCulture);
+                Map(m => m.Id).Name("Id");
+                Map(m => m.Ranking).Name("Ranking");
+                Map(m => m.Title).Name("Title");
+                Map(m => m.Rating).Name("Rating");
             }
         }
     }

@@ -70,7 +70,10 @@ namespace MovieWatchlist.Api.Tests.Unit.Services
         {
             public MovieMap()
             {
-                AutoMap(CultureInfo.InvariantCulture);
+                Map(m => m.Id).Name("Id");
+                Map(m => m.Ranking).Name("Ranking");
+                Map(m => m.Title).Name("Title");
+                Map(m => m.Rating).Name("Rating");
             }
         }
     }

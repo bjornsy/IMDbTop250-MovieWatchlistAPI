@@ -18,6 +18,12 @@ namespace MovieWatchlist.ApplicationCore.Models
         [Column(TypeName = "numeric(2,1)")]
         public decimal Rating { get; set; }
 
+        [Required]
+        public DateTimeOffset Created { get; set; }
+
+        [Required]
+        public DateTimeOffset LastUpdated { get; set; }
+
         //For join table
         public List<Watchlist> Watchlists { get; } = new();
     }

@@ -12,6 +12,12 @@ namespace MovieWatchlist.ApplicationCore.Models
         [Required]
         public string Name { get; set; } = string.Empty;
 
+        [Required]
+        public DateTimeOffset Created { get; set; }
+
+        [Required]
+        public DateTimeOffset LastUpdated { get; set; }
+
         //For join table
         public List<Movie> Movies { get; } = new();
     }

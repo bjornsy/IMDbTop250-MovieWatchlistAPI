@@ -14,5 +14,11 @@ namespace MovieWatchlist.ApplicationCore.Models
 
         [Required]
         public bool Watched { get; set; }
+
+        [Required]
+        public DateTimeOffset Created { get; set; }
+
+        [Required]
+        public DateTimeOffset LastUpdated { get; set; }
     }
 }
