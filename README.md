@@ -71,3 +71,4 @@ Planned updates include:
 * [Use ExecuteDeleteAsync](https://learn.microsoft.com/en-us/ef/core/what-is-new/ef-core-7.0/whatsnew#executeupdate-and-executedelete-bulk-updates)
 * Change to NSubstitute from Moq
 * Implement HATEOAS
+* Run integration tests in GitHub Actions (not just unit tests) once caching of images within the compose file is supported
