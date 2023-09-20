@@ -53,12 +53,6 @@ var app = builder.Build();
 
 app.UseHttpLogging();
 
-using (var scope = app.Services.CreateScope())
-{
-    var dataContext = scope.ServiceProvider.GetRequiredService<MovieWatchlistContext>();
-    dataContext.Database.Migrate();
-}
-
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

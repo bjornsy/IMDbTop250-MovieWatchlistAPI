@@ -35,7 +35,7 @@ Within the `GET Movies` endpoint, if the cache is empty the [Top250InfoService](
 * The Swagger page will be available at <http://localhost:8080/swagger/index.html>
 * The healthcheck is available at <http://localhost:8080/_health>
 
-### How to develop
+### How to develop locally
 
 * After `docker compose build`, start the Postgres container with a volume: `docker compose start moviewatchlist-db`
 * After starting the program in your IDE, the Swagger page is available at <https://localhost:7069/swagger/index.html>
@@ -56,6 +56,8 @@ Within the `GET Movies` endpoint, if the cache is empty the [Top250InfoService](
     * `dotnet tool install --global dotnet-ef`
     * `dotnet ef --startup-project ../MovieWatchlist.Api/ migrations add <migration name>`
     * `dotnet ef --startup-project ../MovieWatchlist.Api/ database update`
+
+  The migrations are applied during the `compose` step, with `init.sql`. This file can be regenerated after adding a migration with `dotnet ef --startup-project ../MovieWatchlist.Api/ migrations script --output ./init.sql` (this mimics [the recommended way](https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/applying?tabs=dotnet-core-cli#sql-scripts) of applying migrations, rather than executing on application start).
 
 ## Future updates
 

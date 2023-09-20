@@ -10,7 +10,7 @@ services:
         ConnectionStrings:MovieWatchlist: Server=host.docker.internal;Port=5432;Database=moviewatchlist;User ID=postgres;Password=postgres;
         ASPNETCORE_ENVIRONMENT: Development
     moviewatchlist-db:
-      image: postgres:14.5-bullseye
+      image: postgres:16.0-bullseye
       restart: always
       ports:
         - '5432:5432'
@@ -19,6 +19,7 @@ services:
         POSTGRES_PASSWORD: postgres
         POSTGRES_DB: moviewatchlist
       volumes:
+        - ./src/MovieWatchlist.Infrastructure/init.sql:/docker-entrypoint-initdb.d/init.sql
         - moviewatchlist-db:/var/lib/postgresql/data
 volumes:
   moviewatchlist-db:
