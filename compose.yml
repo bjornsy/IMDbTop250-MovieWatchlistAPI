@@ -20,7 +20,7 @@ services:
         POSTGRES_DB: moviewatchlist
       volumes:
         - ./src/MovieWatchlist.Infrastructure/init.sql:/docker-entrypoint-initdb.d/init.sql
-        - moviewatchlist-db:/var/lib/postgresql/data
+        - moviewatchlist-data:/var/lib/postgresql/data
 volumes:
-  moviewatchlist-db:
+  moviewatchlist-data:
     driver: local
