@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using MovieWatchlist.Api.Models.Requests;
-using MovieWatchlist.Api.Models.Responses;
+using MovieWatchlist.Contracts.Requests;
+using MovieWatchlist.Contracts.Responses;
 using MovieWatchlist.Api.Services;
 using System.Net.Mime;
 

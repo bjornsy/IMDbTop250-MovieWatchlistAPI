@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MovieWatchlist.Api.Models.Requests
+namespace MovieWatchlist.Contracts.Requests
 {
-    public class AddMoviesToWatchlistRequest
+    public class RemoveMoviesFromWatchlistRequest
     {
         [Required]
         [MinLength(1)]

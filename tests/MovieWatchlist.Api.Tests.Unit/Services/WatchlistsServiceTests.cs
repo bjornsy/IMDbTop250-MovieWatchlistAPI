@@ -1,6 +1,6 @@
 ﻿using Moq;
 using MovieWatchlist.Api.Exceptions;
-using MovieWatchlist.Api.Models.Requests;
+using MovieWatchlist.Contracts.Requests;
 using MovieWatchlist.Api.Services;
 using MovieWatchlist.ApplicationCore.Interfaces.Data;
 using MovieWatchlist.ApplicationCore.Models;

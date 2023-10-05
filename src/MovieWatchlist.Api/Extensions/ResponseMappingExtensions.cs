@@ -1,4 +1,4 @@
-﻿using MovieWatchlist.Api.Models.Responses;
+﻿using MovieWatchlist.Contracts.Responses;
 using MovieWatchlist.ApplicationCore.Models;
 
 namespace MovieWatchlist.Api.Extensions

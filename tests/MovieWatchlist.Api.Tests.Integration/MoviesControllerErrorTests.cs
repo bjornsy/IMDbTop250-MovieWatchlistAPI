@@ -1,4 +1,4 @@
-﻿using MovieWatchlist.Api.Models.Responses;
+﻿using MovieWatchlist.Contracts.Responses;
 using System.Net;
 using System.Net.Http.Json;
 using Xunit;

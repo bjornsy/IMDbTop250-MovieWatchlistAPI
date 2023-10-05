@@ -1,7 +1,7 @@
 ﻿using MovieWatchlist.Api.Exceptions;
 using MovieWatchlist.Api.Extensions;
-using MovieWatchlist.Api.Models.Requests;
-using MovieWatchlist.Api.Models.Responses;
+using MovieWatchlist.Contracts.Requests;
+using MovieWatchlist.Contracts.Responses;
 using MovieWatchlist.ApplicationCore.Interfaces.Data;
 using MovieWatchlist.ApplicationCore.Models;
 

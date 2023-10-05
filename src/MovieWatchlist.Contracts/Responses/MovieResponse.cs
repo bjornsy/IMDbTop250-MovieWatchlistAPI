@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MovieWatchlist.Api.Models.Responses
+namespace MovieWatchlist.Contracts.Responses
 {
     public record MovieResponse
     {
