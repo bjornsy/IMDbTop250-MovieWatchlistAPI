@@ -2,8 +2,8 @@
 using MovieWatchlist.Api.Exceptions;
 using MovieWatchlist.Contracts.Requests;
 using MovieWatchlist.Api.Services;
-using MovieWatchlist.ApplicationCore.Interfaces.Data;
-using MovieWatchlist.ApplicationCore.Models;
+using MovieWatchlist.Application.Interfaces.Data;
+using MovieWatchlist.Application.Models;
 using Xunit;
 
 namespace MovieWatchlist.Api.Tests.Unit.Services

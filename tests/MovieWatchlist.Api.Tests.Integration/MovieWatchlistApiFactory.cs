@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using MovieWatchlist.Api.Configuration;
-using MovieWatchlist.ApplicationCore.Interfaces.Clients;
+using MovieWatchlist.Application.Interfaces.Clients;
 using MovieWatchlist.Infrastructure.Clients;
 using MovieWatchlist.Infrastructure.Data;
 using System.Net;

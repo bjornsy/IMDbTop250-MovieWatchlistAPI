@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using MovieWatchlist.Api.Extensions;
 using MovieWatchlist.Contracts.Responses;
-using MovieWatchlist.ApplicationCore.Interfaces.Data;
-using MovieWatchlist.ApplicationCore.Models;
+using MovieWatchlist.Application.Interfaces.Data;
+using MovieWatchlist.Application.Models;
 
 namespace MovieWatchlist.Api.Services
 {

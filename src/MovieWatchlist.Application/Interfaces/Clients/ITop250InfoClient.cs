@@ -1,4 +1,4 @@
-﻿namespace MovieWatchlist.ApplicationCore.Interfaces.Clients
+﻿namespace MovieWatchlist.Application.Interfaces.Clients
 {
     public interface ITop250InfoClient
     {

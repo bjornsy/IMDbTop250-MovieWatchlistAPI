@@ -25,7 +25,7 @@ namespace MovieWatchlist.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("MovieWatchlist.ApplicationCore.Models.Movie", b =>
+            modelBuilder.Entity("MovieWatchlist.Application.Models.Movie", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -2305,7 +2305,7 @@ namespace MovieWatchlist.Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("MovieWatchlist.ApplicationCore.Models.Watchlist", b =>
+            modelBuilder.Entity("MovieWatchlist.Application.Models.Watchlist", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -2328,7 +2328,7 @@ namespace MovieWatchlist.Infrastructure.Migrations
                     b.ToTable("Watchlists", "Watchlists");
                 });
 
-            modelBuilder.Entity("MovieWatchlist.ApplicationCore.Models.WatchlistsMovies", b =>
+            modelBuilder.Entity("MovieWatchlist.Application.Models.WatchlistsMovies", b =>
                 {
                     b.Property<string>("MovieId")
                         .HasColumnType("text");
@@ -2356,15 +2356,15 @@ namespace MovieWatchlist.Infrastructure.Migrations
                     b.ToTable("WatchlistsMovies", "Watchlists");
                 });
 
-            modelBuilder.Entity("MovieWatchlist.ApplicationCore.Models.WatchlistsMovies", b =>
+            modelBuilder.Entity("MovieWatchlist.Application.Models.WatchlistsMovies", b =>
                 {
-                    b.HasOne("MovieWatchlist.ApplicationCore.Models.Movie", null)
+                    b.HasOne("MovieWatchlist.Application.Models.Movie", null)
                         .WithMany()
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MovieWatchlist.ApplicationCore.Models.Watchlist", null)
+                    b.HasOne("MovieWatchlist.Application.Models.Watchlist", null)
                         .WithMany()
                         .HasForeignKey("WatchlistId")
                         .OnDelete(DeleteBehavior.Cascade)

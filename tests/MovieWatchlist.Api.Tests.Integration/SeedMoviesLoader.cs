@@ -1,6 +1,6 @@
 ﻿using CsvHelper.Configuration;
 using CsvHelper;
-using MovieWatchlist.ApplicationCore.Models;
+using MovieWatchlist.Application.Models;
 using System.Globalization;
 
 namespace MovieWatchlist.Api.Tests.Integration

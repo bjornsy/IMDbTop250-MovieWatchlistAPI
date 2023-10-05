@@ -1,6 +1,6 @@
 ﻿using HtmlAgilityPack;
-using MovieWatchlist.ApplicationCore.Interfaces.Clients;
-using MovieWatchlist.ApplicationCore.Models;
+using MovieWatchlist.Application.Interfaces.Clients;
+using MovieWatchlist.Application.Models;
 using System.Web;
 
 namespace MovieWatchlist.Api.Services

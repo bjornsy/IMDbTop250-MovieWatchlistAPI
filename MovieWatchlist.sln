@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Top250Scraper", "Top250Scra
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieWatchlist.Infrastructure", "src\MovieWatchlist.Infrastructure\MovieWatchlist.Infrastructure.csproj", "{0E799044-459E-4F87-93B2-0A27A91B6E6B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieWatchlist.ApplicationCore", "src\MovieWatchlist.ApplicationCore\MovieWatchlist.ApplicationCore.csproj", "{3D1C6046-FBD4-4A3A-8AA8-17D402344E64}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieWatchlist.Application", "src\MovieWatchlist.Application\MovieWatchlist.Application.csproj", "{3D1C6046-FBD4-4A3A-8AA8-17D402344E64}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieWatchlist.Api.Tests.Unit", "tests\MovieWatchlist.Api.Tests.Unit\MovieWatchlist.Api.Tests.Unit.csproj", "{1A769873-903A-4E4A-9E65-5EE7770D7F88}"
 EndProject

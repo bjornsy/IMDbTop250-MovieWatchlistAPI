@@ -1,5 +1,5 @@
 ﻿using MovieWatchlist.Contracts.Responses;
-using MovieWatchlist.ApplicationCore.Models;
+using MovieWatchlist.Application.Models;
 
 namespace MovieWatchlist.Api.Extensions
 {
