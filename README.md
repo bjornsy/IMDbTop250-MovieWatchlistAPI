@@ -1,3 +1,5 @@
+[![Unit tests with GitHub Actions](https://github.com/bjornsy/IMDbTop250-MovieWatchlistAPI/actions/workflows/dotnet-test-unit.yml/badge.svg?branch=main)](https://github.com/bjornsy/IMDbTop250-MovieWatchlistAPI/actions/workflows/dotnet-test-unit.yml)
+
 # Movie Watchlist API for IMDb Top 250
 
 API to view the top 250 rated movies from IMDb, and save movies that you want to watch and set as watched.
@@ -69,3 +71,4 @@ Planned updates include:
 * [Use ExecuteDeleteAsync](https://learn.microsoft.com/en-us/ef/core/what-is-new/ef-core-7.0/whatsnew#executeupdate-and-executedelete-bulk-updates)
 * Change to NSubstitute from Moq
 * Implement HATEOAS
+* Run integration tests in GitHub Actions (not just unit tests) once caching of images within the compose file is supported
