@@ -1,4 +1,4 @@
-﻿using MovieWatchlist.Application.Interfaces.Clients;
+﻿using MovieWatchlist.ApplicationCore.Interfaces.Clients;
 
 namespace MovieWatchlist.Infrastructure.Clients
 {

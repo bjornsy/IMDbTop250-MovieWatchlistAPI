@@ -2,8 +2,8 @@
 using Microsoft.Extensions.Logging;
 using Moq;
 using MovieWatchlist.Api.Services;
-using MovieWatchlist.Application.Interfaces.Data;
-using MovieWatchlist.Application.Models;
+using MovieWatchlist.ApplicationCore.Interfaces.Data;
+using MovieWatchlist.ApplicationCore.Models;
 using System.Collections.ObjectModel;
 using Xunit;
 

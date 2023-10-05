@@ -2,8 +2,8 @@
 using CsvHelper.Configuration;
 using Moq;
 using MovieWatchlist.Api.Services;
-using MovieWatchlist.Application.Interfaces.Clients;
-using MovieWatchlist.Application.Models;
+using MovieWatchlist.ApplicationCore.Interfaces.Clients;
+using MovieWatchlist.ApplicationCore.Models;
 using System.Globalization;
 using Xunit;
 

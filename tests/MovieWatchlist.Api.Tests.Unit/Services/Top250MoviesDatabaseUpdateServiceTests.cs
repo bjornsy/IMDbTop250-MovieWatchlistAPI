@@ -1,7 +1,7 @@
 ﻿using Moq;
 using MovieWatchlist.Api.Services;
-using MovieWatchlist.Application.Interfaces.Data;
-using MovieWatchlist.Application.Models;
+using MovieWatchlist.ApplicationCore.Interfaces.Data;
+using MovieWatchlist.ApplicationCore.Models;
 using Xunit;
 
 namespace MovieWatchlist.Api.Tests.Unit.Services

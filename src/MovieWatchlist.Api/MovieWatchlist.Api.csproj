@@ -33,7 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MovieWatchlist.Application\MovieWatchlist.Application.csproj" />
+    <ProjectReference Include="..\MovieWatchlist.ApplicationCore\MovieWatchlist.ApplicationCore.csproj" />
     <ProjectReference Include="..\MovieWatchlist.Contracts\MovieWatchlist.Contracts.csproj" />
     <ProjectReference Include="..\MovieWatchlist.Infrastructure\MovieWatchlist.Infrastructure.csproj" />
   </ItemGroup>

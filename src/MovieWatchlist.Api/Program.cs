@@ -5,8 +5,8 @@ using MovieWatchlist.Api;
 using MovieWatchlist.Api.Configuration;
 using MovieWatchlist.Api.Extensions;
 using MovieWatchlist.Api.Services;
-using MovieWatchlist.Application.Interfaces.Clients;
-using MovieWatchlist.Application.Interfaces.Data;
+using MovieWatchlist.ApplicationCore.Interfaces.Clients;
+using MovieWatchlist.ApplicationCore.Interfaces.Data;
 using MovieWatchlist.Infrastructure.Clients;
 using MovieWatchlist.Infrastructure.Data;
 
@@ -21,9 +21,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMemoryCache();
-
-//builder.AddApplication();
-
 builder.Services.AddDbContext<MovieWatchlistContext>(options =>
     options.UseNpgsql(config.GetConnectionString("MovieWatchlist") ?? throw new InvalidOperationException("Connection string 'MovieWatchlistContext' not found.")));
 

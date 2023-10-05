@@ -1,6 +1,6 @@
-﻿using MovieWatchlist.Application.Models;
+﻿using MovieWatchlist.ApplicationCore.Models;
 
-namespace MovieWatchlist.Application.Interfaces.Data
+namespace MovieWatchlist.ApplicationCore.Interfaces.Data
 {
     public interface IWatchlistsRepository
     {

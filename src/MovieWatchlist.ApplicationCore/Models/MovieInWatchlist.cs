@@ -1,4 +1,4 @@
-﻿namespace MovieWatchlist.Application.Models
+﻿namespace MovieWatchlist.ApplicationCore.Models
 {
     public class MovieInWatchlist
     {

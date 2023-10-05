@@ -1,7 +1,7 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
 using Microsoft.EntityFrameworkCore;
-using MovieWatchlist.Application.Models;
+using MovieWatchlist.ApplicationCore.Models;
 using System.Globalization;
 
 namespace MovieWatchlist.Infrastructure.Data

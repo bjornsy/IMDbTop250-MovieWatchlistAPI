@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MovieWatchlist.Application.Models
+namespace MovieWatchlist.ApplicationCore.Models
 {
     [Table("Movies", Schema = "Movies")]
     public class Movie
