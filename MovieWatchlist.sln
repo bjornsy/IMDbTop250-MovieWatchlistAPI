@@ -15,11 +15,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieWatchlist.Infrastructu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieWatchlist.ApplicationCore", "src\MovieWatchlist.ApplicationCore\MovieWatchlist.ApplicationCore.csproj", "{3D1C6046-FBD4-4A3A-8AA8-17D402344E64}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieWatchlist.Api.Tests.Unit", "tests\MovieWatchlist.Api.Tests.Unit\MovieWatchlist.Api.Tests.Unit.csproj", "{1A769873-903A-4E4A-9E65-5EE7770D7F88}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieWatchlist.ApplicationCore.Tests.Unit", "tests\MovieWatchlist.Api.Tests.Unit\MovieWatchlist.ApplicationCore.Tests.Unit.csproj", "{1A769873-903A-4E4A-9E65-5EE7770D7F88}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieWatchlist.Api.Tests.Integration", "tests\MovieWatchlist.Api.Tests.Integration\MovieWatchlist.Api.Tests.Integration.csproj", "{EFA41952-241C-442B-87FB-42FB3DF0EEB5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieWatchlist.Contracts", "src\MovieWatchlist.Contracts\MovieWatchlist.Contracts.csproj", "{D7DED251-2200-4CA9-81EF-540400FC1AB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieWatchlist.Contracts", "src\MovieWatchlist.Contracts\MovieWatchlist.Contracts.csproj", "{D7DED251-2200-4CA9-81EF-540400FC1AB9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

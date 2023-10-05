@@ -1,12 +1,12 @@
 ﻿using Moq;
-using MovieWatchlist.Api.Exceptions;
+using MovieWatchlist.ApplicationCore.Exceptions;
 using MovieWatchlist.Contracts.Requests;
-using MovieWatchlist.Api.Services;
+using MovieWatchlist.ApplicationCore.Services;
 using MovieWatchlist.ApplicationCore.Interfaces.Data;
 using MovieWatchlist.ApplicationCore.Models;
 using Xunit;
 
-namespace MovieWatchlist.Api.Tests.Unit.Services
+namespace MovieWatchlist.ApplicationCore.Tests.Unit.Services
 {
     public class WatchlistsServiceTests
     {

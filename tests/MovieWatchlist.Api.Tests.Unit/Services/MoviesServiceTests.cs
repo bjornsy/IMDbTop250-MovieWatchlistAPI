@@ -1,13 +1,13 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Moq;
-using MovieWatchlist.Api.Services;
+using MovieWatchlist.ApplicationCore.Services;
 using MovieWatchlist.ApplicationCore.Interfaces.Data;
 using MovieWatchlist.ApplicationCore.Models;
 using System.Collections.ObjectModel;
 using Xunit;
 
-namespace MovieWatchlist.Api.Tests.Unit.Services
+namespace MovieWatchlist.ApplicationCore.Tests.Unit.Services
 {
     public class MoviesServiceTests
     {

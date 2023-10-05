@@ -1,7 +1,7 @@
 ﻿using MovieWatchlist.Contracts.Responses;
 using MovieWatchlist.ApplicationCore.Models;
 
-namespace MovieWatchlist.Api.Extensions
+namespace MovieWatchlist.ApplicationCore.Extensions
 {
     public static class ResponseMappingExtensions
     {

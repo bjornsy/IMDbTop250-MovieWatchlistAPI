@@ -1,4 +1,4 @@
-﻿namespace MovieWatchlist.Api.Exceptions
+﻿namespace MovieWatchlist.ApplicationCore.Exceptions
 {
     public class InvalidRequestException : Exception
     {

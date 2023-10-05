@@ -1,7 +1,7 @@
 ﻿using MovieWatchlist.ApplicationCore.Interfaces.Data;
 using MovieWatchlist.ApplicationCore.Models;
 
-namespace MovieWatchlist.Api.Services
+namespace MovieWatchlist.ApplicationCore.Services
 {
     public interface ITop250MoviesDatabaseUpdateService
     {

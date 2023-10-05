@@ -1,11 +1,11 @@
-﻿using MovieWatchlist.Api.Exceptions;
-using MovieWatchlist.Api.Extensions;
+﻿using MovieWatchlist.ApplicationCore.Extensions;
 using MovieWatchlist.Contracts.Requests;
 using MovieWatchlist.Contracts.Responses;
 using MovieWatchlist.ApplicationCore.Interfaces.Data;
 using MovieWatchlist.ApplicationCore.Models;
+using MovieWatchlist.ApplicationCore.Exceptions;
 
-namespace MovieWatchlist.Api.Services
+namespace MovieWatchlist.ApplicationCore.Services
 {
     public interface IWatchlistsService
     {

@@ -1,10 +1,11 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-using MovieWatchlist.Api.Extensions;
-using MovieWatchlist.Contracts.Responses;
+﻿using MovieWatchlist.Contracts.Responses;
 using MovieWatchlist.ApplicationCore.Interfaces.Data;
 using MovieWatchlist.ApplicationCore.Models;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Caching.Memory;
+using MovieWatchlist.ApplicationCore.Extensions;
 
-namespace MovieWatchlist.Api.Services
+namespace MovieWatchlist.ApplicationCore.Services
 {
     public interface IMoviesService
     {

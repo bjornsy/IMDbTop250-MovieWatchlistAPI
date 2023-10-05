@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
-using MovieWatchlist.Api.Exceptions;
+using MovieWatchlist.ApplicationCore.Exceptions;
 using Npgsql;
 
 namespace MovieWatchlist.Api

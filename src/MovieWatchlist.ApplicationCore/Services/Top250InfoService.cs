@@ -3,7 +3,7 @@ using MovieWatchlist.ApplicationCore.Interfaces.Clients;
 using MovieWatchlist.ApplicationCore.Models;
 using System.Web;
 
-namespace MovieWatchlist.Api.Services
+namespace MovieWatchlist.ApplicationCore.Services
 {
     public interface ITop250InfoService
     {

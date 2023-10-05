@@ -1,13 +1,13 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
 using Moq;
-using MovieWatchlist.Api.Services;
+using MovieWatchlist.ApplicationCore.Services;
 using MovieWatchlist.ApplicationCore.Interfaces.Clients;
 using MovieWatchlist.ApplicationCore.Models;
 using System.Globalization;
 using Xunit;
 
-namespace MovieWatchlist.Api.Tests.Unit.Services
+namespace MovieWatchlist.ApplicationCore.Tests.Unit.Services
 {
     public class Top250InfoServiceTests
     {

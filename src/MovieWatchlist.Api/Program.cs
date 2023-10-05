@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 using MovieWatchlist.Api;
 using MovieWatchlist.Api.Configuration;
 using MovieWatchlist.Api.Extensions;
-using MovieWatchlist.Api.Services;
+using MovieWatchlist.ApplicationCore.Services;
 using MovieWatchlist.ApplicationCore.Interfaces.Clients;
 using MovieWatchlist.ApplicationCore.Interfaces.Data;
 using MovieWatchlist.Infrastructure.Clients;
