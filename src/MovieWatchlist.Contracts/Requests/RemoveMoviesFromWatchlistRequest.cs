@@ -6,6 +6,6 @@ namespace MovieWatchlist.Contracts.Requests
     {
         [Required]
         [MinLength(1)]
-        public List<string> MovieIds { get; set; } = new List<string>();
+        public required List<string> MovieIds { get; init; } = new List<string>();
     }
 }

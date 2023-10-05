@@ -2,7 +2,7 @@
 {
     public class CreateWatchlistRequest
     {
-        public string Name { get; set; } = "Movies to watch from IMDb Top 250";
-        public List<string> MovieIds { get; set; } = new List<string>();
+        public string Name { get; init; } = "Movies to watch from IMDb Top 250";
+        public List<string> MovieIds { get; init; } = new List<string>();
     }
 }

@@ -6,6 +6,6 @@ namespace MovieWatchlist.Contracts.Requests
     {
         [Required]
         [MinLength(1)]
-        public required string Name { get; set; }
+        public required string Name { get; init; }
     }
 }

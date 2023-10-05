@@ -6,6 +6,6 @@ namespace MovieWatchlist.Contracts.Requests
     {
         [Required]
         [MinLength(1)]
-        public Dictionary<string, bool> MovieIdsWatched { get; set; } = new Dictionary<string, bool>();
+        public required Dictionary<string, bool> MovieIdsWatched { get; init; } = new Dictionary<string, bool>();
     }
 }
