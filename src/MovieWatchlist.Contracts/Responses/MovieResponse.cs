@@ -5,14 +5,14 @@ namespace MovieWatchlist.Contracts.Responses
     public record MovieResponse
     {
         [Key]
-        public string Id { get; set; } = string.Empty;
+        public required string Id { get; init; } = string.Empty;
 
-        public int? Ranking { get; set; }
-
-        [Required]
-        public string Title { get; set; } = string.Empty;
+        public required int? Ranking { get; init; }
 
         [Required]
-        public decimal Rating { get; set; }
+        public required string Title { get; init; } = string.Empty;
+
+        [Required]
+        public required decimal Rating { get; init; }
     }
 }

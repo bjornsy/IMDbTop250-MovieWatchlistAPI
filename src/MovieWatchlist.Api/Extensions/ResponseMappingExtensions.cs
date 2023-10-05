@@ -33,7 +33,11 @@ namespace MovieWatchlist.Api.Extensions
 
         private static MovieInWatchlistResponse MapToResponse(this MovieInWatchlist movieInwatchlist)
         {
-            return new MovieInWatchlistResponse(movieInwatchlist.Movie.MapToResponse(), movieInwatchlist.Watched);
+            return new MovieInWatchlistResponse
+            {
+                Movie = movieInwatchlist.Movie.MapToResponse(),
+                Watched = movieInwatchlist.Watched
+            };
         }
     }
 }

@@ -5,12 +5,12 @@ namespace MovieWatchlist.Contracts.Responses
     public record WatchlistResponse
     {
         [Key]
-        public Guid Id { get; set; }
+        public required Guid Id { get; init; }
 
         [Required]
-        public string Name { get; set; } = string.Empty;
+        public required string Name { get; init; } = string.Empty;
 
         [Required]
-        public IReadOnlyCollection<MovieInWatchlistResponse> Movies { get; set; } = new List<MovieInWatchlistResponse>();
+        public required IReadOnlyCollection<MovieInWatchlistResponse> Movies { get; init; } = new List<MovieInWatchlistResponse>();
     }
 }
