@@ -23,7 +23,7 @@ namespace MovieWatchlist.Controllers
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost]
-        public async Task<ActionResult> CreateWatchlist(CreateWatchlistRequest createWatchlistRequest)
+        public async Task<IActionResult> CreateWatchlist(CreateWatchlistRequest createWatchlistRequest)
         {
             var watchlist = await _watchlistsService.CreateWatchlist(createWatchlistRequest);
 
@@ -34,7 +34,7 @@ namespace MovieWatchlist.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("{watchlistId}")]
-        public async Task<ActionResult<WatchlistResponse>> GetWatchlist(Guid watchlistId)
+        public async Task<IActionResult> GetWatchlist(Guid watchlistId)
         {
             var watchlist = await _watchlistsService.GetWatchlist(watchlistId);
 
@@ -50,7 +50,7 @@ namespace MovieWatchlist.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpDelete("{watchlistId}")]
-        public async Task<ActionResult> DeleteWatchlist(Guid watchlistId)
+        public async Task<IActionResult> DeleteWatchlist(Guid watchlistId)
         {
             var watchlist = await _watchlistsService.GetWatchlist(watchlistId);
             if (watchlist is null)
@@ -70,7 +70,7 @@ namespace MovieWatchlist.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Route("{watchlistId}/addMovies")]
         [HttpPost]
-        public async Task<ActionResult> AddMoviesToWatchlist(Guid watchlistId, AddMoviesToWatchlistRequest addMoviesToWatchlistRequest)
+        public async Task<IActionResult> AddMoviesToWatchlist(Guid watchlistId, AddMoviesToWatchlistRequest addMoviesToWatchlistRequest)
         {
             var watchlist = await _watchlistsService.GetWatchlist(watchlistId);
             if (watchlist is null)
@@ -129,7 +129,7 @@ namespace MovieWatchlist.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Route("{watchlistId}/rename")]
         [HttpPatch]
-        public async Task<ActionResult> Rename(Guid watchlistId, RenameWatchlistRequest renameWatchlistRequest)
+        public async Task<IActionResult> Rename(Guid watchlistId, RenameWatchlistRequest renameWatchlistRequest)
         {
             var watchlist = await _watchlistsService.GetWatchlist(watchlistId);
             if (watchlist is null)

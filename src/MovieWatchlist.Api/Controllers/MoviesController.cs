@@ -19,7 +19,7 @@ namespace MovieWatchlist.Controllers
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet("top250")]
-        public async Task<ActionResult<IReadOnlyCollection<MovieResponse>>> GetTop250Movies()
+        public async Task<IActionResult> GetTop250Movies()
         {
             var movies = await _moviesService.GetTop250();
 
@@ -31,7 +31,7 @@ namespace MovieWatchlist.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyCollection<MovieResponse>>> GetMovies([FromQuery][BindRequired] IEnumerable<string> movieIds)
+        public async Task<IActionResult> GetMovies([FromQuery][BindRequired] IEnumerable<string> movieIds)
         {
             var movies = await _moviesService.GetMovies(movieIds);
 
