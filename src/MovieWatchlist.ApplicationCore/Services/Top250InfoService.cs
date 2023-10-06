@@ -1,15 +1,11 @@
 ﻿using HtmlAgilityPack;
 using MovieWatchlist.ApplicationCore.Interfaces.Clients;
+using MovieWatchlist.ApplicationCore.Interfaces.Services;
 using MovieWatchlist.ApplicationCore.Models;
 using System.Web;
 
 namespace MovieWatchlist.ApplicationCore.Services
 {
-    public interface ITop250InfoService
-    {
-        Task<IReadOnlyCollection<Movie>> GetTop250();
-    }
-
     public class Top250InfoService : ITop250InfoService
     {
         private readonly ITop250InfoClient _top250InfoClient;

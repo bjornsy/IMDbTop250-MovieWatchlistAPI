@@ -4,15 +4,10 @@ using MovieWatchlist.ApplicationCore.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Caching.Memory;
 using MovieWatchlist.ApplicationCore.Extensions;
+using MovieWatchlist.ApplicationCore.Interfaces.Services;
 
 namespace MovieWatchlist.ApplicationCore.Services
 {
-    public interface IMoviesService
-    {
-        Task<IReadOnlyCollection<MovieResponse>> GetTop250();
-        Task<IReadOnlyCollection<MovieResponse>> GetMovies(IEnumerable<string> movieIds);
-    }
-
     public class MoviesService : IMoviesService
     {
         private readonly ITop250InfoService _top250InfoService;

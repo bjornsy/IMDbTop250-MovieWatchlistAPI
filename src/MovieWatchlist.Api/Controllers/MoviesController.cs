@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using MovieWatchlist.Contracts.Responses;
-using MovieWatchlist.ApplicationCore.Services;
+using MovieWatchlist.ApplicationCore.Interfaces.Services;
 
 namespace MovieWatchlist.Controllers
 {

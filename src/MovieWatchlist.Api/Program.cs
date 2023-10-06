@@ -9,6 +9,7 @@ using MovieWatchlist.ApplicationCore.Interfaces.Clients;
 using MovieWatchlist.ApplicationCore.Interfaces.Data;
 using MovieWatchlist.Infrastructure.Clients;
 using MovieWatchlist.Infrastructure.Data;
+using MovieWatchlist.ApplicationCore.Interfaces.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;

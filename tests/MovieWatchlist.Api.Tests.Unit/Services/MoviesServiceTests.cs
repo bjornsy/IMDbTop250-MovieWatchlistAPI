@@ -6,6 +6,7 @@ using MovieWatchlist.ApplicationCore.Interfaces.Data;
 using MovieWatchlist.ApplicationCore.Models;
 using System.Collections.ObjectModel;
 using Xunit;
+using MovieWatchlist.ApplicationCore.Interfaces.Services;
 
 namespace MovieWatchlist.ApplicationCore.Tests.Unit.Services
 {

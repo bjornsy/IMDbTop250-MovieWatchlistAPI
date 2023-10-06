@@ -4,20 +4,10 @@ using MovieWatchlist.Contracts.Responses;
 using MovieWatchlist.ApplicationCore.Interfaces.Data;
 using MovieWatchlist.ApplicationCore.Models;
 using MovieWatchlist.ApplicationCore.Exceptions;
+using MovieWatchlist.ApplicationCore.Interfaces.Services;
 
 namespace MovieWatchlist.ApplicationCore.Services
 {
-    public interface IWatchlistsService
-    {
-        Task<WatchlistResponse> CreateWatchlist(CreateWatchlistRequest createWatchlistRequest);
-        Task<WatchlistResponse?> GetWatchlist(Guid watchlistId);
-        Task DeleteWatchlist(Guid watchlistId);
-        Task AddMoviesToWatchlist(Guid watchlistId, AddMoviesToWatchlistRequest addMoviesToWatchlistRequest);
-        Task RemoveMoviesFromWatchlist(Guid watchlistId, RemoveMoviesFromWatchlistRequest addMoviesToWatchlistRequest);
-        Task SetMoviesAsWatched(Guid watchlistId, SetMoviesWatchedStatusRequest setMoviesWatchedStatusRequest);
-        Task Rename(Guid watchlistId, string name);
-    }
-
     public class WatchlistsService : IWatchlistsService
     {
         private readonly IWatchlistsRepository _watchlistRepository;

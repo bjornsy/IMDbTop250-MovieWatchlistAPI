@@ -1,13 +1,9 @@
 ﻿using MovieWatchlist.ApplicationCore.Interfaces.Data;
+using MovieWatchlist.ApplicationCore.Interfaces.Services;
 using MovieWatchlist.ApplicationCore.Models;
 
 namespace MovieWatchlist.ApplicationCore.Services
 {
-    public interface ITop250MoviesDatabaseUpdateService
-    {
-        Task UpdateTop250InDatabase(IReadOnlyCollection<Movie> updatedMovies);
-    }
-
     public class Top250MoviesDatabaseUpdateService : ITop250MoviesDatabaseUpdateService
     {
         private readonly IMoviesRepository _moviesRepository;
