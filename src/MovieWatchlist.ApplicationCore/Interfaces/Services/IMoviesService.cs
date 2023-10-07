@@ -1,10 +1,10 @@
-﻿using MovieWatchlist.Contracts.Responses;
+﻿using MovieWatchlist.ApplicationCore.Models;
 
 namespace MovieWatchlist.ApplicationCore.Interfaces.Services
 {
     public interface IMoviesService
     {
-        Task<IReadOnlyCollection<MovieResponse>> GetTop250();
-        Task<IReadOnlyCollection<MovieResponse>> GetMovies(IEnumerable<string> movieIds);
+        Task<IReadOnlyCollection<Movie>> GetTop250();
+        Task<IReadOnlyCollection<Movie>> GetMovies(IEnumerable<string> movieIds);
     }
 }

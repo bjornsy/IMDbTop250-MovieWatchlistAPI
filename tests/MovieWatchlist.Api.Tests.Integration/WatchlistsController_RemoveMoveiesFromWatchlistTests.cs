@@ -31,7 +31,7 @@ namespace MovieWatchlist.Api.Tests.Integration
             Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
 
             var updatedWatchlist = await (await _httpClient.GetAsync($"watchlists/{createdWatchlist.Id!}")).Content.ReadFromJsonAsync<WatchlistResponse>();
-            Assert.True(updatedWatchlist!.Movies.Count.Equals(0));
+            Assert.True(updatedWatchlist!.Movies.Count().Equals(0));
         }
 
         [Fact]

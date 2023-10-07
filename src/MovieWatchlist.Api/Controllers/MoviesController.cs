@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using MovieWatchlist.Contracts.Responses;
 using MovieWatchlist.ApplicationCore.Interfaces.Services;
+using MovieWatchlist.ApplicationCore.Extensions;
 
 namespace MovieWatchlist.Controllers
 {
@@ -23,6 +23,8 @@ namespace MovieWatchlist.Controllers
         {
             var movies = await _moviesService.GetTop250();
 
+            var movieResponses = movies.Select(m => m.MapToResponse());
+
             return Ok(movies);
         }
 
@@ -35,7 +37,9 @@ namespace MovieWatchlist.Controllers
         {
             var movies = await _moviesService.GetMovies(movieIds);
 
-            return Ok(movies);
+            var movieResponses = movies.Select(m => m.MapToResponse());
+
+            return Ok(movieResponses);
         }
     }
 }

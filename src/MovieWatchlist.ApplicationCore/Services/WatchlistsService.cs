@@ -1,6 +1,4 @@
-﻿using MovieWatchlist.ApplicationCore.Extensions;
-using MovieWatchlist.Contracts.Requests;
-using MovieWatchlist.Contracts.Responses;
+﻿using MovieWatchlist.Contracts.Requests;
 using MovieWatchlist.ApplicationCore.Interfaces.Data;
 using MovieWatchlist.ApplicationCore.Models;
 using MovieWatchlist.ApplicationCore.Exceptions;
@@ -19,7 +17,7 @@ namespace MovieWatchlist.ApplicationCore.Services
             _moviesRepository = moviesRepository;
         }
 
-        public async Task<WatchlistResponse> CreateWatchlist(CreateWatchlistRequest request)
+        public async Task<WatchlistWithMoviesWatched> CreateWatchlist(CreateWatchlistRequest request)
         {
             var watchlist = new Watchlist
             {
@@ -37,10 +35,10 @@ namespace MovieWatchlist.ApplicationCore.Services
 
             var moviesInWatchlist = await GetMoviesInWatchlist(watchlistsMoviesRecords);
 
-            return createdWatchlist.MapToResponse(moviesInWatchlist)!;
+            return new WatchlistWithMoviesWatched { Id = createdWatchlist.Id, Name = createdWatchlist.Name, Movies = moviesInWatchlist };
         }
 
-        public async Task<WatchlistResponse?> GetWatchlist(Guid watchlistId)
+        public async Task<WatchlistWithMoviesWatched?> GetWatchlist(Guid watchlistId)
         {
             var watchlist = await _watchlistRepository.GetWatchlistById(watchlistId);
 
@@ -50,7 +48,7 @@ namespace MovieWatchlist.ApplicationCore.Services
 
             var moviesInWatchlist = await GetMoviesInWatchlist(watchlistsMovies);
 
-            return watchlist.MapToResponse(moviesInWatchlist);
+            return new WatchlistWithMoviesWatched { Id = watchlist.Id, Name = watchlist.Name, Movies = moviesInWatchlist };
         }
 
         public async Task DeleteWatchlist(Guid watchlistId)

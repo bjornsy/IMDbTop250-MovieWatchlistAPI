@@ -1,12 +1,12 @@
-﻿using MovieWatchlist.Contracts.Requests;
-using MovieWatchlist.Contracts.Responses;
+﻿using MovieWatchlist.ApplicationCore.Models;
+using MovieWatchlist.Contracts.Requests;
 
 namespace MovieWatchlist.ApplicationCore.Interfaces.Services
 {
     public interface IWatchlistsService
     {
-        Task<WatchlistResponse> CreateWatchlist(CreateWatchlistRequest createWatchlistRequest);
-        Task<WatchlistResponse?> GetWatchlist(Guid watchlistId);
+        Task<WatchlistWithMoviesWatched> CreateWatchlist(CreateWatchlistRequest createWatchlistRequest);
+        Task<WatchlistWithMoviesWatched?> GetWatchlist(Guid watchlistId);
         Task DeleteWatchlist(Guid watchlistId);
         Task AddMoviesToWatchlist(Guid watchlistId, AddMoviesToWatchlistRequest addMoviesToWatchlistRequest);
         Task RemoveMoviesFromWatchlist(Guid watchlistId, RemoveMoviesFromWatchlistRequest addMoviesToWatchlistRequest);

@@ -3,7 +3,7 @@ using MovieWatchlist.ApplicationCore.Models;
 
 namespace MovieWatchlist.ApplicationCore.Extensions
 {
-    public static class ResponseMappingExtensions
+    public static class ContractMapping
     {
         public static MovieResponse MapToResponse(this Movie movie)
         {
@@ -16,18 +16,13 @@ namespace MovieWatchlist.ApplicationCore.Extensions
             };
         }
 
-        public static WatchlistResponse? MapToResponse(this Watchlist? watchlist, IEnumerable<MovieInWatchlist> watchlistsMovies)
+        public static WatchlistResponse? MapToResponse(this WatchlistWithMoviesWatched watchlistWithMoviesWatched)
         {
-            if (watchlist is null)
-            {
-                return null;
-            }
-
             return new WatchlistResponse
             {
-                Id = watchlist.Id,
-                Name = watchlist.Name,
-                Movies = watchlistsMovies.Select(wm => wm.MapToResponse()).ToList()
+                Id = watchlistWithMoviesWatched.Id,
+                Name = watchlistWithMoviesWatched.Name,
+                Movies = watchlistWithMoviesWatched.Movies.Select(wm => wm.MapToResponse()).ToList()
             };
         }
 

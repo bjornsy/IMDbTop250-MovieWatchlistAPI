@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using MovieWatchlist.ApplicationCore.Extensions;
 using MovieWatchlist.ApplicationCore.Interfaces.Services;
 using MovieWatchlist.Contracts.Requests;
-using MovieWatchlist.Contracts.Responses;
 using System.Net.Mime;
 
 namespace MovieWatchlist.Controllers
@@ -25,9 +25,11 @@ namespace MovieWatchlist.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateWatchlist(CreateWatchlistRequest createWatchlistRequest)
         {
-            var watchlist = await _watchlistsService.CreateWatchlist(createWatchlistRequest);
+            var watchlistWithMoviesWatched = await _watchlistsService.CreateWatchlist(createWatchlistRequest);
 
-            return CreatedAtAction(nameof(GetWatchlist), new { watchlistId = watchlist.Id }, watchlist);
+            var watchlistResponse = watchlistWithMoviesWatched.MapToResponse();
+
+            return CreatedAtAction(nameof(GetWatchlist), new { watchlistId = watchlistResponse!.Id }, watchlistResponse);
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -36,14 +38,16 @@ namespace MovieWatchlist.Controllers
         [HttpGet("{watchlistId}")]
         public async Task<IActionResult> GetWatchlist(Guid watchlistId)
         {
-            var watchlist = await _watchlistsService.GetWatchlist(watchlistId);
+            var watchlistWithMoviesWatched = await _watchlistsService.GetWatchlist(watchlistId);
 
-            if (watchlist is null)
+            if (watchlistWithMoviesWatched is null)
             {
                 return NotFound();
             }
 
-            return Ok(watchlist);
+            var watchlistResponse = watchlistWithMoviesWatched.MapToResponse();
+
+            return Ok(watchlistResponse);
         }
 
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -52,13 +56,13 @@ namespace MovieWatchlist.Controllers
         [HttpDelete("{watchlistId}")]
         public async Task<IActionResult> DeleteWatchlist(Guid watchlistId)
         {
-            var watchlist = await _watchlistsService.GetWatchlist(watchlistId);
-            if (watchlist is null)
+            var watchlistWithMoviesWatched = await _watchlistsService.GetWatchlist(watchlistId);
+            if (watchlistWithMoviesWatched is null)
             {
                 return NotFound();
             }
 
-            await _watchlistsService.DeleteWatchlist(watchlist.Id);
+            await _watchlistsService.DeleteWatchlist(watchlistWithMoviesWatched.Id);
 
             return NoContent();
         }
@@ -72,8 +76,8 @@ namespace MovieWatchlist.Controllers
         [HttpPost]
         public async Task<IActionResult> AddMoviesToWatchlist(Guid watchlistId, AddMoviesToWatchlistRequest addMoviesToWatchlistRequest)
         {
-            var watchlist = await _watchlistsService.GetWatchlist(watchlistId);
-            if (watchlist is null)
+            var watchlistWithMoviesWatched = await _watchlistsService.GetWatchlist(watchlistId);
+            if (watchlistWithMoviesWatched is null)
             {
                 return NotFound();
             }
@@ -92,8 +96,8 @@ namespace MovieWatchlist.Controllers
         [HttpPost]
         public async Task<ActionResult> RemoveMoviesFromWatchlist(Guid watchlistId, RemoveMoviesFromWatchlistRequest removeMoviesFromWatchlistRequest)
         {
-            var watchlist = await _watchlistsService.GetWatchlist(watchlistId);
-            if (watchlist is null)
+            var watchlistWithMoviesWatched = await _watchlistsService.GetWatchlist(watchlistId);
+            if (watchlistWithMoviesWatched is null)
             {
                 return NotFound();
             }
@@ -112,8 +116,8 @@ namespace MovieWatchlist.Controllers
         [HttpPatch]
         public async Task<ActionResult> SetMoviesWatchedStatus(Guid watchlistId, SetMoviesWatchedStatusRequest setMoviesWatchedStatusRequest)
         {
-            var watchlist = await _watchlistsService.GetWatchlist(watchlistId);
-            if (watchlist is null)
+            var watchlistWithMoviesWatched = await _watchlistsService.GetWatchlist(watchlistId);
+            if (watchlistWithMoviesWatched is null)
             {
                 return NotFound();
             }
@@ -131,8 +135,8 @@ namespace MovieWatchlist.Controllers
         [HttpPatch]
         public async Task<IActionResult> Rename(Guid watchlistId, RenameWatchlistRequest renameWatchlistRequest)
         {
-            var watchlist = await _watchlistsService.GetWatchlist(watchlistId);
-            if (watchlist is null)
+            var watchlistWithMoviesWatched = await _watchlistsService.GetWatchlist(watchlistId);
+            if (watchlistWithMoviesWatched is null)
             {
                 return NotFound();
             }

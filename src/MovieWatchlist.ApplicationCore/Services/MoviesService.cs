@@ -1,9 +1,7 @@
-﻿using MovieWatchlist.Contracts.Responses;
-using MovieWatchlist.ApplicationCore.Interfaces.Data;
+﻿using MovieWatchlist.ApplicationCore.Interfaces.Data;
 using MovieWatchlist.ApplicationCore.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Caching.Memory;
-using MovieWatchlist.ApplicationCore.Extensions;
 using MovieWatchlist.ApplicationCore.Interfaces.Services;
 
 namespace MovieWatchlist.ApplicationCore.Services
@@ -34,15 +32,16 @@ namespace MovieWatchlist.ApplicationCore.Services
             _logger = logger;
         }
 
-        public async Task<IReadOnlyCollection<MovieResponse>> GetTop250()
+        public async Task<IReadOnlyCollection<Movie>> GetTop250()
         {
             try
             {
-                return await _memoryCache.GetOrCreateAsync<IReadOnlyCollection<MovieResponse>>(CacheKey, async cacheEntry =>
+                return await _memoryCache.GetOrCreateAsync(CacheKey, async cacheEntry =>
                 {
                     cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(60);
                     var movies = await GetTop250FromClientAndUpdateDb();
-                    return MapMovies(movies);
+
+                    return movies;
                 });
             } 
             catch (Exception ex)
@@ -52,13 +51,13 @@ namespace MovieWatchlist.ApplicationCore.Services
                 var movies = await _moviesRepository.GetAllMoviesReadOnly();
                 var top250 = GetTop250(movies);
 
-                return MapMovies(top250);
+                return top250;
             }
         }
 
-        public async Task<IReadOnlyCollection<MovieResponse>> GetMovies(IEnumerable<string> movieIds)
+        public async Task<IReadOnlyCollection<Movie>> GetMovies(IEnumerable<string> movieIds)
         {
-            return (await _moviesRepository.GetMoviesByIdReadOnly(movieIds)).Select(m => m.MapToResponse()).ToList();
+            return await _moviesRepository.GetMoviesByIdReadOnly(movieIds);
         }
 
         private async Task<IReadOnlyCollection<Movie>> GetTop250FromClientAndUpdateDb()
@@ -70,12 +69,7 @@ namespace MovieWatchlist.ApplicationCore.Services
             return movies;
         }
 
-        private IReadOnlyCollection<MovieResponse> MapMovies(IEnumerable<Movie> movies)
-        {
-            return movies.Select(m => m.MapToResponse()).ToList();
-        }
-
-        private IReadOnlyCollection<Movie> GetTop250(IEnumerable<Movie> movies)
+        private static IReadOnlyCollection<Movie> GetTop250(IEnumerable<Movie> movies)
         {
             return movies.Where(m => m.Ranking != null && m.Ranking < 251).OrderBy(m => m.Ranking).ToList();
         }
