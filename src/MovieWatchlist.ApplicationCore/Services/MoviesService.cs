@@ -32,7 +32,7 @@ namespace MovieWatchlist.ApplicationCore.Services
             _logger = logger;
         }
 
-        public async Task<IReadOnlyCollection<Movie>> GetTop250()
+        public async Task<IReadOnlyCollection<Movie>> GetTop250(CancellationToken cancellationToken)
         {
             try
             {
@@ -48,16 +48,16 @@ namespace MovieWatchlist.ApplicationCore.Services
             {
                 _logger.LogError("Error getting movies from client, using repository as fallback", ex);
 
-                var movies = await _moviesRepository.GetAllMoviesReadOnly();
+                var movies = await _moviesRepository.GetAllMoviesReadOnly(cancellationToken);
                 var top250 = GetTop250(movies);
 
                 return top250;
             }
         }
 
-        public async Task<IReadOnlyCollection<Movie>> GetMovies(IEnumerable<string> movieIds)
+        public async Task<IReadOnlyCollection<Movie>> GetMovies(IEnumerable<string> movieIds, CancellationToken cancellationToken)
         {
-            return await _moviesRepository.GetMoviesByIdReadOnly(movieIds);
+            return await _moviesRepository.GetMoviesByIdReadOnly(movieIds, cancellationToken);
         }
 
         private async Task<IReadOnlyCollection<Movie>> GetTop250FromClientAndUpdateDb()

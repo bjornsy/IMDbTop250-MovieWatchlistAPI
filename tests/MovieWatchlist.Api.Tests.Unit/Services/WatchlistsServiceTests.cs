@@ -47,9 +47,9 @@ namespace MovieWatchlist.ApplicationCore.Tests.Unit.Services
             _watchlistsRepositoryMock.Setup(m => m.AddWatchlist(It.Is<Watchlist>(w => w.Name.Equals(createWatchlistRequest.Name)))).ReturnsAsync(createdWatchlist);
             _watchlistsRepositoryMock.Setup(m => m.AddWatchlistsMovies(It.Is<IEnumerable<WatchlistsMovies>>(watchlistsMovies => 
                 watchlistsMovies.Single().WatchlistId.Equals(watchlistId) && watchlistsMovies.Single().MovieId.Equals("movieId"))));
-            _moviesRepositoryMock.Setup(m => m.GetMoviesByIdReadOnly(It.Is<IEnumerable<string>>(movieIds => movieIds.Single().Equals("movieId")))).ReturnsAsync(moviesRepositoryResult);
+            _moviesRepositoryMock.Setup(m => m.GetMoviesByIdReadOnly(It.Is<IEnumerable<string>>(movieIds => movieIds.Single().Equals("movieId")), CancellationToken.None)).ReturnsAsync(moviesRepositoryResult);
 
-            var result = await _watchlistsService.CreateWatchlist(createWatchlistRequest);
+            var result = await _watchlistsService.CreateWatchlist(createWatchlistRequest, CancellationToken.None);
 
             Assert.Equal(watchlistId, result.Id);
             Assert.Equal("watchlist name", result.Name);
@@ -59,7 +59,7 @@ namespace MovieWatchlist.ApplicationCore.Tests.Unit.Services
             _watchlistsRepositoryMock.Verify(m => m.AddWatchlistsMovies(It.Is<IEnumerable<WatchlistsMovies>>(watchlistsMovies =>
                 watchlistsMovies.Single().WatchlistId.Equals(watchlistId) && watchlistsMovies.Single().MovieId.Equals("movieId"))), Times.Once);
             _watchlistsRepositoryMock.Verify(m => m.SaveChangesAsync(), Times.Once);
-            _moviesRepositoryMock.Verify(m => m.GetMoviesByIdReadOnly(It.Is<IEnumerable<string>>(movieIds => movieIds.Single().Equals("movieId"))), Times.Once);
+            _moviesRepositoryMock.Verify(m => m.GetMoviesByIdReadOnly(It.Is<IEnumerable<string>>(movieIds => movieIds.Single().Equals("movieId")), CancellationToken.None), Times.Once);
         }
 
         [Fact]
@@ -84,9 +84,9 @@ namespace MovieWatchlist.ApplicationCore.Tests.Unit.Services
             _watchlistsRepositoryMock.Setup(m => m.AddWatchlist(It.Is<Watchlist>(w => w.Name.Equals(createWatchlistRequest.Name)))).ReturnsAsync(createdWatchlist);
             _watchlistsRepositoryMock.Setup(m => m.AddWatchlistsMovies(It.Is<IEnumerable<WatchlistsMovies>>(watchlistsMovies =>
                 watchlistsMovies.Any() == false)));
-            _moviesRepositoryMock.Setup(m => m.GetMoviesByIdReadOnly(It.Is<IEnumerable<string>>(movieIds => movieIds.Any() == false))).ReturnsAsync(moviesRepositoryResult);
+            _moviesRepositoryMock.Setup(m => m.GetMoviesByIdReadOnly(It.Is<IEnumerable<string>>(movieIds => movieIds.Any() == false), CancellationToken.None)).ReturnsAsync(moviesRepositoryResult);
 
-            var result = await _watchlistsService.CreateWatchlist(createWatchlistRequest);
+            var result = await _watchlistsService.CreateWatchlist(createWatchlistRequest, CancellationToken.None);
 
             Assert.Equal(watchlistId, result.Id);
             Assert.Equal(defaultName, result.Name);
@@ -96,7 +96,7 @@ namespace MovieWatchlist.ApplicationCore.Tests.Unit.Services
             _watchlistsRepositoryMock.Verify(m => m.AddWatchlistsMovies(It.Is<IEnumerable<WatchlistsMovies>>(watchlistsMovies =>
                 watchlistsMovies.Any() == false)), Times.Once);
             _watchlistsRepositoryMock.Verify(m => m.SaveChangesAsync(), Times.Once);
-            _moviesRepositoryMock.Verify(m => m.GetMoviesByIdReadOnly(It.Is<IEnumerable<string>>(movieIds => movieIds.Any() == false)), Times.Once);
+            _moviesRepositoryMock.Verify(m => m.GetMoviesByIdReadOnly(It.Is<IEnumerable<string>>(movieIds => movieIds.Any() == false), CancellationToken.None), Times.Once);
         }
 
         [Fact]
@@ -114,19 +114,19 @@ namespace MovieWatchlist.ApplicationCore.Tests.Unit.Services
 
             var moviesRepositoryResult = new List<Movie> { new Movie { Id = "movieId" } };
 
-            _watchlistsRepositoryMock.Setup(m => m.GetWatchlistById(watchlistId)).ReturnsAsync(watchlist);
-            _watchlistsRepositoryMock.Setup(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId)).ReturnsAsync(watchlistsMovies);
-            _moviesRepositoryMock.Setup(m => m.GetMoviesByIdReadOnly(It.Is<IEnumerable<string>>(movieIds => movieIds.Single().Equals("movieId")))).ReturnsAsync(moviesRepositoryResult);
+            _watchlistsRepositoryMock.Setup(m => m.GetWatchlistById(watchlistId, CancellationToken.None)).ReturnsAsync(watchlist);
+            _watchlistsRepositoryMock.Setup(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId, CancellationToken.None)).ReturnsAsync(watchlistsMovies);
+            _moviesRepositoryMock.Setup(m => m.GetMoviesByIdReadOnly(It.Is<IEnumerable<string>>(movieIds => movieIds.Single().Equals("movieId")), CancellationToken.None)).ReturnsAsync(moviesRepositoryResult);
 
-            var result = await _watchlistsService.GetWatchlist(watchlistId);
+            var result = await _watchlistsService.GetWatchlist(watchlistId, CancellationToken.None);
 
             Assert.Equal(watchlist.Id, result!.Id);
             Assert.Equal(watchlist.Name, result.Name);
             Assert.Equal("movieId", result.Movies.Single().Movie.Id);
 
-            _watchlistsRepositoryMock.Verify(m => m.GetWatchlistById(watchlistId), Times.Once);
-            _watchlistsRepositoryMock.Verify(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId), Times.Once);
-            _moviesRepositoryMock.Verify(m => m.GetMoviesByIdReadOnly(It.Is<IEnumerable<string>>(movieIds => movieIds.Single().Equals("movieId"))), Times.Once);
+            _watchlistsRepositoryMock.Verify(m => m.GetWatchlistById(watchlistId, CancellationToken.None), Times.Once);
+            _watchlistsRepositoryMock.Verify(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId, CancellationToken.None), Times.Once);
+            _moviesRepositoryMock.Verify(m => m.GetMoviesByIdReadOnly(It.Is<IEnumerable<string>>(movieIds => movieIds.Single().Equals("movieId")), CancellationToken.None), Times.Once);
         }
 
         [Fact]
@@ -134,15 +134,15 @@ namespace MovieWatchlist.ApplicationCore.Tests.Unit.Services
         {
             var watchlistId = Guid.NewGuid();
 
-            _watchlistsRepositoryMock.Setup(m => m.GetWatchlistById(watchlistId)).ReturnsAsync((Watchlist?)null);
+            _watchlistsRepositoryMock.Setup(m => m.GetWatchlistById(watchlistId, CancellationToken.None)).ReturnsAsync((Watchlist?)null);
 
-            var result = await _watchlistsService.GetWatchlist(watchlistId);
+            var result = await _watchlistsService.GetWatchlist(watchlistId, CancellationToken.None);
 
             Assert.Null(result);
 
-            _watchlistsRepositoryMock.Verify(m => m.GetWatchlistById(watchlistId), Times.Once);
-            _watchlistsRepositoryMock.Verify(m => m.GetWatchlistsMoviesByWatchlistId(It.IsAny<Guid>()), Times.Never);
-            _moviesRepositoryMock.Verify(m => m.GetMoviesByIdReadOnly(It.IsAny<IEnumerable<string>>()), Times.Never);
+            _watchlistsRepositoryMock.Verify(m => m.GetWatchlistById(watchlistId, CancellationToken.None), Times.Once);
+            _watchlistsRepositoryMock.Verify(m => m.GetWatchlistsMoviesByWatchlistId(It.IsAny<Guid>(), CancellationToken.None), Times.Never);
+            _moviesRepositoryMock.Verify(m => m.GetMoviesByIdReadOnly(It.IsAny<IEnumerable<string>>(), CancellationToken.None), Times.Never);
         }
 
         [Fact]
@@ -151,13 +151,13 @@ namespace MovieWatchlist.ApplicationCore.Tests.Unit.Services
             var watchlistId = Guid.NewGuid();
             var watchlistsMovies = new List<WatchlistsMovies>();
 
-            _watchlistsRepositoryMock.Setup(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId)).ReturnsAsync(watchlistsMovies);
+            _watchlistsRepositoryMock.Setup(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId, CancellationToken.None)).ReturnsAsync(watchlistsMovies);
             _watchlistsRepositoryMock.Setup(m => m.RemoveWatchlistsMovies(watchlistsMovies));
             _watchlistsRepositoryMock.Setup(m => m.RemoveWatchlist(watchlistId));
 
-            await _watchlistsService.DeleteWatchlist(watchlistId);
+            await _watchlistsService.DeleteWatchlist(watchlistId, CancellationToken.None);
 
-            _watchlistsRepositoryMock.Verify(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId), Times.Once);
+            _watchlistsRepositoryMock.Verify(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId, CancellationToken.None), Times.Once);
             _watchlistsRepositoryMock.Verify(m => m.RemoveWatchlistsMovies(watchlistsMovies), Times.Once);
             _watchlistsRepositoryMock.Verify(m => m.RemoveWatchlist(watchlistId), Times.Once);
             _watchlistsRepositoryMock.Verify(m => m.SaveChangesAsync(), Times.Exactly(2));
@@ -192,16 +192,16 @@ namespace MovieWatchlist.ApplicationCore.Tests.Unit.Services
             var watchlistId = Guid.NewGuid();
             var watchlistsMovies = new List<WatchlistsMovies> { new WatchlistsMovies { WatchlistId = watchlistId, MovieId = "movieId" } };
 
-            _watchlistsRepositoryMock.Setup(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId)).ReturnsAsync(watchlistsMovies);
+            _watchlistsRepositoryMock.Setup(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId, CancellationToken.None)).ReturnsAsync(watchlistsMovies);
 
             _watchlistsRepositoryMock.Setup(m => m.RemoveWatchlistsMovies(It.Is<IEnumerable<WatchlistsMovies>>(watchlistsMovies =>
                 watchlistsMovies.Single().WatchlistId.Equals(watchlistId) && watchlistsMovies.Single().MovieId.Equals("movieId"))));
 
-            await _watchlistsService.RemoveMoviesFromWatchlist(watchlistId, removeMoviesFromWatchlistRequest);
+            await _watchlistsService.RemoveMoviesFromWatchlist(watchlistId, removeMoviesFromWatchlistRequest, CancellationToken.None);
 
             _watchlistsRepositoryMock.Verify(m => m.RemoveWatchlistsMovies(It.Is<IEnumerable<WatchlistsMovies>>(watchlistsMovies =>
                 watchlistsMovies.Single().WatchlistId.Equals(watchlistId) && watchlistsMovies.Single().MovieId.Equals("movieId"))), Times.Once);
-            _watchlistsRepositoryMock.Verify(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId), Times.Once);
+            _watchlistsRepositoryMock.Verify(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId, CancellationToken.None), Times.Once);
             _watchlistsRepositoryMock.Verify(m => m.SaveChangesAsync(), Times.Once);
         }
 
@@ -215,14 +215,14 @@ namespace MovieWatchlist.ApplicationCore.Tests.Unit.Services
             var watchlistId = Guid.NewGuid();
             var watchlistsMovies = new List<WatchlistsMovies> { new WatchlistsMovies { WatchlistId = watchlistId, MovieId = "movieId" } };
 
-            _watchlistsRepositoryMock.Setup(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId)).ReturnsAsync(watchlistsMovies);
+            _watchlistsRepositoryMock.Setup(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId, CancellationToken.None)).ReturnsAsync(watchlistsMovies);
 
-            var exception = await Assert.ThrowsAsync<InvalidRequestException>(async () => await _watchlistsService.RemoveMoviesFromWatchlist(watchlistId, removeMoviesFromWatchlistRequest));
+            var exception = await Assert.ThrowsAsync<InvalidRequestException>(async () => await _watchlistsService.RemoveMoviesFromWatchlist(watchlistId, removeMoviesFromWatchlistRequest, CancellationToken.None));
 
             Assert.Equal("The following movie Ids in the request are invalid: invalidMovieId", exception.Message);
 
             _watchlistsRepositoryMock.Verify(m => m.RemoveWatchlistsMovies(It.IsAny<IEnumerable<WatchlistsMovies>>()), Times.Never);
-            _watchlistsRepositoryMock.Verify(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId), Times.Once);
+            _watchlistsRepositoryMock.Verify(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId, CancellationToken.None), Times.Once);
             _watchlistsRepositoryMock.Verify(m => m.SaveChangesAsync(), Times.Never);
         }
 
@@ -242,15 +242,15 @@ namespace MovieWatchlist.ApplicationCore.Tests.Unit.Services
                 new WatchlistsMovies { WatchlistId = watchlistId, MovieId = "movieId3", Watched = false }
             };
 
-            _watchlistsRepositoryMock.Setup(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId)).ReturnsAsync(watchlistsMovies);
+            _watchlistsRepositoryMock.Setup(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId, CancellationToken.None)).ReturnsAsync(watchlistsMovies);
 
-            await _watchlistsService.SetMoviesAsWatched(watchlistId, setMoviesAsWatchedRequest);
+            await _watchlistsService.SetMoviesAsWatched(watchlistId, setMoviesAsWatchedRequest, CancellationToken.None);
 
             Assert.True(watchlistsMovies[0].Watched);
             Assert.False(watchlistsMovies[1].Watched);
             Assert.False(watchlistsMovies[2].Watched);
 
-            _watchlistsRepositoryMock.Verify(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId), Times.Once);
+            _watchlistsRepositoryMock.Verify(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId, CancellationToken.None), Times.Once);
             _watchlistsRepositoryMock.Verify(m => m.SaveChangesAsync(), Times.Once);
         }
 
@@ -269,13 +269,13 @@ namespace MovieWatchlist.ApplicationCore.Tests.Unit.Services
                 new WatchlistsMovies { WatchlistId = watchlistId, MovieId = "movieId3", Watched = false }
             };
 
-            _watchlistsRepositoryMock.Setup(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId)).ReturnsAsync(watchlistsMovies);
+            _watchlistsRepositoryMock.Setup(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId, CancellationToken.None)).ReturnsAsync(watchlistsMovies);
 
-            var exception = await Assert.ThrowsAsync<InvalidRequestException>(async () => await _watchlistsService.SetMoviesAsWatched(watchlistId, setMoviesAsWatchedRequest));
+            var exception = await Assert.ThrowsAsync<InvalidRequestException>(async () => await _watchlistsService.SetMoviesAsWatched(watchlistId, setMoviesAsWatchedRequest, CancellationToken.None));
 
             Assert.Equal("The following movie Ids in the request are invalid: invalidMovieId,invalidMovieId2", exception.Message);
 
-            _watchlistsRepositoryMock.Verify(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId), Times.Once);
+            _watchlistsRepositoryMock.Verify(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId, CancellationToken.None), Times.Once);
             _watchlistsRepositoryMock.Verify(m => m.SaveChangesAsync(), Times.Never);
         }
 

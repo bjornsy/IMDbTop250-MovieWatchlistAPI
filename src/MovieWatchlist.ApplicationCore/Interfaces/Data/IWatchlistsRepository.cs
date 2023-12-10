@@ -6,8 +6,8 @@ namespace MovieWatchlist.ApplicationCore.Interfaces.Data
     {
         Task<Watchlist> AddWatchlist(Watchlist watchlist);
         Task AddWatchlistsMovies(IEnumerable<WatchlistsMovies> watchlistsMovies);
-        Task<Watchlist?> GetWatchlistById(Guid watchlistId);
-        Task<IReadOnlyCollection<WatchlistsMovies>> GetWatchlistsMoviesByWatchlistId(Guid watchlistId);
+        Task<Watchlist?> GetWatchlistById(Guid watchlistId, CancellationToken cancellationToken);
+        Task<IReadOnlyCollection<WatchlistsMovies>> GetWatchlistsMoviesByWatchlistId(Guid watchlistId, CancellationToken cancellationToken);
         void RemoveWatchlistsMovies(IEnumerable<WatchlistsMovies> watchlistsMovies);
         void RemoveWatchlist(Guid watchlistId);
         void RenameWatchlist(Guid watchlistId, string name);

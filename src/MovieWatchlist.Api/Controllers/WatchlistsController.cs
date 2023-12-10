@@ -23,9 +23,9 @@ namespace MovieWatchlist.Controllers
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost]
-        public async Task<IActionResult> CreateWatchlist(CreateWatchlistRequest createWatchlistRequest)
+        public async Task<IActionResult> CreateWatchlist(CreateWatchlistRequest createWatchlistRequest, CancellationToken cancellationToken)
         {
-            var watchlistWithMoviesWatched = await _watchlistsService.CreateWatchlist(createWatchlistRequest);
+            var watchlistWithMoviesWatched = await _watchlistsService.CreateWatchlist(createWatchlistRequest, cancellationToken);
 
             var watchlistResponse = watchlistWithMoviesWatched.MapToResponse();
 
@@ -36,9 +36,9 @@ namespace MovieWatchlist.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("{watchlistId}")]
-        public async Task<IActionResult> GetWatchlist(Guid watchlistId)
+        public async Task<IActionResult> GetWatchlist(Guid watchlistId, CancellationToken cancellationToken)
         {
-            var watchlistWithMoviesWatched = await _watchlistsService.GetWatchlist(watchlistId);
+            var watchlistWithMoviesWatched = await _watchlistsService.GetWatchlist(watchlistId, cancellationToken);
 
             if (watchlistWithMoviesWatched is null)
             {
@@ -54,15 +54,15 @@ namespace MovieWatchlist.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpDelete("{watchlistId}")]
-        public async Task<IActionResult> DeleteWatchlist(Guid watchlistId)
+        public async Task<IActionResult> DeleteWatchlist(Guid watchlistId, CancellationToken cancellationToken)
         {
-            var watchlistWithMoviesWatched = await _watchlistsService.GetWatchlist(watchlistId);
+            var watchlistWithMoviesWatched = await _watchlistsService.GetWatchlist(watchlistId, cancellationToken);
             if (watchlistWithMoviesWatched is null)
             {
                 return NotFound();
             }
 
-            await _watchlistsService.DeleteWatchlist(watchlistWithMoviesWatched.Id);
+            await _watchlistsService.DeleteWatchlist(watchlistWithMoviesWatched.Id, cancellationToken);
 
             return NoContent();
         }
@@ -74,9 +74,9 @@ namespace MovieWatchlist.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Route("{watchlistId}/addMovies")]
         [HttpPost]
-        public async Task<IActionResult> AddMoviesToWatchlist(Guid watchlistId, AddMoviesToWatchlistRequest addMoviesToWatchlistRequest)
+        public async Task<IActionResult> AddMoviesToWatchlist(Guid watchlistId, AddMoviesToWatchlistRequest addMoviesToWatchlistRequest, CancellationToken cancellationToken)
         {
-            var watchlistWithMoviesWatched = await _watchlistsService.GetWatchlist(watchlistId);
+            var watchlistWithMoviesWatched = await _watchlistsService.GetWatchlist(watchlistId, cancellationToken);
             if (watchlistWithMoviesWatched is null)
             {
                 return NotFound();
@@ -94,15 +94,15 @@ namespace MovieWatchlist.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Route("{watchlistId}/removeMovies")]
         [HttpPost]
-        public async Task<ActionResult> RemoveMoviesFromWatchlist(Guid watchlistId, RemoveMoviesFromWatchlistRequest removeMoviesFromWatchlistRequest)
+        public async Task<ActionResult> RemoveMoviesFromWatchlist(Guid watchlistId, RemoveMoviesFromWatchlistRequest removeMoviesFromWatchlistRequest, CancellationToken cancellationToken)
         {
-            var watchlistWithMoviesWatched = await _watchlistsService.GetWatchlist(watchlistId);
+            var watchlistWithMoviesWatched = await _watchlistsService.GetWatchlist(watchlistId, cancellationToken);
             if (watchlistWithMoviesWatched is null)
             {
                 return NotFound();
             }
 
-            await _watchlistsService.RemoveMoviesFromWatchlist(watchlistId, removeMoviesFromWatchlistRequest);
+            await _watchlistsService.RemoveMoviesFromWatchlist(watchlistId, removeMoviesFromWatchlistRequest, cancellationToken);
 
             return NoContent();
         }
@@ -114,15 +114,15 @@ namespace MovieWatchlist.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Route("{watchlistId}/setMoviesWatchedStatus")]
         [HttpPatch]
-        public async Task<ActionResult> SetMoviesWatchedStatus(Guid watchlistId, SetMoviesWatchedStatusRequest setMoviesWatchedStatusRequest)
+        public async Task<ActionResult> SetMoviesWatchedStatus(Guid watchlistId, SetMoviesWatchedStatusRequest setMoviesWatchedStatusRequest, CancellationToken cancellationToken)
         {
-            var watchlistWithMoviesWatched = await _watchlistsService.GetWatchlist(watchlistId);
+            var watchlistWithMoviesWatched = await _watchlistsService.GetWatchlist(watchlistId, cancellationToken);
             if (watchlistWithMoviesWatched is null)
             {
                 return NotFound();
             }
 
-            await _watchlistsService.SetMoviesAsWatched(watchlistId, setMoviesWatchedStatusRequest);
+            await _watchlistsService.SetMoviesAsWatched(watchlistId, setMoviesWatchedStatusRequest, cancellationToken);
 
             return NoContent();
         }
@@ -133,9 +133,9 @@ namespace MovieWatchlist.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Route("{watchlistId}/rename")]
         [HttpPatch]
-        public async Task<IActionResult> Rename(Guid watchlistId, RenameWatchlistRequest renameWatchlistRequest)
+        public async Task<IActionResult> Rename(Guid watchlistId, RenameWatchlistRequest renameWatchlistRequest, CancellationToken cancellationToken)
         {
-            var watchlistWithMoviesWatched = await _watchlistsService.GetWatchlist(watchlistId);
+            var watchlistWithMoviesWatched = await _watchlistsService.GetWatchlist(watchlistId, cancellationToken);
             if (watchlistWithMoviesWatched is null)
             {
                 return NotFound();

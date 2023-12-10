@@ -19,9 +19,9 @@ namespace MovieWatchlist.Controllers
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet("top250")]
-        public async Task<IActionResult> GetTop250Movies()
+        public async Task<IActionResult> GetTop250Movies(CancellationToken cancellationToken)
         {
-            var movies = await _moviesService.GetTop250();
+            var movies = await _moviesService.GetTop250(cancellationToken);
 
             var movieResponses = movies.Select(m => m.MapToResponse());
 
@@ -33,9 +33,9 @@ namespace MovieWatchlist.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet]
-        public async Task<IActionResult> GetMovies([FromQuery][BindRequired] IEnumerable<string> movieIds)
+        public async Task<IActionResult> GetMovies([FromQuery][BindRequired] IEnumerable<string> movieIds, CancellationToken cancellationToken)
         {
-            var movies = await _moviesService.GetMovies(movieIds);
+            var movies = await _moviesService.GetMovies(movieIds, cancellationToken);
 
             var movieResponses = movies.Select(m => m.MapToResponse());
 

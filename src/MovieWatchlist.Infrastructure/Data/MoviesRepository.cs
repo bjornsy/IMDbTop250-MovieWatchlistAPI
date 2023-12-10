@@ -18,14 +18,14 @@ namespace MovieWatchlist.Infrastructure.Data
             return await _context.Movies.ToListAsync();
         }
 
-        public async Task<IReadOnlyCollection<Movie>> GetAllMoviesReadOnly()
+        public async Task<IReadOnlyCollection<Movie>> GetAllMoviesReadOnly(CancellationToken cancellationToken)
         {
-            return await _context.Movies.AsNoTracking().ToListAsync();
+            return await _context.Movies.AsNoTracking().ToListAsync(cancellationToken);
         }
 
-        public async Task<IReadOnlyCollection<Movie>> GetMoviesByIdReadOnly(IEnumerable<string> movieIds)
+        public async Task<IReadOnlyCollection<Movie>> GetMoviesByIdReadOnly(IEnumerable<string> movieIds, CancellationToken cancellationToken)
         {
-            return await _context.Movies.Where(m => movieIds.Contains(m.Id)).AsNoTracking().ToListAsync();
+            return await _context.Movies.Where(m => movieIds.Contains(m.Id)).AsNoTracking().ToListAsync(cancellationToken);
         }
 
         public async Task AddMovie(Movie movie)

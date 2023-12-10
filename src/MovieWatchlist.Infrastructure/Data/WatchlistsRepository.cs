@@ -25,14 +25,14 @@ namespace MovieWatchlist.Infrastructure.Data
             await _context.WatchlistsMovies.AddRangeAsync(watchlistsMovies);
         }
 
-        public async Task<Watchlist?> GetWatchlistById(Guid watchlistId)
+        public async Task<Watchlist?> GetWatchlistById(Guid watchlistId, CancellationToken cancellationToken)
         {
-            return await _context.Watchlists.AsNoTracking().SingleOrDefaultAsync(w => w.Id.Equals(watchlistId));
+            return await _context.Watchlists.AsNoTracking().SingleOrDefaultAsync(w => w.Id.Equals(watchlistId), cancellationToken);
         }
 
-        public async Task<IReadOnlyCollection<WatchlistsMovies>> GetWatchlistsMoviesByWatchlistId(Guid watchlistId)
+        public async Task<IReadOnlyCollection<WatchlistsMovies>> GetWatchlistsMoviesByWatchlistId(Guid watchlistId, CancellationToken cancellationToken)
         {
-            return await _context.WatchlistsMovies.Where(wm => wm.WatchlistId.Equals(watchlistId)).ToListAsync();
+            return await _context.WatchlistsMovies.Where(wm => wm.WatchlistId.Equals(watchlistId)).ToListAsync(cancellationToken);
         }
 
         public void RemoveWatchlistsMovies(IEnumerable<WatchlistsMovies> watchlistsMovies)
