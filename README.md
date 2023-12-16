@@ -65,7 +65,6 @@ Within the `GET Movies` endpoint, if the cache is empty the [Top250InfoService](
 
 Planned updates include:
 
-* .NET 8
 * [Use .NET 8 Identity API for authentication](https://learn.microsoft.com/en-us/aspnet/core/release-notes/aspnetcore-8.0?view=aspnetcore-7.0#identity-api-endpoints)
 * [Distributed Redis output cache](https://learn.microsoft.com/en-us/aspnet/core/release-notes/aspnetcore-8.0?view=aspnetcore-7.0#redis-based-output-caching)
 * [Use ExecuteDeleteAsync](https://learn.microsoft.com/en-us/ef/core/what-is-new/ef-core-7.0/whatsnew#executeupdate-and-executedelete-bulk-updates)
