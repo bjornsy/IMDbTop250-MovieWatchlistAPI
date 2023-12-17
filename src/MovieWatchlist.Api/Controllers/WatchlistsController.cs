@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using MovieWatchlist.ApplicationCore.Extensions;
 using MovieWatchlist.ApplicationCore.Interfaces.Services;
@@ -7,6 +8,7 @@ using System.Net.Mime;
 namespace MovieWatchlist.Controllers
 {
     [ApiController]
+    [ApiVersion(1.0)]
     [Consumes(MediaTypeNames.Application.Json)]
     [Route("[controller]")]
     public class WatchlistsController : ControllerBase

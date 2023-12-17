@@ -2,10 +2,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using MovieWatchlist.ApplicationCore.Interfaces.Services;
 using MovieWatchlist.ApplicationCore.Extensions;
+using Asp.Versioning;
 
 namespace MovieWatchlist.Controllers
 {
     [ApiController]
+    [ApiVersion(1.0)]
     [Route("[controller]")]
     public class MoviesController : ControllerBase
     {

@@ -10,6 +10,7 @@ using MovieWatchlist.ApplicationCore.Interfaces.Data;
 using MovieWatchlist.Infrastructure.Clients;
 using MovieWatchlist.Infrastructure.Data;
 using MovieWatchlist.ApplicationCore.Interfaces.Services;
+using Asp.Versioning;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
@@ -19,6 +20,12 @@ builder.Logging.AddConsole();
 builder.Services.AddProblemDetails();
 builder.Services.AddHealthChecks().AddNpgSql(config.GetConnectionString("MovieWatchlist"));
 builder.Services.AddControllers();
+builder.Services.AddApiVersioning(o => {
+    o.DefaultApiVersion = new ApiVersion(1.0);
+    o.AssumeDefaultVersionWhenUnspecified = true;
+    o.ReportApiVersions = true;
+    o.ApiVersionReader = new MediaTypeApiVersionReader("api-version");
+}).AddMvc();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMemoryCache();
@@ -49,6 +56,8 @@ builder.Services.AddHttpClient<ITop250InfoClient, Top250InfoClient>((serviceProv
     })
     .AddPolicyHandlerFromRegistry(RetryPolicyOptions.RetryPolicy)
     .AddPolicyHandlerFromRegistry(CircuitBreakerPolicyOptions.CircuitBreakerPolicy);
+
+builder.Services.AddHttpLogging(o => { });
 
 var app = builder.Build();
 
