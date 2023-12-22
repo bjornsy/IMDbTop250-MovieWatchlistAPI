@@ -7,15 +7,7 @@ namespace MovieWatchlist.ApplicationCore.Mapping
     {
         public static MovieDTO MapToDTO(this Movie movie)
         {
-            return new MovieDTO
-            {
-                Id = movie.Id,
-                Ranking = movie.Ranking,
-                Title = movie.Title,
-                Rating = movie.Rating,
-                Created = movie.Created,
-                LastUpdated = movie.LastUpdated
-            };
+            return new MovieDTO(movie.Id, movie.Ranking, movie.Title, movie.Rating, movie.Created, movie.LastUpdated);
         }
     }
 }

@@ -6,16 +6,16 @@ namespace MovieWatchlist.ApplicationCore.Extensions
 {
     public static class ContractMapping
     {
-        //public static MovieResponse MapToResponse(this Movie movie)
-        //{
-        //    return new MovieResponse
-        //    {
-        //        Id = movie.Id,
-        //        Title = movie.Title,
-        //        Ranking = movie.Ranking,
-        //        Rating = movie.Rating
-        //    };
-        //}
+        public static MovieResponse MapToResponse(this Movie movie)
+        {
+            return new MovieResponse
+            {
+                Id = movie.Id,
+                Title = movie.Title,
+                Ranking = movie.Ranking,
+                Rating = movie.Rating
+            };
+        }
 
         public static MovieResponse MapToResponse(this MovieDTO movie)
         {
