@@ -3,6 +3,8 @@ using MovieWatchlist.ApplicationCore.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Caching.Memory;
 using MovieWatchlist.ApplicationCore.Interfaces.Services;
+using MovieWatchlist.ApplicationCore.Models.DTO;
+using MovieWatchlist.ApplicationCore.Mapping;
 
 namespace MovieWatchlist.ApplicationCore.Services
 {
@@ -32,7 +34,7 @@ namespace MovieWatchlist.ApplicationCore.Services
             _logger = logger;
         }
 
-        public async Task<IReadOnlyCollection<Movie>> GetTop250(CancellationToken cancellationToken)
+        public async Task<IReadOnlyCollection<MovieDTO>> GetTop250(CancellationToken cancellationToken)
         {
             try
             {
@@ -55,23 +57,27 @@ namespace MovieWatchlist.ApplicationCore.Services
             }
         }
 
-        public async Task<IReadOnlyCollection<Movie>> GetMovies(IEnumerable<string> movieIds, CancellationToken cancellationToken)
+        public async Task<IReadOnlyCollection<MovieDTO>> GetMovies(IEnumerable<string> movieIds, CancellationToken cancellationToken)
         {
-            return await _moviesRepository.GetMoviesByIdReadOnly(movieIds, cancellationToken);
+            var movies = await _moviesRepository.GetMoviesByIdReadOnly(movieIds, cancellationToken);
+            return movies.Select(m => m.MapToDTO()).ToList();
         }
 
-        private async Task<IReadOnlyCollection<Movie>> GetTop250FromClientAndUpdateDb()
+        private async Task<IReadOnlyCollection<MovieDTO>> GetTop250FromClientAndUpdateDb()
         {
             var movies = await _top250InfoService.GetTop250();
 
             await _top250MoviesDatabaseUpdateService.UpdateTop250InDatabase(movies);
 
-            return movies;
+            return movies.Select(m => m.MapToDTO()).ToList();
         }
 
-        private static IReadOnlyCollection<Movie> GetTop250(IEnumerable<Movie> movies)
+        private static IReadOnlyCollection<MovieDTO> GetTop250(IEnumerable<Movie> movies)
         {
-            return movies.Where(m => m.Ranking != null && m.Ranking < 251).OrderBy(m => m.Ranking).ToList();
+            return movies.Where(m => m.Ranking != null && m.Ranking < 251)
+                .OrderBy(m => m.Ranking)
+                .Select(m => m.MapToDTO())
+                .ToList();
         }
     }
 }

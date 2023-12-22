@@ -1,10 +1,11 @@
 ﻿using MovieWatchlist.ApplicationCore.Models;
+using MovieWatchlist.ApplicationCore.Models.DTO;
 
 namespace MovieWatchlist.ApplicationCore.Interfaces.Services
 {
     public interface IMoviesService
     {
-        Task<IReadOnlyCollection<Movie>> GetTop250(CancellationToken cancellationToken);
-        Task<IReadOnlyCollection<Movie>> GetMovies(IEnumerable<string> movieIds, CancellationToken cancellationToken);
+        Task<IReadOnlyCollection<MovieDTO>> GetTop250(CancellationToken cancellationToken);
+        Task<IReadOnlyCollection<MovieDTO>> GetMovies(IEnumerable<string> movieIds, CancellationToken cancellationToken);
     }
 }

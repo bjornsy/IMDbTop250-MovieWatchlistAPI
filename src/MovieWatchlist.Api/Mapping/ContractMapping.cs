@@ -1,11 +1,23 @@
 ﻿using MovieWatchlist.Contracts.Responses;
 using MovieWatchlist.ApplicationCore.Models;
+using MovieWatchlist.ApplicationCore.Models.DTO;
 
 namespace MovieWatchlist.ApplicationCore.Extensions
 {
     public static class ContractMapping
     {
-        public static MovieResponse MapToResponse(this Movie movie)
+        //public static MovieResponse MapToResponse(this Movie movie)
+        //{
+        //    return new MovieResponse
+        //    {
+        //        Id = movie.Id,
+        //        Title = movie.Title,
+        //        Ranking = movie.Ranking,
+        //        Rating = movie.Rating
+        //    };
+        //}
+
+        public static MovieResponse MapToResponse(this MovieDTO movie)
         {
             return new MovieResponse
             {
@@ -26,12 +38,12 @@ namespace MovieWatchlist.ApplicationCore.Extensions
             };
         }
 
-        private static MovieInWatchlistResponse MapToResponse(this MovieInWatchlist movieInwatchlist)
+        private static MovieInWatchlistResponse MapToResponse(this MovieInWatchlist movieInWatchlist)
         {
             return new MovieInWatchlistResponse
             {
-                Movie = movieInwatchlist.Movie.MapToResponse(),
-                Watched = movieInwatchlist.Watched
+                Movie = movieInWatchlist.Movie.MapToResponse(),
+                Watched = movieInWatchlist.Watched
             };
         }
     }
