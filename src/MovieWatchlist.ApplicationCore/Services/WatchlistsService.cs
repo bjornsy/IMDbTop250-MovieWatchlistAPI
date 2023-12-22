@@ -3,6 +3,8 @@ using MovieWatchlist.ApplicationCore.Interfaces.Data;
 using MovieWatchlist.ApplicationCore.Models;
 using MovieWatchlist.ApplicationCore.Exceptions;
 using MovieWatchlist.ApplicationCore.Interfaces.Services;
+using MovieWatchlist.ApplicationCore.Models.DTO;
+using MovieWatchlist.ApplicationCore.Mapping;
 
 namespace MovieWatchlist.ApplicationCore.Services
 {
@@ -17,7 +19,7 @@ namespace MovieWatchlist.ApplicationCore.Services
             _moviesRepository = moviesRepository;
         }
 
-        public async Task<WatchlistWithMoviesWatched> CreateWatchlist(CreateWatchlistRequest request, CancellationToken cancellationToken)
+        public async Task<WatchlistWithMoviesWatchedDTO> CreateWatchlist(CreateWatchlistRequest request, CancellationToken cancellationToken)
         {
             var watchlist = new Watchlist
             {
@@ -35,10 +37,10 @@ namespace MovieWatchlist.ApplicationCore.Services
 
             var moviesInWatchlist = await GetMoviesInWatchlist(watchlistsMoviesRecords, cancellationToken);
 
-            return new WatchlistWithMoviesWatched { Id = createdWatchlist.Id, Name = createdWatchlist.Name, Movies = moviesInWatchlist };
+            return new WatchlistWithMoviesWatchedDTO(createdWatchlist.Id, createdWatchlist.Name, moviesInWatchlist);
         }
 
-        public async Task<WatchlistWithMoviesWatched?> GetWatchlist(Guid watchlistId, CancellationToken cancellationToken)
+        public async Task<WatchlistWithMoviesWatchedDTO?> GetWatchlist(Guid watchlistId, CancellationToken cancellationToken)
         {
             var watchlist = await _watchlistRepository.GetWatchlistById(watchlistId, cancellationToken);
 
@@ -48,7 +50,7 @@ namespace MovieWatchlist.ApplicationCore.Services
 
             var moviesInWatchlist = await GetMoviesInWatchlist(watchlistsMovies, cancellationToken);
 
-            return new WatchlistWithMoviesWatched { Id = watchlist.Id, Name = watchlist.Name, Movies = moviesInWatchlist };
+            return new WatchlistWithMoviesWatchedDTO(watchlist.Id, watchlist.Name, moviesInWatchlist);
         }
 
         public async Task DeleteWatchlist(Guid watchlistId, CancellationToken cancellationToken)
@@ -117,12 +119,12 @@ namespace MovieWatchlist.ApplicationCore.Services
             return validWatchlistsMovies;
         }
 
-        private async Task<IEnumerable<MovieInWatchlist>> GetMoviesInWatchlist(IEnumerable<WatchlistsMovies> watchlistsMovies, CancellationToken cancellationToken)
+        private async Task<IEnumerable<MovieInWatchlistDTO>> GetMoviesInWatchlist(IEnumerable<WatchlistsMovies> watchlistsMovies, CancellationToken cancellationToken)
         {
             var movies = await _moviesRepository.GetMoviesByIdReadOnly(watchlistsMovies.Select(wm => wm.MovieId), cancellationToken);
 
             var moviesInWatchlist = movies.Join(watchlistsMovies, m => m.Id, wm => wm.MovieId, (m, wm) => new { Movie = m, WatchlistsMovies = wm })
-                            .Select(x => new MovieInWatchlist(x.Movie, x.WatchlistsMovies.Watched));
+                            .Select(x => new MovieInWatchlistDTO(x.Movie.MapToDTO(), x.WatchlistsMovies.Watched));
 
             return moviesInWatchlist;
         }

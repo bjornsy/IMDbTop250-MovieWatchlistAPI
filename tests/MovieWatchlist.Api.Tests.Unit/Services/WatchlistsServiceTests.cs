@@ -53,7 +53,7 @@ namespace MovieWatchlist.ApplicationCore.Tests.Unit.Services
 
             Assert.Equal(watchlistId, result.Id);
             Assert.Equal("watchlist name", result.Name);
-            Assert.Equal("movieId", result.Movies.Single().Movie.Id);
+            Assert.Equal("movieId", result.Movies.Single().MovieDTO.Id);
 
             _watchlistsRepositoryMock.Verify(m => m.AddWatchlist(It.Is<Watchlist>(w => w.Name.Equals(createWatchlistRequest.Name))), Times.Once);
             _watchlistsRepositoryMock.Verify(m => m.AddWatchlistsMovies(It.Is<IEnumerable<WatchlistsMovies>>(watchlistsMovies =>
@@ -122,7 +122,7 @@ namespace MovieWatchlist.ApplicationCore.Tests.Unit.Services
 
             Assert.Equal(watchlist.Id, result!.Id);
             Assert.Equal(watchlist.Name, result.Name);
-            Assert.Equal("movieId", result.Movies.Single().Movie.Id);
+            Assert.Equal("movieId", result.Movies.Single().MovieDTO.Id);
 
             _watchlistsRepositoryMock.Verify(m => m.GetWatchlistById(watchlistId, CancellationToken.None), Times.Once);
             _watchlistsRepositoryMock.Verify(m => m.GetWatchlistsMoviesByWatchlistId(watchlistId, CancellationToken.None), Times.Once);
