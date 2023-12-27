@@ -29,7 +29,7 @@ namespace MovieWatchlist.Controllers
 
             var movieResponses = movies.Select(m => m.MapToResponse());
 
-            return Ok(movies);
+            return Ok(movieResponses);
         }
 
         [Produces("application/json")]
