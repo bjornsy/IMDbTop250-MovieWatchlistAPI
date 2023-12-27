@@ -11,6 +11,7 @@ using MovieWatchlist.Infrastructure.Clients;
 using MovieWatchlist.Infrastructure.Data;
 using MovieWatchlist.ApplicationCore.Interfaces.Services;
 using Asp.Versioning;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
@@ -18,7 +19,21 @@ var config = builder.Configuration;
 builder.Logging.AddConsole();
 
 builder.Services.AddProblemDetails();
-builder.Services.AddHealthChecks().AddNpgSql(config.GetConnectionString("MovieWatchlist"));
+builder.Services.AddTransient<IProblemDetailsWriter, ProblemDetailsWriter>();
+
+var dbConnectionString = config.GetConnectionString("Postgres") ?? throw new InvalidOperationException("Connection string 'Postgres' not found.");
+builder.Services.AddDbContext<MovieWatchlistContext>(options => options.UseNpgsql(dbConnectionString));
+
+var redisConnectionString = config.GetConnectionString("Redis") ?? throw new InvalidOperationException("Connection string 'Redis' not found.");
+builder.Services.AddOutputCache(options => { 
+    options.DefaultExpirationTimeSpan = TimeSpan.FromHours(1);
+}).AddStackExchangeRedisOutputCache(options =>
+{
+    options.ConnectionMultiplexerFactory = async () =>
+        await ConnectionMultiplexer.ConnectAsync(redisConnectionString);
+});
+
+builder.Services.AddHealthChecks().AddNpgSql(dbConnectionString).AddRedis(redisConnectionString);
 builder.Services.AddControllers();
 builder.Services.AddApiVersioning(o => {
     o.DefaultApiVersion = new ApiVersion(1.0);
@@ -28,11 +43,6 @@ builder.Services.AddApiVersioning(o => {
 }).AddMvc();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddMemoryCache();
-builder.Services.AddDbContext<MovieWatchlistContext>(options =>
-    options.UseNpgsql(config.GetConnectionString("MovieWatchlist") ?? throw new InvalidOperationException("Connection string 'MovieWatchlistContext' not found.")));
-
-builder.Services.AddTransient<IProblemDetailsWriter, ProblemDetailsWriter>();
 
 builder.Services.AddScoped<IMoviesRepository, MoviesRepository>();
 builder.Services.AddTransient<IMoviesService, MoviesService>();
@@ -70,6 +80,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseOutputCache();
 
 app.UseExceptionHandler(exceptionHandlerApp =>
 {

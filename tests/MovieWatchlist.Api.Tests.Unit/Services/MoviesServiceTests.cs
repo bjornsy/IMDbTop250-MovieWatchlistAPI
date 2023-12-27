@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Moq;
 using MovieWatchlist.ApplicationCore.Services;
 using MovieWatchlist.ApplicationCore.Interfaces.Data;
@@ -16,7 +15,6 @@ namespace MovieWatchlist.ApplicationCore.Tests.Unit.Services
         private Mock<IMoviesRepository> _moviesRepositoryMock;
         private Mock<IWatchlistsRepository> _watchlistsRepositoryMock;
         private Mock<ITop250MoviesDatabaseUpdateService> _top250MoviesDatabaseUpdateServiceMock;
-        private IMemoryCache _memoryCache;
         private Mock<ILogger<MoviesService>> _loggerMock;
         private MoviesService _moviesService;
 
@@ -26,9 +24,8 @@ namespace MovieWatchlist.ApplicationCore.Tests.Unit.Services
             _watchlistsRepositoryMock = new Mock<IWatchlistsRepository>();
             _top250InfoServiceMock = new Mock<ITop250InfoService>();
             _top250MoviesDatabaseUpdateServiceMock = new Mock<ITop250MoviesDatabaseUpdateService>();
-            _memoryCache = new MemoryCache(new MemoryCacheOptions());
             _loggerMock = new Mock<ILogger<MoviesService>>();
-            _moviesService = new MoviesService(_top250InfoServiceMock.Object, _moviesRepositoryMock.Object, _watchlistsRepositoryMock.Object, _top250MoviesDatabaseUpdateServiceMock.Object, _memoryCache, _loggerMock.Object);
+            _moviesService = new MoviesService(_top250InfoServiceMock.Object, _moviesRepositoryMock.Object, _top250MoviesDatabaseUpdateServiceMock.Object, _loggerMock.Object);
         }
 
         [Fact]
@@ -44,30 +41,6 @@ namespace MovieWatchlist.ApplicationCore.Tests.Unit.Services
             Assert.Equal(movies.Single().Ranking, result.Single().Ranking);
             Assert.Equal(movies.Single().Rating, result.Single().Rating);
 
-            _top250MoviesDatabaseUpdateServiceMock.Verify(m => m.UpdateTop250InDatabase(movies), Times.Once);
-            _moviesRepositoryMock.Verify(m => m.GetAllMoviesReadOnly(CancellationToken.None), Times.Never);
-            _loggerMock.Verify(logger => logger.Log(
-                It.IsAny<LogLevel>(),
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => true),
-                It.IsAny<Exception>(),
-                It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)), Times.Never);
-
-        }
-
-        [Fact]
-        public async Task GetTop250_ReturnsMovieResponsesFromMemoryCache()
-        {
-            var movies = new ReadOnlyCollection<Movie>(new List<Movie> { new Movie { Id = "1" } });
-            _top250InfoServiceMock.Setup(m => m.GetTop250()).ReturnsAsync(movies);
-
-            var firstCallResult = await _moviesService.GetTop250(CancellationToken.None);
-            var secondCallResult = await _moviesService.GetTop250(CancellationToken.None);
-
-            Assert.Equal(movies.Single().Id, firstCallResult.Single().Id);
-            Assert.Same(movies.Single().Id, secondCallResult.Single().Id);
-
-            _top250InfoServiceMock.Verify(m => m.GetTop250(), Times.Once);
             _top250MoviesDatabaseUpdateServiceMock.Verify(m => m.UpdateTop250InDatabase(movies), Times.Once);
             _moviesRepositoryMock.Verify(m => m.GetAllMoviesReadOnly(CancellationToken.None), Times.Never);
             _loggerMock.Verify(logger => logger.Log(

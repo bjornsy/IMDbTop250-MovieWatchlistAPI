@@ -1,7 +1,6 @@
 ﻿using MovieWatchlist.ApplicationCore.Interfaces.Data;
 using MovieWatchlist.ApplicationCore.Models;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Caching.Memory;
 using MovieWatchlist.ApplicationCore.Interfaces.Services;
 using MovieWatchlist.ApplicationCore.Models.DTO;
 using MovieWatchlist.ApplicationCore.Mapping;
@@ -12,25 +11,17 @@ namespace MovieWatchlist.ApplicationCore.Services
     {
         private readonly ITop250InfoService _top250InfoService;
         private readonly IMoviesRepository _moviesRepository;
-        private readonly IWatchlistsRepository _watchlistsRepository;
         private readonly ITop250MoviesDatabaseUpdateService _top250MoviesDatabaseUpdateService;
-        private readonly IMemoryCache _memoryCache;
         private readonly ILogger<MoviesService> _logger;
-
-        private const string CacheKey = "Top250Info";
 
         public MoviesService(ITop250InfoService top250InfoService,
             IMoviesRepository moviesRepository,
-            IWatchlistsRepository watchlistsRepository,
             ITop250MoviesDatabaseUpdateService top250MoviesDatabaseUpdateService, 
-            IMemoryCache memoryCache,
             ILogger<MoviesService> logger)
         {
             _top250InfoService = top250InfoService;
             _moviesRepository = moviesRepository;
-            _watchlistsRepository = watchlistsRepository;
             _top250MoviesDatabaseUpdateService = top250MoviesDatabaseUpdateService;
-            _memoryCache = memoryCache;
             _logger = logger;
         }
 
@@ -38,17 +29,12 @@ namespace MovieWatchlist.ApplicationCore.Services
         {
             try
             {
-                return await _memoryCache.GetOrCreateAsync(CacheKey, async cacheEntry =>
-                {
-                    cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(60);
-                    var movies = await GetTop250FromClientAndUpdateDb();
-
-                    return movies;
-                });
+                var movies = await GetTop250FromClientAndUpdateDb();
+                return movies;
             } 
             catch (Exception ex)
             {
-                _logger.LogError("Error getting movies from client, using repository as fallback", ex);
+                _logger.LogError(ex, "Error getting movies from client, using repository as fallback");
 
                 var movies = await _moviesRepository.GetAllMoviesReadOnly(cancellationToken);
                 var top250 = GetTop250(movies);

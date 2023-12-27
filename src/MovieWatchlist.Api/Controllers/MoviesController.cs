@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using MovieWatchlist.ApplicationCore.Interfaces.Services;
 using MovieWatchlist.ApplicationCore.Extensions;
 using Asp.Versioning;
+using Microsoft.AspNetCore.OutputCaching;
 
 namespace MovieWatchlist.Controllers
 {
@@ -18,6 +19,7 @@ namespace MovieWatchlist.Controllers
             _moviesService = moviesService;
         }
 
+        [OutputCache]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet("top250")]

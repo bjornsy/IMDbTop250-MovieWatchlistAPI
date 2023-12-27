@@ -20,7 +20,9 @@ The list of movies is obtained from <http://top250.info/>, under the Top 250 sec
 
 In case the website is down, as part of the Entity Framework migration, movie data is seeded from a [pre-populated CSV file](src/MovieWatchlist.Api/Top250MoviesSeed.csv). This file can be updated by the separate [Top250Scraper console application](Top250Scraper/Program.cs) if desired.
 
-Within the `GET Movies` endpoint, if the cache is empty the [Top250InfoService](src/MovieWatchlist.Api/Services/Top250InfoService.cs) will scrape the list of movies from the page of the current day, then [Top250MoviesDatabaseUpdateService](src/MovieWatchlist.Api/Services/Top250MoviesDatabaseUpdateService.cs) will update the table in the database.
+Within the `GET Movies` endpoint, the [Top250InfoService](src/MovieWatchlist.Api/Services/Top250InfoService.cs) will scrape the list of movies from the page of the current day, then [Top250MoviesDatabaseUpdateService](src/MovieWatchlist.Api/Services/Top250MoviesDatabaseUpdateService.cs) will update the table in the database.
+
+There is a distributed Redis output cache in place, using a container and the [.NET built-in support](https://learn.microsoft.com/en-us/aspnet/core/performance/caching/output?view=aspnetcore-8.0#redis-cache).
 
 ![sequence diagram](/docs/Top250MoviesSequenceDiagram_PlantText.png)
 
@@ -29,7 +31,7 @@ Within the `GET Movies` endpoint, if the cache is empty the [Top250InfoService](
 ### Dependencies
 
 * [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-* [.NET 7 (for development)](https://dotnet.microsoft.com/en-us/download/dotnet/7.0)
+* [.NET 8 (for development)](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
 
 ### How to run
 
@@ -66,7 +68,6 @@ Within the `GET Movies` endpoint, if the cache is empty the [Top250InfoService](
 Planned updates include:
 
 * [Use .NET 8 Identity API for authentication](https://learn.microsoft.com/en-us/aspnet/core/release-notes/aspnetcore-8.0?view=aspnetcore-7.0#identity-api-endpoints)
-* [Distributed Redis output cache](https://learn.microsoft.com/en-us/aspnet/core/release-notes/aspnetcore-8.0?view=aspnetcore-7.0#redis-based-output-caching)
 * [Use ExecuteDeleteAsync](https://learn.microsoft.com/en-us/ef/core/what-is-new/ef-core-7.0/whatsnew#executeupdate-and-executedelete-bulk-updates)
 * Change to NSubstitute from Moq
 * Implement HATEOAS

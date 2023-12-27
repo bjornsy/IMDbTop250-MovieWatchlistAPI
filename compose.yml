@@ -3,12 +3,18 @@ services:
       build:      
         context: .
         dockerfile: ./Dockerfile
-      depends_on: [ moviewatchlist-db ]    
+      depends_on: [ moviewatchlist-redis, moviewatchlist-db ]    
       ports:
         - "8080:80"
       environment:
-        ConnectionStrings:MovieWatchlist: Server=host.docker.internal;Port=5432;Database=moviewatchlist;User ID=postgres;Password=postgres;
+        ConnectionStrings:Postgres: Server=host.docker.internal;Port=5432;Database=moviewatchlist;User ID=postgres;Password=postgres;
+        ConnectionStrings:Redis: localhost:6379
         ASPNETCORE_ENVIRONMENT: Development
+    moviewatchlist-redis:
+      image: redis:7.2.3-alpine
+      restart: always
+      ports:
+        - '6379:6379'
     moviewatchlist-db:
       image: postgres:16.0-bullseye
       restart: always
