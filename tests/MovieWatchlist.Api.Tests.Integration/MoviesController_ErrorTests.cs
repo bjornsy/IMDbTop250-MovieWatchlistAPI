@@ -5,12 +5,12 @@ using Xunit;
 
 namespace MovieWatchlist.Api.Tests.Integration
 {
-    public class MoviesControllerErrorTests : IClassFixture<MovieWatchlistApiFactory>
+    public class MoviesController_ErrorTests : IClassFixture<MovieWatchlistApiFactory>
     {
         private readonly HttpClient _httpClient;
         private readonly MovieWatchlistApiFactory _movieWatchlistApiFactory;
 
-        public MoviesControllerErrorTests(MovieWatchlistApiFactory movieWatchlistApiFactory)
+        public MoviesController_ErrorTests(MovieWatchlistApiFactory movieWatchlistApiFactory)
         {
             _httpClient = movieWatchlistApiFactory.CreateClient();
             _movieWatchlistApiFactory = movieWatchlistApiFactory;
