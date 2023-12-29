@@ -7,7 +7,7 @@ services:
       ports:
         - "8080:80"
       environment:
-        ConnectionStrings:Postgres: Server=host.docker.internal;Port=5432;Database=moviewatchlist;User ID=postgres;Password=postgres;
+        ConnectionStrings:Postgres: Server=host.docker.internal;Port=5432;Database=moviewatchlist;User ID=postgres;
         ConnectionStrings:Redis: localhost:6379
         ASPNETCORE_ENVIRONMENT: Development
     moviewatchlist-redis:
@@ -16,13 +16,12 @@ services:
       ports:
         - '6379:6379'
     moviewatchlist-db:
-      image: postgres:16.0-bullseye
+      image: postgres:16.1-alpine
       restart: always
       ports:
         - '5432:5432'
       environment:
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: postgres
+        POSTGRES_HOST_AUTH_METHOD: trust #Only for local use
         POSTGRES_DB: moviewatchlist
       volumes:
         - ./src/MovieWatchlist.Infrastructure/init.sql:/docker-entrypoint-initdb.d/init.sql

@@ -24,6 +24,8 @@ namespace MovieWatchlist.Api.Tests.Integration
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
+            builder.UseEnvironment("Test");
+
             builder.ConfigureLogging(logging =>
             {
                 logging.ClearProviders();

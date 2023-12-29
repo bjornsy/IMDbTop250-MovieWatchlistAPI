@@ -27,6 +27,9 @@ builder.Services.AddDbContext<MovieWatchlistContext>(options => options.UseNpgsq
 var redisConnectionString = config.GetConnectionString("Redis") ?? throw new InvalidOperationException("Connection string 'Redis' not found.");
 builder.Services.AddOutputCache(options => { 
     options.DefaultExpirationTimeSpan = TimeSpan.FromHours(1);
+    options.AddPolicy("NoCacheIfTest", policyBuilder => { 
+        if (builder.Environment.EnvironmentName.Equals("Test")) { policyBuilder.NoCache(); }; 
+    });
 }).AddStackExchangeRedisOutputCache(options =>
 {
     options.ConnectionMultiplexerFactory = async () =>

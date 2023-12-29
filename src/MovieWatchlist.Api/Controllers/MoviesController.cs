@@ -19,7 +19,7 @@ namespace MovieWatchlist.Controllers
             _moviesService = moviesService;
         }
 
-        [OutputCache]
+        [OutputCache(PolicyName = "NoCacheIfTest")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet("top250")]

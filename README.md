@@ -49,7 +49,7 @@ There is a distributed Redis output cache in place, using a container and the [.
   * Select movies in the table:
 
     ```
-    psql --username postgres --password
+    psql --username postgres
     \l
     \c moviewatchlist
     \dt *.*
