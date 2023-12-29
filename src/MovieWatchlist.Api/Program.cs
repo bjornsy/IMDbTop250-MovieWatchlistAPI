@@ -19,7 +19,7 @@ var config = builder.Configuration;
 builder.Logging.AddConsole();
 
 builder.Services.AddProblemDetails();
-builder.Services.AddTransient<IProblemDetailsWriter, ProblemDetailsWriter>();
+builder.Services.AddExceptionHandler<ExceptionHandler>();
 
 var dbConnectionString = config.GetConnectionString("Postgres") ?? throw new InvalidOperationException("Connection string 'Postgres' not found.");
 builder.Services.AddDbContext<MovieWatchlistContext>(options => options.UseNpgsql(dbConnectionString));
@@ -83,20 +83,7 @@ app.UseHttpsRedirection();
 
 app.UseOutputCache();
 
-app.UseExceptionHandler(exceptionHandlerApp =>
-{
-    exceptionHandlerApp.Run(async context =>
-    {
-        if (context.RequestServices.GetService<IProblemDetailsWriter>() is { } problemDetailsWriter)
-        {
-            var problemDetailsContext = new ProblemDetailsContext() { HttpContext = context };
-            if (problemDetailsWriter.CanWrite(problemDetailsContext))
-            {
-                await problemDetailsWriter.WriteAsync(problemDetailsContext);
-            }
-        }
-    });
-});
+app.UseExceptionHandler();
 
 app.MapHealthChecks("/_health", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
 {
